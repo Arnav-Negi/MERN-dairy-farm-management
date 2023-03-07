@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose").default;
-// const userRoutes = require("./routes/userRoutes");
+const customerRoutes = require("./routes/customerRoutes");
 // const subgreddiitRoutes = require("./routes/subgreddiitRoutes");
 // const postRoutes = require("./routes/postRoutes");
 require("dotenv").config();
@@ -14,7 +14,7 @@ mongoose
     .then(() => server.listen(process.env.PORT, () => console.log("Connected to Backend and MongoDB")))
     .catch((err) => console.log(err));
 
-// server.use("/user", userRoutes);
+server.use("/api/customer", customerRoutes);
 
 // server.use("/subgreddiit", subgreddiitRoutes);
 
