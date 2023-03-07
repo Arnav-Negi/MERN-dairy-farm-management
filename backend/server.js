@@ -15,9 +15,9 @@ mongoose
     .catch((err) => console.log(err));
 
 // server.use("/user", userRoutes);
-//
+
 // server.use("/subgreddiit", subgreddiitRoutes);
-//
+
 // server.use("/post", postRoutes);
 
 server.get("/", (req, res) => {
