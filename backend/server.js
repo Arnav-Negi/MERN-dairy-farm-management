@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose").default;
 const customerRoutes = require("./routes/customerRoutes");
-// const subgreddiitRoutes = require("./routes/subgreddiitRoutes");
+const vendorRoutes = require("./routes/vendorRoutes");
 // const postRoutes = require("./routes/postRoutes");
 require("dotenv").config();
 
@@ -16,7 +16,7 @@ mongoose
 
 server.use("/api/customer", customerRoutes);
 
-// server.use("/subgreddiit", subgreddiitRoutes);
+server.use("/api/vendor", vendorRoutes);
 
 // server.use("/post", postRoutes);
 
