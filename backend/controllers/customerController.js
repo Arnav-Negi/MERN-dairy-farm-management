@@ -34,10 +34,9 @@ const registerCustomer = async (req, res) => {
             {expiresIn: 36000},
             (err, token) => {
                 if (err) throw err;
-                res.json({ token, customer });
+                res.status(200).json({ token, customer });
             }
         );
-        console.log("Hello");
     } catch (err) {
         console.error(err.message);
         res.status(500).send("Server error");

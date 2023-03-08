@@ -3,16 +3,16 @@ import Box from "@mui/joy/Box"
 import Button from "@mui/joy/Button"
 import Checkbox from "@mui/joy/Checkbox"
 import FormControl from "@mui/joy/FormControl"
-import FormLabel, { formLabelClasses } from "@mui/joy/FormLabel"
+import FormLabel, {formLabelClasses} from "@mui/joy/FormLabel"
 import Link from "@mui/joy/Link"
 import Input from "@mui/joy/Input"
-import { useLocation } from 'react-router-dom';
+import {useLocation} from 'react-router-dom';
 import axios from 'axios'
 import Root from "../../url"
 
 export default function SignUp() {
 
-    let { state } = useLocation();
+    let {state} = useLocation();
 
     const handleSubmit = async (event) => {
         console.log()
@@ -20,19 +20,19 @@ export default function SignUp() {
         const data = new FormData(event.currentTarget)
 
         try {
-            const url = Root() + "/register"
+            const url ="http://localhost:5000/api/customer/register"
             const details = {
-                name: data.get('name'),
-                email: data.get('email'),
-                contact: data.get('contact'),
+                first_name: data.get('firstname'),
+                last_name: data.get('lastname'),
+                emailID: data.get('email'),
+                phoneNumber: data.get('contact'),
                 password: data.get('password'),
-                type: state.user === "customer" ? 2 : 3
+                address: data.get('address')
             }
             const res = await axios.post(url, details)
-            if (res.data.status === "OK") {
-                console.log("Done")
-            }
-            else {
+            if (res.status === 200) {
+                alert("Customer created!")
+            } else {
                 alert("Invalid credentials!")
             }
         } catch (error) {
@@ -53,10 +53,17 @@ export default function SignUp() {
                     />
                 </FormControl>
                 <FormControl required>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>First Name</FormLabel>
                     <Input
-                        placeholder="Enter your Name"
-                        name="name"
+                        placeholder="First Name"
+                        name="firstname"
+                    />
+                </FormControl>
+                <FormControl required>
+                    <FormLabel>Last Name</FormLabel>
+                    <Input
+                        placeholder="Last Name"
+                        name="lastname"
                     />
                 </FormControl>
 
@@ -69,7 +76,11 @@ export default function SignUp() {
                 </FormControl>
                 <FormControl required>
                     <FormLabel>Password</FormLabel>
-                    <Input placeholder="••••••••" type="password" name="password" />
+                    <Input placeholder="Password" type="password" name="password"/>
+                </FormControl>
+                <FormControl required>
+                    <FormLabel>Address</FormLabel>
+                    <Input placeholder={'Address'} type="text" name="address"/>
                 </FormControl>
                 <Box
                     sx={{

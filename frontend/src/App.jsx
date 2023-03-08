@@ -16,11 +16,11 @@ export default function App() {
             {/*<VendorNavbar/>*/}
             <Routes>
                 <Route path="/" element={<Choose/>}/>
-                <Route path="/login" element={<Auth/>}/>
+                <Route path="/auth" element={<Auth/>}/>
                 <Route path="/:type/:user_id/verify/:token" element={<Verify/>}/>
                 <Route path="*" xelement={<Navigate to='/'/>}/>
-                <Route path={'vendor'} element={<VendorScreen />} />
-                <Route path={'customer'} element={<CustomerScreen />} />
+                <Route path={'/vendor/*'} element={<VendorScreen />} />
+                <Route path={'/customer/*'} element={<CustomerScreen />} />
             </Routes>
         </div>
     )

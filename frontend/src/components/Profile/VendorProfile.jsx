@@ -2,7 +2,7 @@ import {Paper, Table, TableBody, TableCell, TableContainer, TableRow} from "@mui
 import {Link, useNavigate} from "react-router-dom";
 import {useRecoilState} from "recoil";
 import Button from "@mui/material/Button";
-import {user} from "../../atoms/user"
+import {userAtom} from "../../atoms/user"
 import {useState} from "react";
 import Typography from "@mui/material/Typography";
 

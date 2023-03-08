@@ -2,9 +2,8 @@ import {
     atom
 } from 'recoil';
 
-export const user = atom({
-    key: 'user',
+export const userAtom = atom({
+    key: 'userAtom',
     default: {
-        'cuck': 'yes'
     }
 })

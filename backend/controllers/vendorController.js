@@ -30,7 +30,7 @@ const registerVendor = async (req, res) => {
 
         jwt.sign(
             payload,
-            process.env.SECRETKET,
+            process.env.SECRETKEY,
             {expiresIn: '1h'},
             (err, token) => {
                 if (err) throw err;

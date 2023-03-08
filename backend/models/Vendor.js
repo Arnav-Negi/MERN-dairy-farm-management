@@ -3,75 +3,75 @@ const mongoose = require("mongoose");
 const VendorSchema = new mongoose.Schema({
     first_name: {
         type: String,
-        required: true,
+        // required: true,
     },
     last_name: {
         type: String,
-        required: true,
+        // required: true,
     },
     password: {
         type: String,
-        required: true,
+        // required: true,
     },
     phoneNumber: {
         type: Number,
-        required: true,
+        // required: true,
     },
     emailID: {
         type: String,
-        required: true,
+        // required: true,
         unique: true,
     },
     address: {
         type: String,
-        required: true,
+        // required: true,
     },
     dairyFarm: {
         name: {
             type: String,
-            required: true,
+            // required: true,
         },
         establishedDate: {
             type: Date,
-            required: true,
+            // required: true,
         },
         openingHours: {
             type: String,
-            required: true,
+            // required: true,
         },
         closingHours: {
             type: String,
-            required: true,
+            // required: true,
         },
     },
     workingDays: {
         type: [String],
-        required: true,
+        // required: true,
     },
     account: {
         holderName: {
             type: String,
-            required: true,
+            // required: true,
         },
         bankName: {
             type: String,
-            required: true,
+            // required: true,
         },
         branchName: {
             type: String,
-            required: true,
+            // required: true,
         },
         IFSC: {
             type: String,
-            required: true,
+            // required: true,
         },
         accountNumber: {
             type: String,
-            required: true,
+            // required: true,
         },
         accountType: {
             type: String,
-            required: true,
+            // required: true,
         },
     },
 }, {timestamps: true});

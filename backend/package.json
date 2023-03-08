@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,5 +17,8 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.0.1",
     "node-modules": "^1.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.21"
   }
 }

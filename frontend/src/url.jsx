@@ -1,1 +1,1 @@
-export default function Root (){return "http://localhost:5000/api"}
+export default function Root (){return "http://localhost:5000/api/"}

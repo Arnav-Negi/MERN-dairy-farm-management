@@ -2,19 +2,19 @@ import {Paper, Table, TableBody, TableCell, TableContainer, TableRow} from "@mui
 import {Link, useNavigate} from "react-router-dom";
 import {useRecoilState} from "recoil";
 import Button from "@mui/material/Button";
-import {user} from "../../atoms/user"
+import {userAtom} from "../../atoms/user"
 import {useState} from "react";
 import Typography from "@mui/material/Typography";
 
 export default function CustomerProfile() {
-    // const [user, setUser] = useRecoilState(user);
-    const [user, setUser] = useState({
-        first_name: 'arnav',
-        last_name: 'negi',
-        phoneNumber: '910191019',
-        emailID: 'arnavnegi14@gmail.com',
-        address: "your mom's house"
-    });
+    const [user, setUser] = useRecoilState(userAtom);
+    // const [user, setUser] = useState({
+    //     first_name: 'arnav',
+    //     last_name: 'negi',
+    //     phoneNumber: '910191019',
+    //     emailID: 'arnavnegi14@gmail.com',
+    //     address: "your mom's house"
+    // });
 
     return (
         <div className={'flex-col flex-grow w-full'}>

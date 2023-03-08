@@ -11,7 +11,7 @@ import axios from 'axios'
 import {useRecoilState} from "recoil";
 import {userAtom} from "../../atoms/user"
 
-export default function SignIn() {
+export default function VendorSignIn() {
     const [user, setUser] = useRecoilState(userAtom);
     const navigate = useNavigate();
     let {state} = useLocation()
@@ -20,14 +20,14 @@ export default function SignIn() {
         event.preventDefault()
         const data = new FormData(event.currentTarget)
         try {
-            const url = "http://localhost:5000/api/customer/login"
+            const url = "http://localhost:5000/api/vendor/login"
             const details = {
                 emailID: data.get('email'),
                 password: data.get('password')
             }
             const res = await axios.post(url, details)
             if (res.status === 200) {
-                setUser(res.data.customer);
+                setUser(res.data.vendor);
                 localStorage.setItem("token", res.data.token);
                 navigate('/customer/profile');
             } else {

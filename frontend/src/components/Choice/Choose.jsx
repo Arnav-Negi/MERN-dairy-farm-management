@@ -10,7 +10,7 @@ export default function Choose() {
                 <div className="child">
                     <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2} sx={{ flexGrow: 1 }}>
                         <Grid>
-                            <Link to="/login" state={{user: "customer"}}>
+                            <Link to="/auth" state={{user: "customer"}}>
                                 <div className="card">
                                     <div className="wrapper">
                                         <img src="/src/assets/images/v1.png" className="cover-image" />
@@ -21,7 +21,7 @@ export default function Choose() {
                             </Link>
                         </Grid>
                         <Grid>
-                            <Link to="/login" state={{ user: "vendor" }}>
+                            <Link to="/auth" state={{ user: "vendor" }}>
                                 <div className="card">
                                     <div className="wrapper">
                                         <img src="/src/assets/images/c14.png" className="cover-image" />

@@ -18,6 +18,8 @@ import Sheet from '@mui/joy/Sheet';
 import { useLocation } from 'react-router-dom';
 import SignIn from "./SignIn"
 import SignUp from "./SignUp"
+import VendorSignIn from "./VendorSignIn.jsx";
+import VendorSignUp from "./VendorSignUp.jsx";
 
 const Item = styled(Sheet)(({ theme }) => ({
   ...theme.typography.body2,
@@ -174,10 +176,10 @@ export default function Login() {
             }}
           >
             <div>
-              <Typography component="h2" fontSize="xl2" fontWeight="lg">
+              <Typography component="h2" fontSize="xl2" fontWeight="lg" textColor={'black'}>
                 Dear {state.user === "customer" ? "Customer" : "Vendor"}, {signState === 2 ? "welcome back" : "let's get started"}
               </Typography>
-              <Typography level="body2" sx={{ my: 1, mb: 3 }}>
+              <Typography level="body2" sx={{ my: 1, mb: 3 }} textColor={'black'}>
                 {signState === 2 ? "We are so excited to see you again!" : "Sign up and start your journey with us"}
               </Typography>
             </div>
@@ -194,10 +196,10 @@ export default function Login() {
                 </Button>
               </Grid>
             </Grid>
-              {signState === 2 ? <SignIn /> : <SignUp />}
+              {signState === 2 ? (state.user === "customer" ? <SignIn /> : <VendorSignIn />) : (state.user === "customer" ? <SignUp /> : <VendorSignUp />)}
           </Box>
           <Box component="footer" sx={{ py: 3 }}>
-            <Typography level="body3" textAlign="center">
+            <Typography level="body3" textAlign="center" textColor={'black'}>
               © avadoha {new Date().getFullYear()}
             </Typography>
           </Box>
