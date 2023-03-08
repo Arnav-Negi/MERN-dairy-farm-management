@@ -86,7 +86,6 @@ const getCustomer = async (req, res) => {
         }
         const customer = await Customer.findById(req.user.id).select("-createdAt -updatedAt -password -__v");
         console.log(customer);
-        console.log(customer);
         res.status(200).json({success: "Customer found", customer});
     } catch (err) {
         console.error(err.message);
