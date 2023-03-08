@@ -43,31 +43,6 @@ const registerVendor = async (req, res) => {
     }
 }
 
-/*
-async function verify(req, res) {
-    const id = new mongoose.Types.ObjectId(req.params.user_id)
-
-    const token = await Token.findOne({
-        user: req.params.user_id,
-        token: req.params.token
-    })
-    if (token === null) {
-        return res.send("Token not found")
-    }
-
-    console.log(token.token)
-
-    if (req.params.type === '2') {
-        await Customer.updateOne({_id: req.params.user_id}, {verified: true})
-    } else if (req.params.type === '3') {
-        await Vendor.updateOne({_id: req.params.user_id}, {verified: true})
-    }
-
-    await Token.findOneAndDelete({token: token.token})
-
-    res.send("Verified")
-}
-*/
 const loginVendor = async (req, res) => {
     try {
         const vendor = await Vendor.findOne({ emailID: req.body.emailID });
@@ -125,7 +100,7 @@ const updateVendor = async (req, res) => {
         }
         const vendorByEmail = await Vendor.findOne({emailID: req.body.emailID});
 
-        if (vendorByEmail && vendorByEmail._id !== req.user.id) {
+        if (vendorByEmail && vendorByEmail._id.toString() !== req.user.id) {
             return res.status(400).json({error: "This email ID is already in use"});
         }
 

@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose").default;
 const customerRoutes = require("./routes/customerRoutes");
 const vendorRoutes = require("./routes/vendorRoutes");
-// const postRoutes = require("./routes/postRoutes");
+const generalRoutes = require("./routes/generalRoutes");
 require("dotenv").config();
 
 const server = express();
@@ -18,7 +18,7 @@ server.use("/api/customer", customerRoutes);
 
 server.use("/api/vendor", vendorRoutes);
 
-// server.use("/post", postRoutes);
+server.use("/api/general", generalRoutes);
 
 server.get("/", (req, res) => {
     res.send("<p>Backend Home Page</p>");
