@@ -9,7 +9,7 @@ export default function Verify() {
 
     const [verify, setVerify] = React.useState(false)
 
-    React.useEffect(() => {
+    React.useEffect(async () => {
         async function verifyUser() {
             try {
                 const url = Root() + "/" + type + "/" + user_id + "/verify/" + token
@@ -19,7 +19,8 @@ export default function Verify() {
                 console.error(error);
             }
         }
-        verifyUser()
+
+        await verifyUser()
     }, [token])
     
     if (verify) return <h1>Verified</h1>

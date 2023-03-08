@@ -19,7 +19,7 @@ export default function SignIn() {
     const data = new FormData(event.currentTarget)
     try {
       const url = Root() + "/login"
-      const details = { email: data.get('email'), password: data.get('password'), type: state.user == "customer" ? 2 : 3 }
+      const details = { email: data.get('email'), password: data.get('password'), type: state.user === "customer" ? 2 : 3 }
       const res = await axios.post(url, details)
       if (res.data.status === "OK") {
         console.log(res.data.info)

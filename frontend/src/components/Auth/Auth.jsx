@@ -64,6 +64,7 @@ export default function Login() {
   let { state } = useLocation()
 
   function handleSignIn() {
+      // TODO implement sign in and sign up from auth
     setSignState(2);
   }
   function handleSignUp() {

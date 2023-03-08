@@ -16,7 +16,7 @@ export default function Choose() {
                                         <img src="/src/assets/images/v1.png" className="cover-image" />
                                     </div>
                                     <img src="/src/assets/images/v9.png" className="title" />
-                                    <img src="src/assets/images/c16.png" className="character" />
+                                    <img src="/src/assets/images/c16.png" className="character" />
                                 </div>
                             </Link>
                         </Grid>

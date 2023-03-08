@@ -12,9 +12,10 @@ import Root from "../../url"
 
 export default function SignUp() {
 
-    let { state } = useLocation()
+    let { state } = useLocation();
 
     const handleSubmit = async (event) => {
+        console.log()
         event.preventDefault()
         const data = new FormData(event.currentTarget)
 
@@ -25,7 +26,7 @@ export default function SignUp() {
                 email: data.get('email'),
                 contact: data.get('contact'),
                 password: data.get('password'),
-                type: state.user == "customer" ? 2 : 3
+                type: state.user === "customer" ? 2 : 3
             }
             const res = await axios.post(url, details)
             if (res.data.status === "OK") {
