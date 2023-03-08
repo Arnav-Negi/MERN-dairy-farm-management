@@ -1,62 +1,84 @@
 const Customer = require("../models/Customer");
-// const bcrypt = require("bcryptjs");
-// const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
-// const register_user = async (req, res) => {
-//     const { first_name, last_name, username, password, age, contact_no, email } =
-//         req.body;
-//
-//     try {
-//         const temp_user_username = await User.findOne({ username });
-//
-//         if (temp_user_username) {
-//             return res.status(400).json({ msg: "User already exists" });
-//         }
-//
-//         const temp_user_email = await User.findOne({ email });
-//
-//         if (temp_user_email) {
-//             return res.status(400).json({ msg: "Email already exists" });
-//         }
-//
-//         const user = new User({
-//             first_name,
-//             last_name,
-//             username,
-//             password,
-//             age,
-//             contact_no,
-//             email,
-//         });
-//
-//         const salt = await bcrypt.genSalt(10);
-//
-//         user.password = await bcrypt.hash(password, salt);
-//
-//         await user.save();
-//
-//         const payload = {
-//             user: {
-//                 id: user.id,
-//             },
-//         };
-//
-//         user.password = undefined;
-//
-//         jwt.sign(
-//             payload,
-//             process.env.SECRETKEY,
-//             { expiresIn: 3600000 },
-//             (err, token) => {
-//                 if (err) throw err;
-//                 res.json({ token, user });
-//             }
-//         );
-//     } catch (err) {
-//         console.error(err.message);
-//         res.status(500).send("Server error");
-//     }
-// };
+const registerCustomer = async (req, res) => {
+    try {
+        const tempCustomer = await Customer.findOne({emailID: req.body.emailID});
+
+        if (tempCustomer) {
+            return res.status(400).json({error: "Email already in use"});
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const password = await bcrypt.hash(req.body.password, salt);
+
+        const customer = new Customer(req.body);
+        customer.password = password;
+
+        await customer.save();
+
+        const payload = {
+            user: {
+                id: customer._id,
+                userType: "Customer",
+            }
+        }
+
+        customer.password = undefined
+
+        jwt.sign(
+            payload,
+            process.env.SECRETKEY,
+            {expiresIn: 36000},
+            (err, token) => {
+                if (err) throw err;
+                res.json({ token, customer });
+            }
+        );
+        console.log("Hello");
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+}
+
+const loginCustomer = async (req, res) => {
+    try {
+        const customer = await Customer.findOne({ emailID: req.body.emailID });
+        if (!customer) {
+            return res.status(400).json({error: "Invalid Credentials"});
+        }
+
+        const check = await bcrypt.compare(req.body.password, customer.password);
+        if (!check) {
+            return res.status(400).json({ error: "Invalid Credentials" });
+        }
+
+        const payload = {
+            user: {
+                id: customer._id,
+                userType: "Customer",
+            }
+        };
+
+        customer.password = undefined;
+
+        jwt.sign(
+            payload,
+            process.env.SECRETKEY,
+            {expiresIn: '1h'},
+            (err, token) => {
+                if (err) throw err;
+                res.status(200).json({ token, customer });
+            }
+        );
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+};
 //
 // const login_user = async (req, res) => {
 //     const { username, password } = req.body;
@@ -336,14 +358,8 @@ const updateCustomer = async (req, res) => {
 // };
 
 module.exports = {
-    // get_user,
-    // update_user,
-    // login_user,
-    // remove_follower,
-    // add_follower,
-    // register_user,
-    // follow,
-    // unfollow,
+    registerCustomer,
+    loginCustomer,
     getCustomer,
     updateCustomer,
 };
