@@ -1,12 +1,12 @@
 const express = require("express");
 const vendorController = require("../controllers/vendorController");
-// const auth = require("../middleware/auth");
+const auth = require("../middleware/auth");
 
 const router = express.Router();
 
-router.get("/", vendorController.getVendor);
+router.get("/", auth, vendorController.getVendor);
 
-router.patch("/", vendorController.updateVendor);
+router.patch("/", auth, vendorController.updateVendor);
 
 router.post("/register", vendorController.registerVendor);
 
