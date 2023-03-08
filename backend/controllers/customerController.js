@@ -62,7 +62,7 @@ const loginCustomer = async (req, res) => {
             }
         };
 
-        // customer.password = undefined;
+        customer.password = undefined;
 
         jwt.sign(
             payload,
