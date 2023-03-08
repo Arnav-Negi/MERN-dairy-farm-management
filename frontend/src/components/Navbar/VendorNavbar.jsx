@@ -9,9 +9,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -23,6 +20,7 @@ import {AccountCircle} from "@mui/icons-material";
 import LockResetIcon from '@mui/icons-material/LockReset';
 import LogoutIcon from '@mui/icons-material/Logout';
 import CustomizedAccordions from "./Accordion.jsx";
+import {Link} from "react-router-dom";
 
 const drawerWidth = 250;
 
@@ -91,9 +89,7 @@ const Drawer = styled(MuiDrawer, {shouldForwardProp: (prop) => prop !== 'open'})
     }),
 );
 
-export default function MiniDrawer() {
-    const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
+export default function VendorNavbar() {
     const [anchorEl, setAnchorEl] = React.useState(null);
 
     const handleMenu = (event) => {
@@ -104,7 +100,6 @@ export default function MiniDrawer() {
         setAnchorEl(null);
     };
 
-    // TODO: fill appbar and sidebar
     return (
         <Box sx={{display: 'flex'}}>
             <CssBaseline/>
@@ -159,7 +154,7 @@ export default function MiniDrawer() {
                     <List sx={{ fontSize: '0.9rem' }}>
                         {['My profile', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
                             <ListItem key={text} disablePadding >
-                                <ListItemButton>
+                                <ListItemButton component={Link} to={'/profile'}>
                                     <ListItemIcon >
                                         {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                                     </ListItemIcon>
