@@ -46,7 +46,7 @@ const registerCustomer = async (req, res) => {
 
 const loginCustomer = async (req, res) => {
     try {
-        const customer = await Customer.findOne({ emailID: req.body.emailID });
+        const customer = await Customer.findOne({ emailID: req.body.emailID }).select("-createdAt -updatedAt -__v");
         if (!customer) {
             return res.status(400).json({error: "Invalid Credentials"});
         }
@@ -63,7 +63,7 @@ const loginCustomer = async (req, res) => {
             }
         };
 
-        customer.password = undefined;
+        // customer.password = undefined;
 
         jwt.sign(
             payload,
@@ -85,8 +85,9 @@ const getCustomer = async (req, res) => {
         if (req.user.userType !== "Customer") {
             return res.status(400).json({error: "User is not a customer"});
         }
-        const customer = await Customer.findById(req.user.id);
-        customer.password = undefined;
+        const customer = await Customer.findById(req.user.id).select("-createdAt -updatedAt -password -__v");
+        console.log(customer);
+        console.log(customer);
         res.status(200).json({success: "Customer found", customer});
     } catch (err) {
         console.error(err.message);
