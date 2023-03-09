@@ -12,7 +12,7 @@ import CustomerNavbar from "./components/Navbar/CustomerNavbar.jsx";
 export default function App() {
 
     return (
-        <div className={'min-h-screen w-full flex justify-center place-items-center'}>
+        <div className={'min-h-screen w-full'}>
             {/*<VendorNavbar/>*/}
             <Routes>
                 <Route path="/" element={<Choose/>}/>
