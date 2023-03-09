@@ -8,6 +8,10 @@ import VendorNavbar from "./components/Navbar/VendorNavbar.jsx";
 import VendorProfile from "./components/Profile/VendorProfile.jsx";
 import CustomerProfile from "./components/Profile/CustomerProfile.jsx";
 import CustomerNavbar from "./components/Navbar/CustomerNavbar.jsx";
+import { useRecoilState } from "recoil";
+import { userAtom } from "./atoms/user";
+import { useEffect } from "react";
+import { setToken } from "./utils/checkToken";
 
 export default function App() {
 
@@ -27,6 +31,13 @@ export default function App() {
 }
 
 function VendorScreen() {
+
+    const [user, setUser] = useRecoilState(userAtom);
+    useEffect(() => {
+        setToken();
+        axios.get()
+    }, [])
+
     return (
         <>
             <VendorNavbar/>
@@ -41,9 +52,11 @@ function CustomerScreen() {
     return (
         <>
             <CustomerNavbar/>
+            <div style={{marginLeft: '20%', width: '75%', minHeight: '100%'}}>
             <Routes>
                 <Route path={'profile'} element={<CustomerProfile/>} />
             </Routes>
+            </div>
         </>
     )
 }

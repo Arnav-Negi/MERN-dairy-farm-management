@@ -22,7 +22,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import CustomizedAccordions from "./Accordion.jsx";
 import {Link} from "react-router-dom";
 
-const drawerWidth = 250;
+const drawerWidth = '15%';
 
 const openedMixin = (theme) => ({
     width: drawerWidth,
@@ -71,6 +71,14 @@ const AppBar = styled(MuiAppBar, {
         }),
     }),
 }));
+
+const customerOptions = {
+    simple: [{
+        text: 'My Profile',
+        link: '/customer/profile'
+    }],
+    accordion: []
+}
 
 const Drawer = styled(MuiDrawer, {shouldForwardProp: (prop) => prop !== 'open'})(
     ({theme, open}) => ({

@@ -5,20 +5,14 @@ import Button from "@mui/material/Button";
 import {userAtom} from "../../atoms/user"
 import {useState} from "react";
 import Typography from "@mui/material/Typography";
+import EditCustomer from "./EditCustomer";
 
 export default function CustomerProfile() {
     const [user, setUser] = useRecoilState(userAtom);
-    // const [user, setUser] = useState({
-    //     first_name: 'arnav',
-    //     last_name: 'negi',
-    //     phoneNumber: '910191019',
-    //     emailID: 'arnavnegi14@gmail.com',
-    //     address: "your mom's house"
-    // });
 
     return (
         <div className={'flex-col flex-grow w-full'}>
-            <Typography align={'left'} variant={'h4'} sx={{paddingTop: '5%'}}>
+            <Typography align={'left'} variant={'h4'} sx={{paddingTop: '5%',paddingBottom: '5%'}}>
                 User info
             </Typography>
             <TableContainer
@@ -29,7 +23,7 @@ export default function CustomerProfile() {
                     width: "100%"
                 }}
             >
-                <Table aria-label="simple table">
+                <Table aria-label="simple table" sx={{padding: "5%"}}>
                     <TableBody>
                         {Object.keys(user).map(key => {
                                 return (
@@ -51,7 +45,7 @@ export default function CustomerProfile() {
                         )}
                     </TableBody>
                 </Table>
-                <Button component={Link} to={'/profile/edit'}>Edit user info</Button>
+                <EditCustomer />
             </TableContainer>
         </div>
     )
