@@ -6,6 +6,7 @@ const setToken = () => {
         token = localStorage.getItem("token");
     } catch { return 1;}
     if (token === null) return 1;
+    console.log(token)
     axios.defaults.headers["authorization"] = token;
     return 0;
 }

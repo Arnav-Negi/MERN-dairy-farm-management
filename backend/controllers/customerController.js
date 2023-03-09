@@ -80,6 +80,7 @@ const loginCustomer = async (req, res) => {
 };
 
 const getCustomer = async (req, res) => {
+    console.log("aiushdauihdo")
     try {
         if (req.user.userType !== "Customer") {
             return res.status(400).json({error: "User is not a customer"});

@@ -1,6 +1,7 @@
 import * as React from "react";
+import axios from "axios";
 import './App.css'
-import {Routes, Route, Navigate} from "react-router-dom";
+import {Routes, Route, Navigate, useNavigate} from "react-router-dom";
 import Auth from './components/Auth/Auth';
 import Verify from './Verify'
 import Choose from './components/Choice/Choose';
@@ -33,22 +34,54 @@ export default function App() {
 function VendorScreen() {
 
     const [user, setUser] = useRecoilState(userAtom);
-    useEffect(() => {
-        setToken();
-        axios.get()
+    const navigate = useNavigate();
+    useEffect( () => {
+        async function fetchData() {
+            setToken();
+            try {
+                const response = await axios.get('http://localhost:5000/api/vendor');
+                setUser(response.data.vendor);
+            }
+            catch {
+                navigate('/');
+            }
+        }
+
+        fetchData();
     }, [])
 
     return (
         <>
             <VendorNavbar/>
+            <div style={{marginLeft: '20%', width: '75%', minHeight: '100%'}}>
             <Routes>
                 <Route path={'profile'} element={<VendorProfile/>} />
             </Routes>
+            </div>
         </>
     )
 }
 
 function CustomerScreen() {
+    
+    const [user, setUser] = useRecoilState(userAtom);
+    const navigate = useNavigate();
+    useEffect( () => {
+        async function fetchData() {
+            setToken();
+            try {
+                const response = await axios.get('http://localhost:5000/api/customer');
+                console.log(response)
+                setUser(response.data.customer);
+            }
+            catch {
+                navigate('/');
+            }
+        }
+
+        fetchData();
+    }, [])
+
     return (
         <>
             <CustomerNavbar/>
