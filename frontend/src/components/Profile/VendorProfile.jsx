@@ -33,7 +33,8 @@ export default function VendorProfile() {
     }
 
     return (
-        <div className={'flex-col flex-grow w-full'} style={{paddingTop: '25rem'}}>
+        <div className={' w-full'} style={{paddingTop: '50rem',
+            paddingBottom: '5rem'}}>
             <Typography align={'left'} fontSize={'large'} sx={{paddingTop: '5%'}}>
                 User info
             </Typography>

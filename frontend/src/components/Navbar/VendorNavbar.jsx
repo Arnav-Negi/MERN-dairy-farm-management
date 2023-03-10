@@ -156,17 +156,17 @@ export default function VendorNavbar() {
             >
                 <Toolbar />
                 <Box sx={{ overflow: 'auto' }}>
-                    <List sx={{ fontSize: '0.9rem' }}>
-                        {['My profile', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                            <ListItem key={text} disablePadding >
-                                <ListItemButton component={Link} to={'/profile'}>
-                                    <ListItemIcon >
-                                        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                    </ListItemIcon>
-                                    <ListItemText primary={text} />
-                                </ListItemButton>
-                            </ListItem>
-                        ))}
+                    <List sx={{fontSize: '0.9rem'}}>
+                        <ListItem key={'profile'} disablePadding>
+                            <ListItemButton component={Link} to={'/vendor/profile'}>
+                                <ListItemText primary={'My Profile'}/>
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem key={'app-info'} disablePadding>
+                            <ListItemButton component={Link} to={'/vendor/app-info'}>
+                                <ListItemText primary={'App Information'}/>
+                            </ListItemButton>
+                        </ListItem>
                     </List>
                     <Divider />
                     <CustomizedAccordions />

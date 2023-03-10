@@ -12,6 +12,7 @@ import { useRecoilState } from "recoil";
 import { userAtom } from "./atoms/user";
 import { useEffect } from "react";
 import { setToken } from "./utils/checkToken";
+import AppInfo from "./components/AppInfo/AppInfo.jsx";
 
 export default function App() {
 
@@ -54,9 +55,10 @@ function VendorScreen() {
     return (
         <>
             <VendorNavbar/>
-            <div style={{marginLeft: '20%', width: '75%', minHeight: '100%', marginTop: '20%'}}>
+            <div style={{marginLeft: '20%', width: '75%', minHeight: '100%', marginTop: '10vh'}}>
             <Routes>
                 <Route path={'profile'} element={<VendorProfile/>} />
+                <Route path={'app-info'} element={<AppInfo/>} />
             </Routes>
             </div>
         </>
@@ -92,6 +94,7 @@ function CustomerScreen() {
             <div style={{marginLeft: '20%', width: '75%', minHeight: '100%'}}>
             <Routes>
                 <Route path={'profile'} element={<CustomerProfile/>} />
+                <Route path={'app-info'} element={<AppInfo/>} />
             </Routes>
             </div>
         </>
