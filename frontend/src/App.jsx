@@ -35,7 +35,8 @@ function VendorScreen() {
     const navigate = useNavigate();
     useEffect( () => {
         async function fetchData() {
-            setToken();
+            if (setToken())
+                navigate('/')
             try {
                 const response = await axios.get('http://localhost:5000/api/vendor');
                 setUser({...user, ...response.data.vendor});
@@ -48,6 +49,8 @@ function VendorScreen() {
         fetchData();
     }, [])
 
+    if (!user) return (<div>loading</div>)
+    else
     return (
         <>
             <VendorNavbar/>
@@ -66,7 +69,8 @@ function CustomerScreen() {
     const navigate = useNavigate();
     useEffect( () => {
         async function fetchData() {
-            setToken();
+            if (setToken())
+                navigate('/')
             try {
                 const response = await axios.get('http://localhost:5000/api/customer');
                 console.log(response)
@@ -80,6 +84,8 @@ function CustomerScreen() {
         fetchData();
     }, [])
 
+    if (!user) return (<div>loading</div>)
+    else
     return (
         <>
             <CustomerNavbar/>

@@ -4,6 +4,5 @@ import {
 
 export const userAtom = atom({
     key: 'userAtom',
-    default: {
-    }
+    default: null
 })

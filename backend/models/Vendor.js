@@ -3,75 +3,75 @@ const mongoose = require("mongoose");
 const VendorSchema = new mongoose.Schema({
     first_name: {
         type: String,
-        // required: true,
+        required: true,
     },
     last_name: {
         type: String,
-        // required: true,
+        required: true,
     },
     password: {
         type: String,
-        // required: true,
+        required: true,
     },
     phoneNumber: {
         type: Number,
-        // required: true,
+        required: true,
     },
     emailID: {
         type: String,
-        // required: true,
+        required: true,
         unique: true,
     },
     address: {
         type: String,
-        // required: true,
+        required: true,
     },
     dairyFarm: {
         name: {
             type: String,
-            // required: true,
+            default: "",
         },
         establishedDate: {
             type: Date,
-            // required: true,
+            default: "01/01/0001",
         },
         openingHours: {
             type: String,
-            // required: true,
+            default: "00:00",
         },
         closingHours: {
             type: String,
-            // required: true,
+            default: "00:00",
         },
     },
     workingDays: {
         type: [String],
-        // required: true,
+        default: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
     },
     account: {
         holderName: {
             type: String,
-            // required: true,
+            default: "",
         },
         bankName: {
             type: String,
-            // required: true,
+            default: "",
         },
         branchName: {
             type: String,
-            // required: true,
+            default: "",
         },
         IFSC: {
             type: String,
-            // required: true,
+            default: "",
         },
         accountNumber: {
             type: String,
-            // required: true,
+            default: "",
         },
         accountType: {
             type: String,
-            // required: true,
+            default: "",
         },
     },
 }, {timestamps: true});

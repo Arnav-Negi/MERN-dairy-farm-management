@@ -20,7 +20,7 @@ import {AccountCircle} from "@mui/icons-material";
 import LockResetIcon from '@mui/icons-material/LockReset';
 import LogoutIcon from '@mui/icons-material/Logout';
 import CustomizedAccordions from "./Accordion.jsx";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {logout} from "../../utils/checkToken.jsx";
 
 const drawerWidth = '15%';
@@ -100,6 +100,7 @@ const Drawer = styled(MuiDrawer, {shouldForwardProp: (prop) => prop !== 'open'})
 
 export default function CustomerNavbar() {
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const navigate = useNavigate();
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -144,7 +145,10 @@ export default function CustomerNavbar() {
                         >
                             <MenuItem onClick={handleClose}>
                                 <LockResetIcon/>Change password</MenuItem>
-                            <MenuItem onClick={() => logout()}>
+                            <MenuItem onClick={() => {
+                                logout()
+                                navigate('/')
+                            }}>
                                 <LogoutIcon/>Logout</MenuItem>
                         </Menu>
                     </div>
