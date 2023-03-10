@@ -30,6 +30,9 @@ export default function VendorProfile() {
         }
 
         updateCustomer().then(() => setUser(formData)).catch(err => console.log(err));
+        setEditUser(false);
+        setEditFarm(false);
+        setEditAccount(false);
     }
 
     return (
