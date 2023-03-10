@@ -5,7 +5,9 @@ require("dotenv").config();
 
 const registerCustomer = async (req, res) => {
     try {
-        const tempCustomer = await Customer.findOne({emailID: req.body.emailID});
+        const tempCustomer = await Customer
+            .findOne({emailID: req.body.emailID})
+            .select("-createdAt -updatedAt -__v");
 
         if (tempCustomer) {
             return res.status(400).json({error: "Email already in use"});
@@ -45,7 +47,9 @@ const registerCustomer = async (req, res) => {
 
 const loginCustomer = async (req, res) => {
     try {
-        const customer = await Customer.findOne({ emailID: req.body.emailID }).select("-createdAt -updatedAt -__v");
+        const customer = await Customer
+            .findOne({ emailID: req.body.emailID })
+            .select("-createdAt -updatedAt -__v");
         if (!customer) {
             return res.status(400).json({error: "Invalid Credentials"});
         }
@@ -84,8 +88,9 @@ const getCustomer = async (req, res) => {
         if (req.user.userType !== "Customer") {
             return res.status(400).json({error: "User is not a customer"});
         }
-        const customer = await Customer.findById(req.user.id).select("-createdAt -updatedAt -password -__v");
-        console.log(customer);
+        const customer = await Customer
+            .findById(req.user.id)
+            .select("-createdAt -updatedAt -password -__v");
         res.status(200).json({success: "Customer found", customer});
     } catch (err) {
         console.error(err.message);

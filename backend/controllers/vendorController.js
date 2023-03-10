@@ -5,7 +5,9 @@ require("dotenv").config();
 
 const registerVendor = async (req, res) => {
     try {
-        const tempVendor = await Vendor.findOne({emailID: req.body.emailID});
+        const tempVendor = await Vendor
+            .findOne({emailID: req.body.emailID})
+            .select("-createdAt -updatedAt -__v");
 
         if (tempVendor) {
             return res.status(400).json({error: "Email already in use"});
@@ -45,7 +47,9 @@ const registerVendor = async (req, res) => {
 
 const loginVendor = async (req, res) => {
     try {
-        const vendor = await Vendor.findOne({ emailID: req.body.emailID });
+        const vendor = await Vendor
+            .findOne({ emailID: req.body.emailID })
+            .select("-createdAt -updatedAt -__v");
         if (!vendor) {
             return res.status(400).json({error: "Invalid Credentials"});
         }
@@ -84,8 +88,9 @@ const getVendor = async (req, res) => {
         if (req.user.userType !== "Vendor") {
             return res.status(400).json({error: "User is not a vendor"});
         }
-        const vendor = await Vendor.findById(req.user.id);
-        vendor.password = undefined;
+        const vendor = await Vendor
+            .findById(req.user.id)
+            .select("-createdAt -updatedAt -password -__v");
         res.status(200).json({success: "Vendor found", vendor});
     } catch (err) {
         console.error(err.message);
