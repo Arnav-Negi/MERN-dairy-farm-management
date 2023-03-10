@@ -7,29 +7,29 @@ import {useState} from "react";
 import Typography from "@mui/material/Typography";
 
 export default function VendorProfile() {
-    // const [user, setUser] = useRecoilState(user);
-    const [user, setUser] = useState({
-        first_name: 'arnav',
-        last_name: 'negi',
-        phoneNumber: '910191019',
-        emailID: 'arnavnegi14@gmail.com',
-        address: "your mom's house",
-        dairyFarm: {
-            name: 'your mom is a cow',
-            establishedDate: '29/03/2007',
-            openingHours: '10 AM',
-            closingHours: '11 PM',
-        },
-        workingDays: ['Monday', 'Tuesday', 'Wednesday'],
-        account: {
-            holderName: 'Goudhara farms',
-            bankName: 'ISBC',
-            branchName: 'Gachibowli',
-            IFSC: '1901ASJD',
-            accountNumber: '9910-1992-1912',
-            accountType: 'savings',
-        },
-    });
+    const [user, setUser] = useRecoilState(user);
+    // const [user, setUser] = useState({
+    //     first_name: 'arnav',
+    //     last_name: 'negi',
+    //     phoneNumber: '910191019',
+    //     emailID: 'arnavnegi14@gmail.com',
+    //     address: "your mom's house",
+    //     dairyFarm: {
+    //         name: 'your mom is a cow',
+    //         establishedDate: '29/03/2007',
+    //         openingHours: '10 AM',
+    //         closingHours: '11 PM',
+    //     },
+    //     workingDays: ['Monday', 'Tuesday', 'Wednesday'],
+    //     account: {
+    //         holderName: 'Goudhara farms',
+    //         bankName: 'ISBC',
+    //         branchName: 'Gachibowli',
+    //         IFSC: '1901ASJD',
+    //         accountNumber: '9910-1992-1912',
+    //         accountType: 'savings',
+    //     },
+    // });
 
     return (
         <div className={'flex-col flex-grow w-full pt-10'}>
