@@ -1,6 +1,5 @@
 import * as React from "react";
 import axios from "axios";
-import './App.css'
 import {Routes, Route, Navigate, useNavigate} from "react-router-dom";
 import Auth from './components/Auth/Auth';
 import Verify from './Verify'
@@ -23,7 +22,7 @@ export default function App() {
                 <Route path="/" element={<Choose/>}/>
                 <Route path="/auth" element={<Auth/>}/>
                 <Route path="/:type/:user_id/verify/:token" element={<Verify/>}/>
-                <Route path="*" xelement={<Navigate to='/'/>}/>
+                <Route path="/*" element={<Navigate to='/'/>}/>
                 <Route path={'/vendor/*'} element={<VendorScreen />} />
                 <Route path={'/customer/*'} element={<CustomerScreen />} />
             </Routes>
