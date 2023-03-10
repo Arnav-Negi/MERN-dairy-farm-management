@@ -21,6 +21,7 @@ import LockResetIcon from '@mui/icons-material/LockReset';
 import LogoutIcon from '@mui/icons-material/Logout';
 import CustomizedAccordions from "./Accordion.jsx";
 import {Link} from "react-router-dom";
+import {logout} from "../../utils/checkToken.jsx";
 
 const drawerWidth = '15%';
 
@@ -108,6 +109,7 @@ export default function CustomerNavbar() {
         setAnchorEl(null);
     };
 
+
     return (
         <Box sx={{display: 'flex'}}>
             <CssBaseline/>
@@ -142,7 +144,7 @@ export default function CustomerNavbar() {
                         >
                             <MenuItem onClick={handleClose}>
                                 <LockResetIcon/>Change password</MenuItem>
-                            <MenuItem onClick={handleClose}>
+                            <MenuItem onClick={() => logout()}>
                                 <LogoutIcon/>Logout</MenuItem>
                         </Menu>
                     </div>

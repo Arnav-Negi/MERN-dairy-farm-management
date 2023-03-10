@@ -17,7 +17,6 @@ export default function VendorSignUp() {
     let {state} = useLocation();
 
     const handleSubmit = async (event) => {
-        console.log()
         event.preventDefault()
         const data = new FormData(event.currentTarget)
 
@@ -32,13 +31,10 @@ export default function VendorSignUp() {
                 address: data.get('address')
             }
             const res = await axios.post(url, details)
-            if (res.status === 200) {
-                alert("Vendor created!")
-            } else {
-                alert("Invalid credentials!")
-            }
+            alert("Vendor created!")
         } catch (error) {
             console.log(error)
+            alert("Invalid credentials!")
         }
     }
 
@@ -46,7 +42,7 @@ export default function VendorSignUp() {
     return (
         <>
             <form onSubmit={handleSubmit}>
-                <Grid container spacing={2} sx={{ flexGrow: 1 }}>
+                <Grid container spacing={2} sx={{flexGrow: 1}}>
                     <Grid item xs={6} md={8}>
                         <FormControl required>
                             <FormLabel>Email</FormLabel>

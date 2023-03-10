@@ -16,7 +16,7 @@ import { setToken } from "./utils/checkToken";
 export default function App() {
 
     return (
-        <div className={'min-h-screen w-full'}>
+        <div className={'min-h-screen w-full bg-white'}>
             {/*<VendorNavbar/>*/}
             <Routes>
                 <Route path="/" element={<Choose/>}/>
@@ -39,7 +39,7 @@ function VendorScreen() {
             setToken();
             try {
                 const response = await axios.get('http://localhost:5000/api/vendor');
-                setUser(response.data.vendor);
+                setUser({...user, ...response.data.vendor});
             }
             catch {
                 navigate('/');
@@ -52,7 +52,7 @@ function VendorScreen() {
     return (
         <>
             <VendorNavbar/>
-            <div style={{marginLeft: '20%', width: '75%', minHeight: '100%'}}>
+            <div style={{marginLeft: '20%', width: '75%', minHeight: '100%', marginTop: '20%'}}>
             <Routes>
                 <Route path={'profile'} element={<VendorProfile/>} />
             </Routes>
@@ -71,7 +71,7 @@ function CustomerScreen() {
             try {
                 const response = await axios.get('http://localhost:5000/api/customer');
                 console.log(response)
-                setUser(response.data.customer);
+                setUser({...user, ...response.data.customer});
             }
             catch {
                 navigate('/');
@@ -84,7 +84,7 @@ function CustomerScreen() {
     return (
         <>
             <CustomerNavbar/>
-            <div style={{marginLeft: '20%', width: '75%', minHeight: '100%'}}>
+            <div style={{marginLeft: '20%', width: '75%', minHeight: '100%', marginTop: '20%'}}>
             <Routes>
                 <Route path={'profile'} element={<CustomerProfile/>} />
             </Routes>

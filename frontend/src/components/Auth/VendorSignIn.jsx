@@ -26,15 +26,12 @@ export default function VendorSignIn() {
                 password: data.get('password')
             }
             const res = await axios.post(url, details)
-            if (res.status === 200) {
-                setUser(res.data.vendor);
-                localStorage.setItem("token", res.data.token);
-                navigate('/customer/profile');
-            } else {
-                alert(res.status)
-            }
+            setUser({...user, ...res.data.vendor});
+            localStorage.setItem("token", res.data.token);
+            navigate('/vendor/profile');
         } catch (error) {
             console.log(error)
+            alert(error)
         }
     }
 
