@@ -17,7 +17,6 @@ export default function App() {
 
     return (
         <div className={'min-h-screen w-full bg-white'}>
-            {/*<VendorNavbar/>*/}
             <Routes>
                 <Route path="/" element={<Choose/>}/>
                 <Route path="/auth" element={<Auth/>}/>
@@ -84,7 +83,7 @@ function CustomerScreen() {
     return (
         <>
             <CustomerNavbar/>
-            <div style={{marginLeft: '20%', width: '75%', minHeight: '100%', marginTop: '20%'}}>
+            <div style={{marginLeft: '20%', width: '75%', minHeight: '100%'}}>
             <Routes>
                 <Route path={'profile'} element={<CustomerProfile/>} />
             </Routes>
