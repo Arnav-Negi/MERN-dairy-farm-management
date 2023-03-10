@@ -1,39 +1,40 @@
-import {Paper, Table, TableBody, TableCell, TableContainer, TableRow} from "@mui/material";
-import {Link, useNavigate} from "react-router-dom";
+import {Paper, Table, TableBody, TableCell, TableContainer, TableRow, TextField} from "@mui/material";
+import {Link} from "react-router-dom";
 import {useRecoilState} from "recoil";
-import Button from "@mui/material/Button";
+import Button from "@mui/joy/Button";
 import {userAtom} from "../../atoms/user"
 import {useState} from "react";
-import Typography from "@mui/material/Typography";
+import Typography from "@mui/joy/Typography";
+import axios from "axios";
+import updateField from "../../utils/updateField.jsx";
 
 export default function VendorProfile() {
-    // const [user, setUser] = useRecoilState(user);
-    const [user, setUser] = useState({
-        first_name: 'arnav',
-        last_name: 'negi',
-        phoneNumber: '910191019',
-        emailID: 'arnavnegi14@gmail.com',
-        address: "your mom's house",
-        dairyFarm: {
-            name: 'your mom is a cow',
-            establishedDate: '29/03/2007',
-            openingHours: '10 AM',
-            closingHours: '11 PM',
-        },
-        workingDays: ['Monday', 'Tuesday', 'Wednesday'],
-        account: {
-            holderName: 'Goudhara farms',
-            bankName: 'ISBC',
-            branchName: 'Gachibowli',
-            IFSC: '1901ASJD',
-            accountNumber: '9910-1992-1912',
-            accountType: 'savings',
-        },
-    });
+    const [user, setUser] = useRecoilState(userAtom);
+    const [formData, setFormData] = useState(user);
+    const [editUser, setEditUser] = useState(false);
+    const [editFarm, setEditFarm] = useState(false);
+    const [editAccount, setEditAccount] = useState(false);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        async function updateCustomer() {
+            try {
+                const url = 'http://localhost:5000/api/vendor';
+                const res = await axios.patch(url, formData);
+                alert("customer updated.");
+            } catch (e) {
+                alert(e);
+                console.log(e)
+            }
+        }
+
+        updateCustomer().then(() => setUser(formData)).catch(err => console.log(err));
+    }
 
     return (
-        <div className={'flex-col flex-grow w-full pt-10'}>
-            <Typography align={'left'} variant={'h4'} sx={{paddingTop: '5%'}}>
+        <div className={'flex-col flex-grow w-full'} style={{paddingTop: '25rem'}}>
+            <Typography align={'left'} fontSize={'large'} sx={{paddingTop: '5%'}}>
                 User info
             </Typography>
             <TableContainer
@@ -47,7 +48,7 @@ export default function VendorProfile() {
                 <Table aria-label="simple table">
                     <TableBody>
                         {Object.keys(user).map(key => {
-                                if (key !== 'dairyFarm' && key !== 'account') {
+                                if (key !== 'dairyFarm' && key !== 'account' && key !== '_id') {
                                     if (key === 'workingDays')
                                         return (
                                             <TableRow
@@ -61,7 +62,14 @@ export default function VendorProfile() {
                                                 </TableCell>
                                                 <TableCell align="right" sx={{
                                                     fontSize: "120%",
-                                                }}>{user[key].join()}</TableCell>
+                                                }}>
+                                                    <TextField
+                                                        value={formData[key].join()}
+                                                        InputProps={{
+                                                            readOnly: !editUser,
+                                                        }}
+                                                        onChange={(e) => setFormData({...updateField({...formData}, key, e.target.value.split(','))})}/>
+                                                </TableCell>
                                             </TableRow>
                                         )
                                     else
@@ -77,7 +85,14 @@ export default function VendorProfile() {
                                                 </TableCell>
                                                 <TableCell align="right" sx={{
                                                     fontSize: "120%",
-                                                }}>{user[key]}</TableCell>
+                                                }}>
+                                                    <TextField
+                                                        value={formData[key]}
+                                                        InputProps={{
+                                                            readOnly: !editUser,
+                                                        }}
+                                                        onChange={(e) => setFormData({...updateField({...formData}, key, e.target.value)})}/>
+                                                </TableCell>
                                             </TableRow>
                                         )
                                 }
@@ -85,10 +100,18 @@ export default function VendorProfile() {
                         )}
                     </TableBody>
                 </Table>
-                <Button component={Link} to={'/profile/edit'}>Edit user info</Button>
+                <div className="flex justify-center">
+                    {editUser? <Button onClick={() => {
+                            setEditUser(false);
+                            setFormData(user);
+                        }}>CANCEL</Button> :
+                        <Button onClick={() => setEditUser(true)}>EDIT</Button>
+                    }
+                    <Button onClick={handleSubmit} disabled={!editUser}>UPDATE</Button>
+                </div>
             </TableContainer>
 
-            <Typography align={'left'} variant={'h4'} sx={{paddingTop: '5%'}}>
+            <Typography align={'left'} fontSize={'large'} sx={{paddingTop: '5%'}}>
                 Farm info
             </Typography>
             <TableContainer
@@ -114,17 +137,35 @@ export default function VendorProfile() {
                                         </TableCell>
                                         <TableCell align="right" sx={{
                                             fontSize: "120%",
-                                        }}>{user.dairyFarm[key]}</TableCell>
+                                        }}>
+                                            <TextField
+                                                value={formData.dairyFarm[key]}
+                                                InputProps={{
+                                                    readOnly: !editFarm,
+                                                }}
+                                                onChange={(e) => setFormData({
+                                                    ...formData,
+                                                    dairyFarm: {...updateField({...formData.dairyFarm}, key, e.target.value)}
+                                                })}/>
+                                        </TableCell>
                                     </TableRow>
                                 )
                             }
                         )}
                     </TableBody>
                 </Table>
-                <Button component={Link} to={'/profile/edit'}>Edit user info</Button>
+                <div className="flex justify-center">
+                    {editFarm? <Button onClick={() => {
+                            setEditFarm(false);
+                            setFormData(user);
+                        }}>CANCEL</Button> :
+                        <Button onClick={() => setEditFarm(true)}>EDIT</Button>
+                    }
+                    <Button onClick={handleSubmit} disabled={!editFarm}>UPDATE</Button>
+                </div>
             </TableContainer>
 
-            <Typography align={'left'} variant={'h4'} sx={{paddingTop: '5%'}}>
+            <Typography align={'left'} fontSize={'large'} sx={{paddingTop: '5%'}}>
                 Account info
             </Typography>
             <TableContainer
@@ -150,14 +191,32 @@ export default function VendorProfile() {
                                         </TableCell>
                                         <TableCell align="right" sx={{
                                             fontSize: "120%",
-                                        }}>{user.account[key]}</TableCell>
+                                        }}>
+                                            <TextField
+                                                value={formData.account[key]}
+                                                InputProps={{
+                                                    readOnly: !editAccount,
+                                                }}
+                                                onChange={(e) => setFormData({
+                                                    ...formData,
+                                                    account: {...updateField({...formData.account}, key, e.target.value)}
+                                                })}/>
+                                        </TableCell>
                                     </TableRow>
                                 )
                             }
                         )}
                     </TableBody>
                 </Table>
-                <Button component={Link} to={'/profile/edit'}>Edit user info</Button>
+                <div className="flex justify-center">
+                    {editAccount? <Button onClick={() => {
+                            setEditAccount(false);
+                            setFormData(user);
+                        }}>CANCEL</Button> :
+                        <Button onClick={() => setEditAccount(true)}>EDIT</Button>
+                    }
+                    <Button onClick={handleSubmit} disabled={!editAccount}>UPDATE</Button>
+                </div>
             </TableContainer>
         </div>
     )
