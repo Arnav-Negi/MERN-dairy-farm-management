@@ -1,0 +1,23 @@
+# Minutes of Meeting
+
+* **Tasks (T)** - has an Owner and a deadline
+* **Decisions (D)**
+* **Information (I)** - everything else of interest
+
+### Date : 30-01-23
+
+### Time : 19:00
+
+### Topic: Second Client Meet
+
+### Attendees: Vaidyanath Bobbili, Srihitha Mallepally, Vedanivas Chowdary, Prakul Agrawal, Arnav Negi
+
+Type | Description | Owner | Deadline
+---- | ----------------------------------------------------------------------------------- | --------------- | --------
+I | Proof of concept website to be shared soon for reference. | - | -
+I | Key users are dairy producers i.e. vendors and the customers | - | -
+I | Other users include the delivery team consisting of drivers who deliver the products and possibly a farm manager. | - | -
+I | Client discussed that the startup already uses Amazon web services server | - | -
+D | Screens to be developed are vendors, customers and admin. | - | -
+T | Discuss among team members and decide on frontend MERN frameworks| Srihitha, Vedanivas, Prakul, and Arnav  | 04-02-23
+T | Look at AWS services and its backend code. | Srihitha, Vedanivas, Prakul, and Arnav | 04-02-23
