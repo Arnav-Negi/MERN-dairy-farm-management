@@ -42,8 +42,6 @@ export default function VendorSignUp() {
     return (
         <>
             <form onSubmit={handleSubmit}>
-                <Grid container spacing={2} sx={{flexGrow: 1}}>
-                    <Grid item xs={6} md={8}>
                         <FormControl required>
                             <FormLabel>Email</FormLabel>
                             <Input
@@ -75,58 +73,14 @@ export default function VendorSignUp() {
                             />
                         </FormControl>
                         <FormControl required>
-                            <FormLabel>Password</FormLabel>
-                            <Input placeholder="Password" type="password" name="password"/>
-                        </FormControl>
-                        <FormControl required>
                             <FormLabel>Address</FormLabel>
                             <Input placeholder={'Address'} type="text" name="address"/>
-                        </FormControl>
-                    </Grid>
-
-                    <Grid item xs={6} md={8}>
-                        <Typography textColor={'black'}>Farm info</Typography>
-                        <FormControl required>
-                            <FormLabel>Email</FormLabel>
-                            <Input
-                                placeholder="Enter your email"
-                                type="email"
-                                name="email"
-                            />
-                        </FormControl>
-                        <FormControl required>
-                            <FormLabel>First Name</FormLabel>
-                            <Input
-                                placeholder="First Name"
-                                name="firstname"
-                            />
-                        </FormControl>
-                        <FormControl required>
-                            <FormLabel>Last Name</FormLabel>
-                            <Input
-                                placeholder="Last Name"
-                                name="lastname"
-                            />
-                        </FormControl>
-
-                        <FormControl required>
-                            <FormLabel>Contact No.</FormLabel>
-                            <Input
-                                placeholder="Enter your Contact"
-                                name="contact"
-                            />
                         </FormControl>
                         <FormControl required>
                             <FormLabel>Password</FormLabel>
                             <Input placeholder="Password" type="password" name="password"/>
                         </FormControl>
-                        <FormControl required>
-                            <FormLabel>Address</FormLabel>
-                            <Input placeholder={'Address'} type="text" name="address"/>
-                        </FormControl>
-                    </Grid>
 
-                </Grid>
                 <Box
                     sx={{
                         display: "flex",

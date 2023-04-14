@@ -37,6 +37,7 @@ export default function EditCustomer() {
             }
         }
         updateCustomer().then(() => setUser(formData)).catch(err => console.log(err));
+        setEdit(false);
     }
 
     return (

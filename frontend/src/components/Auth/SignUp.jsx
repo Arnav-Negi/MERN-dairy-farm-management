@@ -134,10 +134,18 @@ export default function SignUp() {
                 </FormControl>
 
                 <FormControl required>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>First Name</FormLabel>
                     <Input
-                        placeholder="Enter your Name"
-                        name="name"
+                        placeholder="Enter your First Name"
+                        name="firstname"
+                    />
+                </FormControl>
+
+                <FormControl required>
+                    <FormLabel>Last Name</FormLabel>
+                    <Input
+                        placeholder="Enter your Last Name"
+                        name="lastname"
                     />
                 </FormControl>
 
@@ -153,6 +161,15 @@ export default function SignUp() {
                         error={conError}
                     />
                 </FormControl>
+
+                <FormControl required>
+                    <FormLabel>Address</FormLabel>
+                    <Input
+                        placeholder="Enter your Address"
+                        name="address"
+                    />
+                </FormControl>
+
                 <FormControl required>
                     <FormLabel>Password</FormLabel>
                     <Input

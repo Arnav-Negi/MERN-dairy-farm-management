@@ -114,7 +114,7 @@ export default function CustomerNavbar() {
     return (
         <Box sx={{display: 'flex'}}>
             <CssBaseline/>
-            <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+            <AppBar position="fixed" sx={{zIndex: (theme) => theme.zIndex.drawer + 1}}>
                 <Toolbar>
                     <Typography sx={{flexGrow: 1}}/>
                     <Typography variant={'h5'}>
@@ -160,25 +160,25 @@ export default function CustomerNavbar() {
                 sx={{
                     width: drawerWidth,
                     flexShrink: 0,
-                    [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+                    [`& .MuiDrawer-paper`]: {width: drawerWidth, boxSizing: 'border-box'},
                 }}
             >
-                <Toolbar />
-                <Box sx={{ overflow: 'auto' }}>
-                    <List sx={{ fontSize: '0.9rem' }}>
-                        {['My profile', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                            <ListItem key={text} disablePadding >
-                                <ListItemButton component={Link} to={'/profile'}>
-                                    <ListItemIcon >
-                                        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                    </ListItemIcon>
-                                    <ListItemText primary={text} />
-                                </ListItemButton>
-                            </ListItem>
-                        ))}
+                <Toolbar/>
+                <Box sx={{overflow: 'auto'}}>
+                    <List sx={{fontSize: '0.9rem'}}>
+                        <ListItem key={'profile'} disablePadding>
+                            <ListItemButton component={Link} to={'/customer/profile'}>
+                                <ListItemText primary={'My Profile'}/>
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem key={'app-info'} disablePadding>
+                            <ListItemButton component={Link} to={'/customer/app-info'}>
+                                <ListItemText primary={'App Information'}/>
+                            </ListItemButton>
+                        </ListItem>
                     </List>
-                    <Divider />
-                    <CustomizedAccordions />
+                    <Divider/>
+                    <CustomizedAccordions/>
                 </Box>
             </Drawer>
             <Box component="main" sx={{flexGrow: 1, p: 3}}>

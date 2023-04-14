@@ -30,10 +30,14 @@ export default function VendorProfile() {
         }
 
         updateCustomer().then(() => setUser(formData)).catch(err => console.log(err));
+        setEditUser(false);
+        setEditFarm(false);
+        setEditAccount(false);
     }
 
     return (
-        <div className={'flex-col flex-grow w-full'} style={{paddingTop: '25rem'}}>
+        <div className={' w-full'} style={{paddingTop: '50rem',
+            paddingBottom: '5rem'}}>
             <Typography align={'left'} fontSize={'large'} sx={{paddingTop: '5%'}}>
                 User info
             </Typography>
