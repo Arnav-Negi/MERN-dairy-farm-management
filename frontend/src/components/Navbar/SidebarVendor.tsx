@@ -17,10 +17,10 @@ import AccountBoxOutlinedIcon from '@mui/icons-material/AccountBoxOutlined';
 import HelpCenterOutlinedIcon from '@mui/icons-material/HelpCenterOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
-import HailOutlinedIcon from '@mui/icons-material/HailOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-import InventoryOutlinedIcon from '@mui/icons-material/InventoryOutlined';
+import FormatListBulletedOutlinedIcon from '@mui/icons-material/FormatListBulletedOutlined';
 import {logout} from '../../utils/checkToken';
+import {Check} from "@mui/icons-material";
 
 export default function SidebarVendor() {
     const [user, setUser] = useRecoilState(userAtom);
@@ -120,37 +120,13 @@ export default function SidebarVendor() {
                     </ListItem>
                     <ListItem>
                         <ListItemButton onClick={() => {
-                            navigate('/vendor/vendor-list')
+                            navigate('/vendor/subscriptions')
                         }} >
                             <ListItemDecorator>
-                                <HailOutlinedIcon sx={{ fontSize: 30}}/>
+                                <FormatListBulletedOutlinedIcon sx={{ fontSize: 30}}/>
                             </ListItemDecorator>
                             <ListItemContent >
-                                Vendors
-                            </ListItemContent>
-                        </ListItemButton>
-                    </ListItem>
-                    <ListItem>
-                        <ListItemButton onClick={() => {
-                            navigate('/vendor/vendor-list')
-                        }} >
-                            <ListItemDecorator>
-                                <ShoppingCartOutlinedIcon sx={{ fontSize: 30}}/>
-                            </ListItemDecorator>
-                            <ListItemContent >
-                                Your Cart
-                            </ListItemContent>
-                        </ListItemButton>
-                    </ListItem>
-                    <ListItem>
-                        <ListItemButton onClick={() => {
-                            navigate('/vendor/vendor-list')
-                        }} >
-                            <ListItemDecorator>
-                                <InventoryOutlinedIcon sx={{ fontSize: 30}}/>
-                            </ListItemDecorator>
-                            <ListItemContent >
-                                Your Subscriptions
+                                Subscriptions
                             </ListItemContent>
                         </ListItemButton>
                     </ListItem>

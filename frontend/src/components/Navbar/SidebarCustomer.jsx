@@ -108,18 +108,6 @@ export default function SidebarCustomer() {
                     </ListItem>
                     <ListItem>
                         <ListItemButton onClick={() => {
-                            navigate('/customer/inventory')
-                        }} >
-                            <ListItemDecorator>
-                                <Inventory2OutlinedIcon sx={{ fontSize: 30}}/>
-                            </ListItemDecorator>
-                            <ListItemContent >
-                                Inventory
-                            </ListItemContent>
-                        </ListItemButton>
-                    </ListItem>
-                    <ListItem>
-                        <ListItemButton onClick={() => {
                             navigate('/customer/vendor-list')
                         }} >
                             <ListItemDecorator>
