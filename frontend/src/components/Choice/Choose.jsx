@@ -1,11 +1,11 @@
-import * as React from "react"
-import './Choose.css'
+import * as React from "react";
+import './Choose.css';
 import Grid from '@mui/joy/Grid';
 import { Link } from "react-router-dom"
 
 export default function Choose() {
     return (
-        <>
+        <React.Fragment>
                 <div className="parent">
                 <div className="child">
                     <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2} sx={{ flexGrow: 1 }}>
@@ -34,6 +34,6 @@ export default function Choose() {
                     </Grid>
                     </div>
                 </div>
-        </>
+        </React.Fragment>
     )
 }

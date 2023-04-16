@@ -119,7 +119,7 @@ export default function SignUp() {
 
 
     return (
-        <>
+        <React.Fragment>
             <form onSubmit={handleSubmit}>
                 <FormControl required>
                     <FormLabel>Email</FormLabel>
@@ -198,7 +198,7 @@ export default function SignUp() {
                 </Box>
                 <Button
                     loading={lstate}
-                    type="submit" fullWidth>
+                    type="" fullWidth>
                     Submit
                 </Button>
             </form>
@@ -240,6 +240,6 @@ export default function SignUp() {
                     </Typography>
                 </ModalDialog>
             </Modal>
-        </>
+        </React.Fragment>
     )
 }

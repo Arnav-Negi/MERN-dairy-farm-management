@@ -1,4 +1,5 @@
-import {Paper, Table, TableBody, TableCell, TableContainer, TableRow, TextField} from "@mui/material";
+import {Table, TableBody, TableCell, TableContainer, TableRow, TextField} from "@mui/material";
+import { Sheet } from "@mui/joy";
 import {Link} from "react-router-dom";
 import {useRecoilState} from "recoil";
 import Button from "@mui/joy/Button";
@@ -43,8 +44,8 @@ export default function VendorProfile() {
             </Typography>
             <TableContainer
                 variant={"elevation"}
-                elevation={3}
-                component={Paper}
+                // elevation={3}
+                component={Sheet}
                 sx={{
                     width: "100%"
                 }}
@@ -120,8 +121,8 @@ export default function VendorProfile() {
             </Typography>
             <TableContainer
                 variant={"elevation"}
-                elevation={3}
-                component={Paper}
+                // elevation={3}
+                component={Sheet}
                 sx={{
                     width: "100%"
                 }}
@@ -174,8 +175,8 @@ export default function VendorProfile() {
             </Typography>
             <TableContainer
                 variant={"elevation"}
-                elevation={3}
-                component={Paper}
+                // elevation={3}
+                component={Sheet}
                 sx={{
                     width: "100%"
                 }}

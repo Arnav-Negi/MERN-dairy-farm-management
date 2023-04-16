@@ -16,7 +16,7 @@
   }
 
   .parent {
-    background-image: url('src/assets/images/Untitled.png');
+    background-image: url('/src/assets/images/Untitled.png');
     
     background-size: cover;
     background-repeat:repeat;

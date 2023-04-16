@@ -9,10 +9,10 @@ import Link from '@mui/joy/Link';
 import Typography from '@mui/joy/Typography';
 import useScript from './useScript';
 import FirstSidebar from './components/FirstSidebar';
-import SecondSidebar from './components/SecondSidebar';
+import SecondSidebarCustomer from '../Navbar/SidebarCustomer';
 import OrderTable from './components/OrderTable';
 import Header from './components/Header';
-import ColorSchemeToggle from './components/ColorSchemeToggle';
+import ColorSchemeToggle from '../Navbar/ColorSchemeToggle';
 import customTheme from './theme';
 
 const useEnhancedEffect =
@@ -47,7 +47,7 @@ export default function JoyOrderDashboardTemplate() {
       <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
         <Header />
         <FirstSidebar />
-        <SecondSidebar />
+        <SecondSidebarCustomer />
         <Box
           component="main"
           className="MainContent"

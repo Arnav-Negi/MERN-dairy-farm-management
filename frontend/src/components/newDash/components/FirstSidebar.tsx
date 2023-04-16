@@ -48,7 +48,6 @@ export default function FirstSidebar() {
           },
         }}
       />
-      <MuiLogo />
       <List sx={{ '--ListItem-radius': '8px', '--List-gap': '12px' }}>
         <ListItem>
           <ListItemButton>

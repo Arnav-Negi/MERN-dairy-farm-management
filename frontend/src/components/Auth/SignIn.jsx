@@ -58,7 +58,7 @@ export default function SignIn() {
     }
 
     return (
-        <>
+        <React.Fragment >
             <form onSubmit={handleSubmit}>
                 <FormControl required>
                     <FormLabel>Email</FormLabel>
@@ -79,18 +79,13 @@ export default function SignIn() {
                         alignItems: "center"
                     }}
                 >
-                    {/* <Checkbox
-                  size="sm"
-                  label="Remember for 30 days"
-                  name="persistent"
-                /> */}
                     <Link fontSize="sm" href="#replace-with-a-link" fontWeight="lg">
                         Forgot password
                     </Link>
                 </Box>
                 <Button
                     loading={lstate}
-                    type="submit"
+                    type=""
                     fullWidth>
                     Submit
                 </Button>
@@ -117,6 +112,6 @@ export default function SignIn() {
                 </ModalDialog>
             </Modal>
 
-        </>
+        </React.Fragment>
     )
 }

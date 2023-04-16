@@ -37,7 +37,7 @@ export default function VendorSignIn() {
 
 
     return (
-        <>
+        <React.Fragment>
             <form onSubmit={handleSubmit}>
                 <FormControl required>
                     <FormLabel>Email</FormLabel>
@@ -62,10 +62,10 @@ export default function VendorSignIn() {
                         Forgot password
                     </Link>
                 </Box>
-                <Button type="submit" fullWidth>
+                <Button type="" fullWidth>
                     Submit
                 </Button>
             </form>
-        </>
+        </React.Fragment>
     )
 }

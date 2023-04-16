@@ -3,7 +3,7 @@ import GlobalStyles from '@mui/joy/GlobalStyles';
 import IconButton from '@mui/joy/IconButton';
 import Sheet from '@mui/joy/Sheet';
 import MuiLogo from './MuiLogo';
-import ColorSchemeToggle from './ColorSchemeToggle';
+import ColorSchemeToggle from '../../Navbar/ColorSchemeToggle';
 import { toggleSidebar } from '../utils';
 
 export default function Header() {

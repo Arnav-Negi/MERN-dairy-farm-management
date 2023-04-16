@@ -20,8 +20,8 @@ import Sheet from '@mui/joy/Sheet';
 import {useLocation} from 'react-router-dom';
 import SignIn from "./SignIn"
 import SignUp from "./SignUp"
-import VendorSignIn from "./VendorSignIn.jsx";
-import VendorSignUp from "./VendorSignUp.jsx";
+import VendorSignIn from "./VendorSignIn"
+import VendorSignUp from "./VendorSignUp";
 
 const Item = styled(Sheet)(({theme}) => ({
     ...theme.typography.body2,
@@ -179,7 +179,7 @@ export default function Login() {
                         }}
                     >
                         <div>
-                            <Typography component="h2" fontSize="xl2" fontWeight="lg">
+                            <Typography component="h2" fontSize="xl2" fontWeight="lg"   >
                                 Dear {state.user === "customer" ? "Customer" : "Vendor"}, {signState === 2 ? "welcome back" : "let's get started"}
                             </Typography>
                             <Typography level="body2" sx={{my: 1, mb: 3}}>
@@ -189,12 +189,14 @@ export default function Login() {
 
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={6}>
-                                <Button fullWidth disabled={signState === 2} type="submit" onClick={handleSignIn}>
+                                <Button fullWidth disabled={signState === 2} type="" onClick={handleSignIn}
+                                    color={"primary"}>
                                     Sign In
                                 </Button>
                             </Grid>
                             <Grid item xs={12} sm={6}>
-                                <Button fullWidth disabled={signState === 3} type="submit" onClick={handleSignUp}>
+                                <Button fullWidth disabled={signState === 3} type="" onClick={handleSignUp}
+                                        color={"primary"}>
                                     Sign Up
                                 </Button>
                             </Grid>
