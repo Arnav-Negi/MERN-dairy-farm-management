@@ -32,11 +32,11 @@ export default function SidebarVendor() {
                 className="SecondSidebar-overlay"
                 sx={{
                     position: 'fixed',
-                    zIndex: 9998,
+                    zIndex: 1,
                     top: 0,
                     left: 0,
                     width: '100vw',
-                    height: '100vh',
+                    height: '100%',
                     bgcolor: 'background.body',
                     opacity: 'calc(var(--SideNavigation-slideIn, 0) - 0.2)',
                     transition: 'opacity 0.4s',
@@ -44,15 +44,13 @@ export default function SidebarVendor() {
                         xs: 'translateX(calc(100% * (var(--SideNavigation-slideIn, 0) - 1) + var(--SideNavigation-slideIn, 0) * var(--FirstSidebar-width, 0px)))',
                         lg: 'translateX(-100%)',
                     },
+                    overflowX: 'hidden',
                 }}
             />
             <Sheet
                 className="SecondSidebar"
                 sx={{
-                    position: {
-                        xs: 'fixed',
-                        lg: 'sticky',
-                    },
+                    position: 'fixed',
                     transform: {
                         xs: 'translateX(calc(100% * (var(--SideNavigation-slideIn, 0) - 1) + var(--SideNavigation-slideIn, 0) * var(--FirstSidebar-width, 0px)))',
                         lg: 'none',
@@ -61,7 +59,7 @@ export default function SidebarVendor() {
                     borderColor: 'divider',
                     transition: 'transform 0.4s',
                     zIndex: 9999,
-                    height: '100dvh',
+                    height: '100vh',
                     top: 0,
                     p: 2,
                     py: 3,
@@ -77,9 +75,10 @@ export default function SidebarVendor() {
                         '--ListItem-radius': '8px',
                         '--ListItem-minHeight': '32px',
                         '--List-gap': '4px',
+                        display: 'block',
                     }}
                 >
-                    <ListSubheader role="presentation" sx={{color: 'text.primary'}}>
+                    <ListSubheader role="presentation" color={'primary'}>
                         Dashboard
                     </ListSubheader>
                     <ListItem>
@@ -133,12 +132,12 @@ export default function SidebarVendor() {
                 </List>
                 <Box sx={{pl: 1, mt: 'auto', display: 'flex', alignItems: 'center'}}>
                     <div style={{paddingRight: '10px'}}>
-                        <Typography fontWeight="lg" level="body2">
+                        <Typography fontWeight="lg" level="body2" color={'primary'}>
                             {user.first_name + ' ' + user.last_name}
                         </Typography>
                         <Typography level="body2">{user.emailID}</Typography>
                     </div>
-                    <IconButton variant='plain' color='neutral' sx={{ml: 'auto'}} onClick={() => {
+                    <IconButton variant='plain' color='primary' sx={{ml: 'auto'}} onClick={() => {
                                     logout();
                                     navigate('/')
                                 }}>

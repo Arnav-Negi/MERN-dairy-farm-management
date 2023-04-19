@@ -1,18 +1,15 @@
-import * as React from "react";
 import axios from "axios";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Auth from './components/Auth/Auth';
 import Verify from './Verify'
 import Choose from './components/Choice/Choose';
-import VendorNavbar from "./components/Navbar/VendorNavbar.jsx";
 import VendorProfile from "./components/Profile/VendorProfileNew.jsx";
 import CustomerProfile from "./components/Profile/CustomerProfileNew.jsx";
-import CustomerNavbar from "./components/Navbar/CustomerNavbar.jsx";
 import { useRecoilState } from "recoil";
 import { userAtom } from "./atoms/user";
-import { useEffect } from "react";
+import React, {Fragment, useEffect} from "react";
 import { setToken } from "./utils/checkToken";
-import AppInfo from "./components/AppInfo/AppInfo.jsx";
+import AppInfo from "./components/AppInfo/NewAppInfo.jsx";
 import SidebarCustomer from "./components/Navbar/SidebarCustomer.jsx";
 import SidebarVendor from "./components/Navbar/SidebarVendor.tsx";
 import { Box } from "@mui/joy";
@@ -21,8 +18,8 @@ import GlobalStyles from '@mui/joy/GlobalStyles';
 import CssBaseline from '@mui/joy/CssBaseline';
 import customTheme from './components/newDash/theme';
 
-export default function App() {
 
+export default function App() {
     return (
         <CssVarsProvider disableTransitionOnChange theme={customTheme}>
             <GlobalStyles
@@ -59,6 +56,7 @@ function VendorScreen() {
                 navigate('/')
             try {
                 const response = await axios.get('http://localhost:5000/api/vendor');
+                console.log(response.data);
                 setUser({ ...user, ...response.data.vendor });
             }
             catch {
@@ -72,7 +70,8 @@ function VendorScreen() {
     if (!user) return (<div>loading</div>)
     else
         return (
-            <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
+            <Fragment>
+            <Box sx={{ display: 'flex', minHeight: '100dvh', zIndex: 999, position: 'absolute', top: 0, width: '100%' }}>
                 <SidebarVendor />
                 <Box
                     component="main"
@@ -96,8 +95,9 @@ function VendorScreen() {
                         display: 'flex',
                         flexDirection: 'column',
                         minWidth: 0,
-                        height: '100dvh',
+                        minHeight: '100dvh',
                         gap: 1,
+                        backgroundColor: theme.vars.palette.background.level1,
                     })}
                 >
                     <Routes>
@@ -106,6 +106,7 @@ function VendorScreen() {
                     </Routes>
                 </Box>
             </Box>
+            </Fragment>
         )
 }
 

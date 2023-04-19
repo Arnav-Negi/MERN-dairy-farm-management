@@ -79,7 +79,7 @@ export default function SidebarCustomer() {
                         '--List-gap': '4px',
                     }}
                 >
-                    <ListSubheader role="presentation" sx={{color: 'text.primary'}}>
+                    <ListSubheader role="presentation" color={'primary'}>
                         Dashboard
                     </ListSubheader>
                     <ListItem>
@@ -145,12 +145,12 @@ export default function SidebarCustomer() {
                 </List>
                 <Box sx={{pl: 1, mt: 'auto', display: 'flex', alignItems: 'center'}}>
                     <div style={{paddingRight: '10px'}}>
-                        <Typography fontWeight="lg" level="body2">
+                        <Typography fontWeight="lg" level="body2" color={'primary'}>
                             {user.first_name + ' ' + user.last_name}
                         </Typography>
                         <Typography level="body2">{user.emailID}</Typography>
                     </div>
-                    <IconButton variant='plain' color='neutral' sx={{ml: 'auto'}}
+                    <IconButton variant='plain' color='primary' sx={{ml: 'auto'}}
                     onClick={() => {
                         logout()
                         navigate('/')

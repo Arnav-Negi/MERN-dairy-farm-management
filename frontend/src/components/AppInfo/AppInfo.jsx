@@ -15,7 +15,6 @@ export default function AppInfo() {
         'Privacy Policy': 'privacy policy goes here',
         'FAQs': 'FAQs go here',
         'App Version': '0.1.0'
-
     }
 
     return (
