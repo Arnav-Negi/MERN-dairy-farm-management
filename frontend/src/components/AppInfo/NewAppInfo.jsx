@@ -18,7 +18,9 @@ export default function AppInfo() {
         'Terms Of Use': 'Terms of use go here',
         'Privacy Policy': 'privacy policy goes here',
         'FAQs': 'FAQs go here',
-        'App Version': '0.1.0'
+        'App Version': '0.1.0',
+        'User': 'User',
+        'User ID': 'User ID',
     }
 
     return (

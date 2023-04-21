@@ -32,11 +32,11 @@ export default function SidebarCustomer() {
                 className="SecondSidebar-overlay"
                 sx={{
                     position: 'fixed',
-                    zIndex: 9998,
+                    zIndex: 1,
                     top: 0,
                     left: 0,
                     width: '100vw',
-                    height: '100vh',
+                    height: '100%',
                     bgcolor: 'background.body',
                     opacity: 'calc(var(--SideNavigation-slideIn, 0) - 0.2)',
                     transition: 'opacity 0.4s',
@@ -44,15 +44,13 @@ export default function SidebarCustomer() {
                         xs: 'translateX(calc(100% * (var(--SideNavigation-slideIn, 0) - 1) + var(--SideNavigation-slideIn, 0) * var(--FirstSidebar-width, 0px)))',
                         lg: 'translateX(-100%)',
                     },
+                    overflowX: 'hidden',
                 }}
             />
             <Sheet
                 className="SecondSidebar"
                 sx={{
-                    position: {
-                        xs: 'fixed',
-                        lg: 'sticky',
-                    },
+                    position: 'fixed',
                     transform: {
                         xs: 'translateX(calc(100% * (var(--SideNavigation-slideIn, 0) - 1) + var(--SideNavigation-slideIn, 0) * var(--FirstSidebar-width, 0px)))',
                         lg: 'none',
@@ -61,7 +59,7 @@ export default function SidebarCustomer() {
                     borderColor: 'divider',
                     transition: 'transform 0.4s',
                     zIndex: 9999,
-                    height: '100dvh',
+                    height: '100vh',
                     top: 0,
                     p: 2,
                     py: 3,
