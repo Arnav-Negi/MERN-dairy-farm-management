@@ -32,11 +32,12 @@ export default function SidebarCustomer() {
                 className="SecondSidebar-overlay"
                 sx={{
                     position: 'fixed',
-                    zIndex: 1,
+                    zIndex: 9999,
                     top: 0,
                     left: 0,
                     width: '100vw',
-                    height: '100%',
+                    height: '100vh',
+                    overflowX: 'hidden',
                     bgcolor: 'background.body',
                     opacity: 'calc(var(--SideNavigation-slideIn, 0) - 0.2)',
                     transition: 'opacity 0.4s',
@@ -44,13 +45,15 @@ export default function SidebarCustomer() {
                         xs: 'translateX(calc(100% * (var(--SideNavigation-slideIn, 0) - 1) + var(--SideNavigation-slideIn, 0) * var(--FirstSidebar-width, 0px)))',
                         lg: 'translateX(-100%)',
                     },
-                    overflowX: 'hidden',
                 }}
             />
             <Sheet
                 className="SecondSidebar"
                 sx={{
-                    position: 'fixed',
+                    position: {
+                        xs: 'fixed',
+                        lg: 'fixed',
+                    },
                     transform: {
                         xs: 'translateX(calc(100% * (var(--SideNavigation-slideIn, 0) - 1) + var(--SideNavigation-slideIn, 0) * var(--FirstSidebar-width, 0px)))',
                         lg: 'none',
@@ -58,8 +61,8 @@ export default function SidebarCustomer() {
                     borderRight: '1px solid',
                     borderColor: 'divider',
                     transition: 'transform 0.4s',
-                    zIndex: 9999,
-                    height: '100vh',
+                    zIndex: 9998,
+                    height: '100dvh',
                     top: 0,
                     p: 2,
                     py: 3,
@@ -106,7 +109,7 @@ export default function SidebarCustomer() {
                     </ListItem>
                     <ListItem>
                         <ListItemButton onClick={() => {
-                            navigate('/customer/vendor-list')
+                            navigate('/customer/vendors-list')
                         }} >
                             <ListItemDecorator>
                                 <HailOutlinedIcon sx={{ fontSize: 30}}/>
@@ -118,7 +121,7 @@ export default function SidebarCustomer() {
                     </ListItem>
                     <ListItem>
                         <ListItemButton onClick={() => {
-                            navigate('/customer/vendor-list')
+                            navigate('/customer/shopping-cart')
                         }} >
                             <ListItemDecorator>
                                 <ShoppingCartOutlinedIcon sx={{ fontSize: 30}}/>
@@ -130,7 +133,7 @@ export default function SidebarCustomer() {
                     </ListItem>
                     <ListItem>
                         <ListItemButton onClick={() => {
-                            navigate('/customer/vendor-list')
+                            navigate('/customer/my-subscriptions')
                         }} >
                             <ListItemDecorator>
                                 <InventoryOutlinedIcon sx={{ fontSize: 30}}/>

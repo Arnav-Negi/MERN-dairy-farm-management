@@ -5,6 +5,10 @@ import Verify from './Verify'
 import Choose from './components/Choice/Choose';
 import VendorProfile from "./components/Profile/VendorProfileNew.jsx";
 import CustomerProfile from "./components/Profile/CustomerProfileNew.jsx";
+import ItemList from "./components/ItemList/ItemList";
+import VendorList from "./components/VendorList/OrdersListPage";
+import MySubs from "./components/MySubs/MySubsList";
+import Cart from "./components/Cart/Cart";
 import { useRecoilState } from "recoil";
 import { userAtom } from "./atoms/user";
 import React, {Fragment, useEffect} from "react";
@@ -16,7 +20,7 @@ import { Box } from "@mui/joy";
 import { CssVarsProvider } from '@mui/joy/styles';
 import GlobalStyles from '@mui/joy/GlobalStyles';
 import CssBaseline from '@mui/joy/CssBaseline';
-import customTheme from './components/newDash/theme';
+import customTheme from './assets/theme/cartTheme'
 
 
 export default function App() {
@@ -141,15 +145,16 @@ function CustomerScreen() {
                     component="main"
                     className="MainContent"
                     sx={(theme) => ({
-                        px: {
+                        ml: {
                             xs: 2,
                             md: 6,
+                            lg: 30
                         },
-                        pt: {
-                            xs: `calc(${theme.spacing(2)} + var(--Header-height))`,
-                            sm: `calc(${theme.spacing(2)} + var(--Header-height))`,
-                            md: 3,
-                        },
+                        // pt: {
+                        //     xs: `calc(${theme.spacing(2)} + var(--Header-height))`,
+                        //     sm: `calc(${theme.spacing(2)} + var(--Header-height))`,
+                        //     md: 3,
+                        // },
                         pb: {
                             xs: 2,
                             sm: 2,
@@ -166,6 +171,10 @@ function CustomerScreen() {
                     <Routes>
                         <Route path={'profile'} element={<CustomerProfile/>} />
                         <Route path={'app-info'} element={<AppInfo />} />
+                        <Route path={'vendors-list'} element={<VendorList />} />
+                        <Route path={'vendors-list/:id'} element={<ItemList />} />
+                        <Route path={'shopping-cart'} element={<Cart />} />
+                        <Route path={'my-subscriptions'} element={<MySubs />} />
                     </Routes>
                 </Box>
             </Box>
