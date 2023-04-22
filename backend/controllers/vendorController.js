@@ -148,6 +148,7 @@ const removeProduct = async (req, res) => {
         if (product.vendor.toString() !== req.user.id) {
             return res.status(400).json({error: "User is not the owner of the product"});
         }
+        await Vendor.findByIdAndUpdate({_id: req.user.id}, {$pull: {products: req.body.id}});
         await Product.findByIdAndDelete(req.body.id);
         res.status(200).json("Product removed");
     } catch (err) {
