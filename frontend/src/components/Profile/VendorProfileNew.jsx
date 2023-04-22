@@ -144,6 +144,7 @@ export default function VendorProfile() {
                             Personal Details
                         </Typography>
                         {Object.keys(user).map(key => {
+                            if (!Object.keys(keyToLabel).includes(key)) return <></>
                             if (key !== '_id' && key !== 'dairyFarm' && key !== 'account')
                                 if (key !== 'workingDays')
                                     return (

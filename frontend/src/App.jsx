@@ -150,11 +150,6 @@ function CustomerScreen() {
                             md: 6,
                             lg: 30
                         },
-                        // pt: {
-                        //     xs: `calc(${theme.spacing(2)} + var(--Header-height))`,
-                        //     sm: `calc(${theme.spacing(2)} + var(--Header-height))`,
-                        //     md: 3,
-                        // },
                         pb: {
                             xs: 2,
                             sm: 2,

@@ -53,81 +53,62 @@ export default function CustomerProfile() {
     }
 
     return (
-        <Box
-            component="main"
-            className="MainContent"
-            sx={(theme) => ({
-                px: {
-                    xs: 2,
-                    md: 6,
-                },
-                pt: {
-                    xs: `calc(${theme.spacing(2)}`,
-                    sm: `calc(${theme.spacing(2)}`,
-                    md: 3,
-                },
-                pb: {
-                    xs: 4,
-                    sm: 4,
-                    md: 6,
-                },
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                minWidth: 0,
-                height: '100dvh',
-                gap: 1,
-            })}
-        >
+        <Box sx={{display: 'flex', minHeight: '100dvh'}}>
             <Box
-                sx={{
-                    width: '100%',
+                component="main"
+                className="MainContent"
+                sx={(theme) => ({
+                    px: {
+                        xs: 2,
+                        md: 6,
+                    },
+                    pt: {
+                        xs: `calc(${theme.spacing(2)} + var(--Header-height))`,
+                        sm: `calc(${theme.spacing(2)} + var(--Header-height))`,
+                        md: 3,
+                    },
+                    pb: {
+                        xs: 2,
+                        sm: 2,
+                        md: 3,
+                    },
+                    flex: 1,
                     display: 'flex',
-                    alignItems: 'right'
+                    flexDirection: 'column',
+                    minWidth: 0,
+                    height: '100dvh',
+                    gap: 1,
+                })}
+            >
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <ColorSchemeToggle
+                        sx={{ml: 'auto', display: {xs: 'none', md: 'inline-flex'},}}
+                    />
+                </Box>
+                <Box sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    width: '75%',
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
                 }}>
-                <ColorSchemeToggle
-                    sx={{ml: 'auto', display: {xs: 'none', md: 'inline-flex'},}}
-                />
-            </Box>
-            <Box
-                sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    my: 1,
-                    gap: 1,
-                    flexWrap: 'wrap',
-                    '& > *': {
-                        minWidth: 'clamp(0px, (500px - 100%) * 999, 100%)',
-                        flexGrow: 1,
-                    },
-                    width: '75%',
-                    margin: 'auto',
-                }}
-            >
-                <Typography level="h1" fontSize="xl4" color={'primary'}>
-                    Hi, {user.first_name}!
-                </Typography>
-            </Box>
-            <Box
-                sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    my: 1,
-                    gap: 1,
-                    paddingTop: '50px',
-                    flexWrap: 'wrap',
-                    '& > *': {
-                        minWidth: 'clamp(0px, (500px - 100%) * 999, 100%)',
-                        flexGrow: 1,
-                    },
-                    width: '75%',
-                    margin: 'auto',
-                }}
-            >
-                <form onSubmit={handleSubmit}>
-                    <Table borderAxis="none">
-                        <tbody>
-                        {Object.keys(user).map(key => {
+                    <Typography level="h1" fontSize="xl4" color={'primary'}>
+                        Hi, {user.first_name}!
+                    </Typography>
+                </Box>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        width: '75%',
+                        marginLeft: 'auto',
+                        marginRight: 'auto',
+                    }}
+                >
+                    <form onSubmit={handleSubmit}>
+                        <Table borderAxis="none">
+                            <tbody>
+                            {Object.keys(user).map(key => {
                                 if (key !== '_id')
                                     return (
                                         <tr
@@ -143,7 +124,12 @@ export default function CustomerProfile() {
                                                 {edit ?
                                                     <FormControl>
                                                         <Input
-                                                            sx={{fontSize: 'large', padding: 1, border: 1, borderColor: 'primary.main'}}
+                                                            sx={{
+                                                                fontSize: 'large',
+                                                                padding: 1,
+                                                                border: 1,
+                                                                borderColor: 'primary.main'
+                                                            }}
                                                             value={formData[key]}
                                                             variant={"outlined"}
                                                             color={"text.primary"}
@@ -151,33 +137,39 @@ export default function CustomerProfile() {
                                                                 setFormData({...updateField({...formData}, key, e.target.value)})}/>
                                                     </FormControl>
                                                     :
-                                                    <Typography fontSize={'lg'} sx={{fontSize: 'large', padding: 1, border: 1, borderColor: 'primary.main'}}>
+                                                    <Typography fontSize={'lg'} sx={{
+                                                        fontSize: 'large',
+                                                        padding: 1,
+                                                        border: 1,
+                                                        borderColor: 'primary.main'
+                                                    }}>
                                                         {user[key]}
                                                     </Typography>}
                                             </td>
                                         </tr>
                                     )
                             })
-                        }
-                        </tbody>
-                    </Table>
-                    <Box sx={{display: 'flex', gap: 2, paddingTop: '50px'}}>
-                        {edit ? <Button variant={'outlined'} color="primary" onClick={(e) => {
-                                e.preventDefault();
-                                setEdit(false);
-                                console.log('cancel')
-                                setFormData(user);
-                            }}>CANCEL</Button> :
-                            <Button variant={'outlined'} color="primary" onClick={(e) => {
-                                e.preventDefault();
-                                console.log('edit')
-                                setEdit(true);
-                            }}>EDIT</Button>
-                        }
-                        <Button type="" disabled={!edit} color={"primary"}>UPDATE</Button>
-                        <input type="submit" hidden />
-                    </Box>
-                </form>
+                            }
+                            </tbody>
+                        </Table>
+                        <Box sx={{display: 'flex', gap: 2, paddingTop: '50px'}}>
+                            {edit ? <Button variant={'outlined'} color="primary" onClick={(e) => {
+                                    e.preventDefault();
+                                    setEdit(false);
+                                    console.log('cancel')
+                                    setFormData(user);
+                                }}>CANCEL</Button> :
+                                <Button variant={'outlined'} color="primary" onClick={(e) => {
+                                    e.preventDefault();
+                                    console.log('edit')
+                                    setEdit(true);
+                                }}>EDIT</Button>
+                            }
+                            <Button type="" disabled={!edit} color={"primary"}>UPDATE</Button>
+                            <input type="submit" hidden/>
+                        </Box>
+                    </form>
+                </Box>
             </Box>
         </Box>
     )

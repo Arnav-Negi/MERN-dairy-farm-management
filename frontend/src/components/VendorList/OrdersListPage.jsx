@@ -32,19 +32,6 @@ export default function JoyOrderDashboardTemplate() {
   }, [status]);
 
   return (
-    <CssVarsProvider disableTransitionOnChange >
-      <GlobalStyles
-        styles={{
-          '[data-feather], .feather': {
-            color: 'var(--Icon-color)',
-            margin: 'var(--Icon-margin)',
-            fontSize: 'var(--Icon-fontSize, 20px)',
-            width: '1em',
-            height: '1em',
-          },
-        }}
-      />
-      <CssBaseline />
       <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
         <Box
           component="main"
@@ -132,6 +119,5 @@ export default function JoyOrderDashboardTemplate() {
           <OrderTable />
         </Box>
       </Box>
-    </CssVarsProvider>
   );
 }
