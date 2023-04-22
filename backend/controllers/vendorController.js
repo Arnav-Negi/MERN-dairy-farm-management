@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Vendor = require("../models/Vendor");
+const Product = require("../models/Product");
 require("dotenv").config();
 
 const registerVendor = async (req, res) => {
@@ -117,9 +118,70 @@ const updateVendor = async (req, res) => {
     }
 };
 
+const addProduct = async (req, res) => {
+try {
+        if (req.user.userType !== "Vendor") {
+            return res.status(400).json({error: "User is not a vendor"});
+        }
+        const product = new Product(req.body);
+        product.vendor = req.user.id;
+        product.available_quantity = product.weekly_quantity;
+        await product.save();
+
+        await Vendor.findByIdAndUpdate({_id: req.user.id}, {$push: {products: product._id}})
+        res.status(200).json("Product added");
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+}
+
+const removeProduct = async (req, res) => {
+    try {
+        if (req.user.userType !== "Vendor") {
+            return res.status(400).json({error: "User is not a vendor"});
+        }
+        const product = await Product.findById(req.body.id);
+        if (!product) {
+            return res.status(400).json({error: "Product not found"});
+        }
+        if (product.vendor.toString() !== req.user.id) {
+            return res.status(400).json({error: "User is not the owner of the product"});
+        }
+        await Product.findByIdAndDelete(req.body.id);
+        res.status(200).json("Product removed");
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+}
+
+const updateProduct = async (req, res) => {
+    try {
+        if (req.user.userType !== "Vendor") {
+            return res.status(400).json({error: "User is not a vendor"});
+        }
+        const product = await Product.findById(req.body.id);
+        if (!product) {
+            return res.status(400).json({error: "Product not found"});
+        }
+        if (product.vendor.toString() !== req.user.id) {
+            return res.status(400).json({error: "User is not the owner of the product"});
+        }
+        await Product.findByIdAndUpdate({_id: req.body.id}, req.body);
+        res.status(200).json("Product updated");
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+}
+
 module.exports = {
     getVendor,
     updateVendor,
     registerVendor,
     loginVendor,
+    addProduct,
+    removeProduct,
+    updateProduct,
 };

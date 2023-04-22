@@ -12,4 +12,10 @@ router.post("/register", vendorController.registerVendor);
 
 router.post("/login", vendorController.loginVendor);
 
+router.post("/addProduct", auth, vendorController.addProduct);
+
+router.post("/removeProduct", auth, vendorController.removeProduct);
+
+router.patch("/updateProduct", auth, vendorController.updateProduct);
+
 module.exports = router;
