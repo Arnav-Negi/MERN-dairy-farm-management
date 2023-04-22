@@ -118,9 +118,105 @@ const updateCustomer = async (req, res) => {
     }
 };
 
+const addToCart = async (req, res) => {
+    try {
+        if (req.user.userType !== "Customer") {
+            return res.status(400).json({error: "User is not a customer"});
+        }
+
+        const customer = await Customer.findById(req.user.id);
+        if (!customer) {
+            return res.status(400).json({error: "Customer not found"});
+        }
+
+        const product = await Product.findById(req.body.product);
+        if (!product) {
+            return res.status(400).json({error: "Product not found"});
+        }
+
+        const cartItem = customer.cart.find(item => item.product.toString() === req.body.product);
+        if (cartItem) {
+            cartItem.daily_quantity = req.body.daily_quantity;
+            cartItem.days = req.body.days;
+        } else {
+            customer.cart.push(req.body);
+        }
+
+        await customer.save();
+        res.status(200).json("Cart updated");
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+};
+
+const removeFromCart = async (req, res) => {
+    try {
+        if (req.user.userType !== "Customer") {
+            return res.status(400).json({error: "User is not a customer"});
+        }
+
+        const customer = await Customer.findById(req.user.id);
+        if (!customer) {
+            return res.status(400).json({error: "Customer not found"});
+        }
+
+        const product = await Product.findById(req.body.product);
+        if (!product) {
+            return res.status(400).json({error: "Product not found"});
+        }
+
+        const cartItem = customer.cart.find(item => item.product.toString() === req.body.product);
+        if (!cartItem) {
+            return res.status(400).json({error: "Product not in cart"});
+        }
+
+        customer.cart = customer.cart.filter(item => item.product.toString() !== req.body.product);
+        await customer.save();
+        res.status(200).json("Product removed from cart");
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+}
+
+const updateCart = async (req, res) => {
+    try {
+        if (req.user.userType !== "Customer") {
+            return res.status(400).json({error: "User is not a customer"});
+        }
+
+        const customer = await Customer.findById(req.user.id);
+        if (!customer) {
+            return res.status(400).json({error: "Customer not found"});
+        }
+
+        const product = await Product.findById(req.body.product);
+        if (!product) {
+            return res.status(400).json({error: "Product not found"});
+        }
+
+        const cartItem = customer.cart.find(item => item.product.toString() === req.body.product);
+        if (!cartItem) {
+            return res.status(400).json({error: "Product not in cart"});
+        }
+
+        cartItem.daily_quantity = req.body.daily_quantity;
+        cartItem.days = req.body.days;
+        await customer.save();
+        res.status(200).json("Cart updated");
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+}
+
 module.exports = {
     registerCustomer,
     loginCustomer,
     getCustomer,
     updateCustomer,
+    addToCart,
+    removeFromCart,
+    updateCart,
 };

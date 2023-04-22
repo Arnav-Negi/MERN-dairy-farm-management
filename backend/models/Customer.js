@@ -37,7 +37,7 @@ const CustomerSchema = new mongoose.Schema({
                 required: true,
                 ref: "Product",
             },
-            quantity: {
+            daily_quantity: {
                 type: Number,
                 required: true,
             },
