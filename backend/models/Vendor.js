@@ -74,6 +74,14 @@ const VendorSchema = new mongoose.Schema({
             default: "",
         },
     },
+    products: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "Product",
+    },
+    subscriptions: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "Subscription",
+    },
 }, {timestamps: true});
 
 module.exports = Vendor = mongoose.model("Vendor", VendorSchema);

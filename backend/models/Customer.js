@@ -26,6 +26,28 @@ const CustomerSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    subscriptions: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "Subscription",
+    },
+    cart: {
+        type: [{
+            product: {
+                type: mongoose.Schema.Types.ObjectId,
+                required: true,
+                ref: "Product",
+            },
+            quantity: {
+                type: Number,
+                required: true,
+            },
+            days: {
+                type: [String],
+                required: true,
+                default: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+            },
+        }],
+    },
 }, {timestamps: true});
 
 module.exports = Customer = mongoose.model("Customer", CustomerSchema);
