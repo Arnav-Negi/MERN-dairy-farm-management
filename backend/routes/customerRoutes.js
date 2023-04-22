@@ -18,4 +18,8 @@ router.post("/removeFromCart", auth, customerController.removeFromCart);
 
 router.post("/updateCart", auth, customerController.updateCart);
 
+router.post("/addSub", auth, customerController.addSubscription);
+
+router.post("/removeSub", auth, customerController.removeSubscription);
+
 module.exports = router;

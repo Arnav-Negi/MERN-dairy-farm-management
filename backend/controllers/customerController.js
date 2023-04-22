@@ -1,4 +1,6 @@
 const Customer = require("../models/Customer");
+const Product = require("../models/Product");
+const Subscription = require("../models/Subscription");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -138,6 +140,7 @@ const addToCart = async (req, res) => {
         if (cartItem) {
             cartItem.daily_quantity = req.body.daily_quantity;
             cartItem.days = req.body.days;
+            cartItem.startDate = req.body.startDate;
         } else {
             customer.cart.push(req.body);
         }
@@ -203,8 +206,75 @@ const updateCart = async (req, res) => {
 
         cartItem.daily_quantity = req.body.daily_quantity;
         cartItem.days = req.body.days;
+        cartItem.startDate = req.body.startDate;
         await customer.save();
         res.status(200).json("Cart updated");
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+}
+
+const addSubscription = async (req, res) => {
+    try {
+        if (req.user.userType !== "Customer") {
+            return res.status(400).json({error: "User is not a customer"});
+        }
+
+        const customer = await Customer.findById(req.user.id);
+        if (!customer) {
+            return res.status(400).json({error: "Customer not found"});
+        }
+
+        const product = await Product.findById(req.body.product);
+        if (!product) {
+            return res.status(400).json({error: "Product not found"});
+        }
+
+        const cartItem = customer.cart.find(item => item.product.toString() === req.body.product);
+        if (!cartItem) {
+            return res.status(400).json({error: "Product not in cart"});
+        }
+
+        const subscription = new Subscription({
+            product: req.body.product,
+            customer: req.user.id,
+            daily_quantity: cartItem.daily_quantity,
+            days: cartItem.days,
+            startDate: cartItem.startDate,
+        });
+
+        customer.subscriptions.push(subscription);
+        await subscription.save();
+        customer.cart = customer.cart.filter(item => item.product.toString() !== req.body.product);
+        await customer.save();
+        res.status(200).json("Subscription added");
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+}
+
+const removeSubscription = async (req, res) => {
+    try {
+        if (req.user.userType !== "Customer") {
+            return res.status(400).json({error: "User is not a customer"});
+        }
+
+        const customer = await Customer.findById(req.user.id);
+        if (!customer) {
+            return res.status(400).json({error: "Customer not found"});
+        }
+
+        const subscription = await Subscription.findOne({customer: req.user.id, _id: req.body.subscription});
+        if (!subscription) {
+            return res.status(400).json({error: "Subscription not found"});
+        }
+
+        customer.subscriptions = customer.subscriptions.filter(item => item._id.toString() !== req.body.subscription);
+        await customer.save();
+        await Subscription.findByIdAndDelete(req.body.subscription);
+        res.status(200).json("Subscription removed");
     } catch (err) {
         console.error(err.message);
         res.status(500).send("Server error");
@@ -219,4 +289,6 @@ module.exports = {
     addToCart,
     removeFromCart,
     updateCart,
+    addSubscription,
+    removeSubscription,
 };

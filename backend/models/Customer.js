@@ -46,6 +46,10 @@ const CustomerSchema = new mongoose.Schema({
                 required: true,
                 default: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
             },
+            startDate: {
+                type: Date,
+                required: true,
+            },
         }],
     },
 }, {timestamps: true});

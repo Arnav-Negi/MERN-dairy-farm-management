@@ -11,7 +11,7 @@ const SubscriptionSchema = new mongoose.Schema({
         required: true,
         ref: 'Customer',
     },
-    quantity: {
+    daily_quantity: {
         type: Number,
         required: true,
     },
