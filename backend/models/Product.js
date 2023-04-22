@@ -14,13 +14,16 @@ const ProductSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.Decimal128,
         required: true,
     },
-    weekly_quantity: {
+    discount: {
+        type: mongoose.Schema.Types.Decimal128,
+        default: 0,
+    },
+    weeklyQuantity: {
         type: Number,
         required: true,
     },
-    available_quantity: {
+    availableQuantity: {
         type: Number,
-        required: true,
     },
     subscriptions: {
         type: [mongoose.Schema.Types.ObjectId],
@@ -28,7 +31,6 @@ const ProductSchema = new mongoose.Schema({
     },
     vendor: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
         ref: "Vendor",
     },
 }, {timestamps: true});
