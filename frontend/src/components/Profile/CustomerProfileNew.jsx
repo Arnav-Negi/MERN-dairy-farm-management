@@ -128,36 +128,47 @@ export default function CustomerProfile() {
                     <Table borderAxis="none">
                         <tbody>
                         {Object.keys(user).map(key => {
-                                if (key !== '_id')
-                                    return (
-                                        <tr
-                                            key={key}
-                                            style={{'&:last-child td, &:last-child th': {border: 0}}}
-                                        >
-                                            <td>
-                                                <Typography fontSize={"lg"}>
-                                                    {keyToLabel[key]}
-                                                </Typography>
-                                            </td>
-                                            <td>
-                                                {edit ?
-                                                    <FormControl>
-                                                        <Input
-                                                            sx={{fontSize: 'large', padding: 1, border: 1, borderColor: 'primary.main'}}
-                                                            value={formData[key]}
-                                                            variant={"outlined"}
-                                                            color={"text.primary"}
-                                                            onChange={(e) =>
-                                                                setFormData({...updateField({...formData}, key, e.target.value)})}/>
-                                                    </FormControl>
-                                                    :
-                                                    <Typography fontSize={'lg'} sx={{fontSize: 'large', padding: 1, border: 1, borderColor: 'primary.main'}}>
-                                                        {user[key]}
-                                                    </Typography>}
-                                            </td>
-                                        </tr>
-                                    )
-                            })
+                            if (!Object.keys(keyToLabel).includes(key)) return <></>
+                            if (key !== '_id')
+                                return (
+                                    <tr
+                                        key={key}
+                                        style={{'&:last-child td, &:last-child th': {border: 0}}}
+                                    >
+                                        <td>
+                                            <Typography fontSize={"lg"}>
+                                                {keyToLabel[key]}
+                                            </Typography>
+                                        </td>
+                                        <td>
+                                            {edit ?
+                                                <FormControl>
+                                                    <Input
+                                                        sx={{
+                                                            fontSize: 'large',
+                                                            padding: 1,
+                                                            border: 1,
+                                                            borderColor: 'primary.main'
+                                                        }}
+                                                        value={formData[key]}
+                                                        variant={"outlined"}
+                                                        color={"text.primary"}
+                                                        onChange={(e) =>
+                                                            setFormData({...updateField({...formData}, key, e.target.value)})}/>
+                                                </FormControl>
+                                                :
+                                                <Typography fontSize={'lg'} sx={{
+                                                    fontSize: 'large',
+                                                    padding: 1,
+                                                    border: 1,
+                                                    borderColor: 'primary.main'
+                                                }}>
+                                                    {user[key]}
+                                                </Typography>}
+                                        </td>
+                                    </tr>
+                                )
+                        })
                         }
                         </tbody>
                     </Table>
@@ -175,7 +186,7 @@ export default function CustomerProfile() {
                             }}>EDIT</Button>
                         }
                         <Button type="" disabled={!edit} color={"primary"}>UPDATE</Button>
-                        <input type="submit" hidden />
+                        <input type="submit" hidden/>
                     </Box>
                 </form>
             </Box>
