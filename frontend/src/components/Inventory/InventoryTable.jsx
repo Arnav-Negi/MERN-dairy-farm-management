@@ -30,74 +30,8 @@ import UpdateProduct from "./UpdateProduct.jsx";
 import {productsAtom} from "../../atoms/products.jsx";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import Fuse from "fuse.js";
 
-const rows = [
-    {
-        id: "INV-1234",
-        name: "Milk 1L",
-        description: '1 litre pack of delicious milk',
-        weeklyQuantity: 100,
-        usedQuantity: 20,
-        price: 40,
-        discount: 0.1,
-    }, {
-        id: "INV-1235",
-        name: "Ghee 200gms",
-        description: '200 gms of delicious ghee',
-        weeklyQuantity: 100,
-        usedQuantity: 20,
-        price: 40,
-        discount: 0.1,
-    }, {
-        id: "INV-1236",
-        name: "cheese 100gm",
-        description: 'mmmmm cheeselicious',
-        weeklyQuantity: 100,
-        usedQuantity: 20,
-        price: 40,
-        discount: 0.1,
-    }, {
-        id: "INV-1237",
-        name: "cheese 100gm",
-        description: 'mmmmm cheeselicious',
-        weeklyQuantity: 100,
-        usedQuantity: 20,
-        price: 40,
-        discount: 0.1,
-    }, {
-        id: "INV-1238",
-        name: "cheese 100gm",
-        description: 'mmmmm cheeselicious',
-        weeklyQuantity: 100,
-        usedQuantity: 20,
-        price: 40,
-        discount: 0.1,
-    }, {
-        id: "INV-1239",
-        name: "cheese 100gm",
-        description: 'mmmmm cheeselicious',
-        weeklyQuantity: 100,
-        usedQuantity: 20,
-        price: 40,
-        discount: 0.1,
-    }, {
-        id: "INV-1240",
-        name: "cheese 100gm",
-        description: 'mmmmm cheeselicious',
-        weeklyQuantity: 100,
-        usedQuantity: 20,
-        price: 40,
-        discount: 0.1,
-    }, {
-        id: "INV-1241",
-        name: "cheese 100gm",
-        description: 'mmmmm cheeselicious',
-        weeklyQuantity: 100,
-        usedQuantity: 20,
-        price: 40,
-        discount: 0.1,
-    },
-]
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -114,6 +48,8 @@ function getComparator(order, orderBy) {
         ? (a, b) => descendingComparator(a, b, orderBy)
         : (a, b) => -descendingComparator(a, b, orderBy)
 }
+
+const searchOptions = {keys: ['name', 'description'], threshold: 0.2, limit: 9999}
 
 // Since 2020 all major browsers ensure sort stability with Array.prototype.sort().
 // stableSort() brings sort stability to non-modern browsers (notably IE11). If you
@@ -134,6 +70,15 @@ function stableSort(array, comparator) {
 export default function InventoryTable() {
 
     const [rows, setRows] = useRecoilState(productsAtom);
+    let fuse = new Fuse([...rows], searchOptions);
+
+    const [order, setOrder] = React.useState("desc");
+    const [openAddProduct, setOpenAddProduct] = React.useState(false);
+    const [openEditProduct, setOpenEditProduct] = React.useState(false);
+    const [EditRow, setEditRow] = React.useState(null);
+
+    const [search, setSearch] = useState("");
+    const [displayList, setDisplayList] = useState(rows);
 
     useEffect(() => {
         async function fetchProducts() {
@@ -149,14 +94,19 @@ export default function InventoryTable() {
             .catch(e => console.log(e));
     }, []);
 
+    useEffect(() => {
+        fuse.setCollection([...rows]);
+        setDisplayList([...rows]);
+    }, [rows]);
 
-    const [order, setOrder] = React.useState("desc");
-    const [openAddProduct, setOpenAddProduct] = React.useState(false);
-    const [openEditProduct, setOpenEditProduct] = React.useState(false);
-    const [EditRow, setEditRow] = React.useState(null);
+    useEffect(() => {
+        const result = fuse.search(search);
+        if (search !== "")
+            setDisplayList(result.map(res => res.item));
+        else
+            setDisplayList([...rows])
+    }, [search]);
 
-    const [user, setUser] = useRecoilState(userAtom);
-    // const [products, setProducts] = useRecoilState(productsAtom);
 
     const handleEditRow = (row) => {
         setEditRow(row)
@@ -165,11 +115,12 @@ export default function InventoryTable() {
 
     const handleRemove = (e, row) => {
         e.preventDefault();
+
         async function removeProduct() {
             const confirm = window.confirm("Are you sure you want to remove this product?");
             if (!confirm) {
                 return "cancelled";
-            };
+            }
 
             const response = await
                 axios.post("http://localhost:5000/api/vendor/removeProduct", {
@@ -226,6 +177,8 @@ export default function InventoryTable() {
                         placeholder="Search"
                         startDecorator={<SearchOutlinedIcon/>}
                         sx={{width: '100%'}}
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
                     />
                 </FormControl>
 
@@ -289,7 +242,7 @@ export default function InventoryTable() {
                     </tr>
                     </thead>
                     <tbody>
-                    {rows && stableSort(rows, getComparator(order, "id")).map(row => (
+                    {displayList && stableSort(displayList, getComparator(order, "id")).map(row => (
                         <tr key={row.id}>
                             <td style={{padding: 12}}>
                                 <Box sx={{display: "flex", gap: 2, alignItems: "center", paddingLeft: 7}}>

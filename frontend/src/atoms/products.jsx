@@ -4,5 +4,5 @@ import {
 
 export const productsAtom = atom({
     key: 'productsAtom',
-    default: null
+    default: []
 })
