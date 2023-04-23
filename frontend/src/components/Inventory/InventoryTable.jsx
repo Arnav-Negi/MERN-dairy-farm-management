@@ -166,19 +166,22 @@ export default function InventoryTable() {
     const handleRemove = (e, row) => {
         e.preventDefault();
         async function removeProduct() {
-            console.log({id: row._id});
+            const confirm = window.confirm("Are you sure you want to remove this product?");
+            if (!confirm) {
+                return "cancelled";
+            };
+
             const response = await
                 axios.post("http://localhost:5000/api/vendor/removeProduct", {
                     id: row._id
                 });
-            console.log(response.data)
+            setRows(rows.filter(r => r._id !== row._id));
             return "success";
         }
 
         removeProduct()
             .then(r => {
                 console.log(r);
-                setRows(rows.filter(r => r._id !== row._id));
             })
             .catch(e => console.log(e));
     }

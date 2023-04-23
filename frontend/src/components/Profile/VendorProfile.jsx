@@ -38,23 +38,27 @@ export default function VendorProfile() {
     const [user, setUser] = useRecoilState(userAtom);
     const [formData, setFormData] = useState(user);
     const [edit, setEdit] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setLoading(true);
 
-        async function updateCustomer() {
+        async function updateVendor() {
             try {
                 const url = 'http://localhost:5000/api/vendor';
                 const res = await axios.patch(url, formData);
                 setUser(formData);
+                setLoading(false);
                 alert("vendor updated.");
             } catch (e) {
+                setLoading(false);
                 alert(e);
                 console.log(e);
             }
         }
 
-        updateCustomer().then(() => {
+        updateVendor().then(() => {
             setEdit(false);
         });
 
@@ -303,7 +307,7 @@ export default function VendorProfile() {
                                     setEdit(true);
                                 }}>EDIT</Button>
                             }
-                            <Button type="" disabled={!edit} color={"primary"}>UPDATE</Button>
+                            <Button type="" disabled={!edit} loading={loading} color={"primary"}>UPDATE</Button>
                             <input type="submit" hidden/>
                         </Box>
                     </form>

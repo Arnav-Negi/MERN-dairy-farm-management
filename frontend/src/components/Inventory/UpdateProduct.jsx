@@ -18,6 +18,7 @@ import axios from "axios";
 export default function UpdateProduct(props) {
     const [user, setUser] = useRecoilState(userAtom);
     const [products, setProducts] = useRecoilState(productsAtom);
+    const [loading, setLoading] = useState(false);
 
     const {open, setOpen, row} = props;
     const [formData, setFormData] = useState(row);
@@ -41,6 +42,7 @@ export default function UpdateProduct(props) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setLoading(true );
 
         async function updateProduct() {
             const response = await
@@ -58,11 +60,13 @@ export default function UpdateProduct(props) {
             .then(() => {
                 console.log("Product updated successfully");
                 setOpen(false);
+                setLaoding(false);
             })
             .catch((err) => {
                 console.log(err);
                 alert(err);
                 setOpen(false);
+                setLaoding(false);
             });
     }
 
@@ -166,7 +170,9 @@ export default function UpdateProduct(props) {
                                     {getInput(key)}
                                 </FormControl>
                             ))}
-                            <Button type={"submit"} color={"primary"} variant={"outlined"} sx={{marginTop: 2}}>
+                            <Button type={"submit"} loading={loading}
+                                    color={"primary"} variant={"outlined"}
+                                    sx={{marginTop: 2}}>
                                 Update Product
                             </Button>
                         </form>

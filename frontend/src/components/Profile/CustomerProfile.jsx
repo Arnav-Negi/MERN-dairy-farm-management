@@ -29,16 +29,20 @@ export default function CustomerProfile() {
     const [user, setUser] = useRecoilState(userAtom);
     const [formData, setFormData] = useState(user);
     const [edit, setEdit] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setLoading(true);
 
         async function updateCustomer() {
             try {
                 const url = 'http://localhost:5000/api/customer';
                 const res = await axios.patch(url, formData);
+                setLoading(false);
                 alert("customer updated.");
             } catch (e) {
+                setLoading(false);
                 alert(e);
                 console.log(e)
             }
@@ -165,7 +169,7 @@ export default function CustomerProfile() {
                                     setEdit(true);
                                 }}>EDIT</Button>
                             }
-                            <Button type="" disabled={!edit} color={"primary"}>UPDATE</Button>
+                            <Button type="" disabled={!edit} loading={loading} color={"primary"}>UPDATE</Button>
                             <input type="submit" hidden/>
                         </Box>
                     </form>
