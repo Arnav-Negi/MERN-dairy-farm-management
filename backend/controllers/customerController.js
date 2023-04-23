@@ -358,12 +358,34 @@ const getSubscriptions = async (req, res) => {
     if (!customer) {
       return res.status(400).json({ error: "Customer not found" });
     }
-    res
-      .status(200)
-      .json({
-        success: "Subscriptions found",
-        subscriptions: customer.subscriptions,
-      });
+    res.status(200).json({
+      success: "Subscriptions found",
+      subscriptions: customer.subscriptions,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+};
+
+const getCart = async (req, res) => {
+  try {
+    if (req.user.userType !== "Customer") {
+      return res.status(400).json({ error: "User is not a customer" });
+    }
+
+    const customer = await Customer.findById(req.user.id).populate({
+      path: "cart",
+      populate: { path: "product", select: "name price discount" },
+      select: "-__v -createdAt -updatedAt",
+    });
+    if (!customer) {
+      return res.status(400).json({ error: "Customer not found" });
+    }
+    res.status(200).json({
+      success: "Cart found",
+      cart: customer.cart,
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
@@ -381,4 +403,5 @@ module.exports = {
   addSubscription,
   removeSubscription,
   getSubscriptions,
+  getCart,
 };

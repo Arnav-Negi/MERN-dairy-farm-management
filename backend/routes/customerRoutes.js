@@ -24,4 +24,6 @@ router.post("/removeSub", auth, customerController.removeSubscription);
 
 router.get("/getSubs", auth, customerController.getSubscriptions);
 
+router.get("/getCart", auth, customerController.getCart);
+
 module.exports = router;
