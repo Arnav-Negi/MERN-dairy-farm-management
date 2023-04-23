@@ -13,6 +13,7 @@ import {useRecoilState} from "recoil";
 import {userAtom} from "../../atoms/user.jsx";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import Fuse from "fuse.js";
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -29,6 +30,9 @@ function getComparator(order, orderBy) {
         ? (a, b) => descendingComparator(a, b, orderBy)
         : (a, b) => -descendingComparator(a, b, orderBy)
 }
+
+const customerOptions = {keys: ['customer.first_name', 'customer.last_name'], threshold: 0.2, limit: 9999}
+const productOptions = {keys: ['product.name'], threshold: 0.2, limit: 9999}
 
 // Since 2020 all major browsers ensure sort stability with Array.prototype.sort().
 // stableSort() brings sort stability to non-modern browsers (notably IE11). If you
@@ -51,6 +55,41 @@ export default function VendorSubscriptionsTable() {
     const [order, setOrder] = React.useState("desc");
 
     const [rows, setRows] = useState([]);
+    const [searchCustomer, setSearchCustomer] = useState("");
+    const [searchProduct, setSearchProduct] = useState("");
+    const [displayList, setDisplayList] = useState(rows);
+
+    const fuseCustomer = new Fuse(rows, customerOptions);
+    const fuseProduct= new Fuse(rows, productOptions);
+
+    useEffect(() => {
+        let result;
+        if (searchProduct !== "") {
+            fuseProduct.setCollection([...rows]);
+            let resultProduct = fuseProduct.search(searchProduct);
+            resultProduct = resultProduct.map((r) => r.item);
+
+            if (searchCustomer !== "") {
+                fuseCustomer.setCollection(resultProduct);
+                result = fuseCustomer.search(searchCustomer);
+                result = result.map((r) => r.item);
+            }
+            else {
+                result = resultProduct;
+            }
+        }
+        else if (searchCustomer !== "") {
+            fuseCustomer.setCollection([...rows]);
+            let resultCustomer = fuseCustomer.search(searchCustomer);
+            result = resultCustomer.map((r) => r.item);
+        }
+        else {
+            result = [...rows];
+        }
+
+        setDisplayList([...result]);
+    }, [searchProduct, searchCustomer]);
+
 
     useEffect(() => {
         async function fetchData() {
@@ -107,6 +146,8 @@ export default function VendorSubscriptionsTable() {
                         placeholder="Search"
                         startDecorator={<SearchOutlinedIcon/>}
                         sx={{width: '100%'}}
+                        value={searchProduct}
+                        onChange={(e) => setSearchProduct(e.target.value)}
                     />
                 </FormControl>
 
@@ -116,6 +157,8 @@ export default function VendorSubscriptionsTable() {
                         placeholder="Search"
                         startDecorator={<SearchOutlinedIcon/>}
                         sx={{width: '100%'}}
+                        value={searchCustomer}
+                        onChange={(e) => setSearchCustomer(e.target.value)}
                     />
                 </FormControl>
 
@@ -161,7 +204,7 @@ export default function VendorSubscriptionsTable() {
                     </tr>
                     </thead>
                     <tbody>
-                    {rows && rows.map((row, index) => (
+                    {displayList && displayList.map((row, index) => (
                         <tr key={row.id}>
                             <td style={{padding: 12}}>
                                 <Box sx={{display: "flex", gap: 2, alignItems: "center", paddingLeft: 7}}>
