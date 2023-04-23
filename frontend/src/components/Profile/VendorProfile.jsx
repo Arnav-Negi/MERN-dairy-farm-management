@@ -14,6 +14,7 @@ import Box from "@mui/joy/Box";
 import FormControl from "@mui/joy/FormControl";
 import Table from "@mui/joy/Table";
 import Input from "@mui/joy/Input";
+import Checkbox from '@mui/joy/Checkbox';
 
 const keyToLabel = {
     first_name: "First Name",
@@ -31,8 +32,10 @@ const keyToLabel = {
     establishedDate: "Established Date",
     name: "Farm Name",
     openingHours: "Opening Hours",
+    workingDays: "Working Days",
 }
 
+const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
 export default function VendorProfile() {
     const [user, setUser] = useRecoilState(userAtom);
@@ -63,6 +66,15 @@ export default function VendorProfile() {
         });
 
         console.log(formData);
+    }
+
+    const addOrRemoveDay = (day, add) => {
+        const newWorkingDays = [...formData.workingDays];
+        if (add && !newWorkingDays.includes(day))
+            newWorkingDays.push(day);
+        else if (newWorkingDays.includes(day))
+            newWorkingDays.splice(newWorkingDays.indexOf(day), 1);
+        setFormData({...formData, workingDays: newWorkingDays});
     }
 
     return (
@@ -190,7 +202,33 @@ export default function VendorProfile() {
                                         )
                                     else return (
                                         // TODO: working days input
-                                        <></>
+                                        <tr
+                                            key={key}
+                                            style={{'&:last-child td, &:last-child th': {border: 0}}}
+                                        >
+                                            <td>
+                                                <Typography fontSize={"lg"}>
+                                                    {keyToLabel[key]}
+                                                </Typography>
+                                            </td>
+                                            <td>
+                                                <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 4}}>
+                                                    {days.map((day, index) => {
+                                                            return (
+                                                                <Checkbox
+                                                                    disabled={!edit}
+                                                                    label={day}
+                                                                    checked={formData.workingDays.includes(day)}
+                                                                    onChange={(e =>
+                                                                        addOrRemoveDay(day, e.target.checked)
+                                                                    )}/>
+                                                            )
+                                                        }
+                                                    )
+                                                    }
+                                                </Box>
+                                            </td>
+                                        </tr>
                                     )
                             })}
                             <Typography level="h3" fontSize="xl2" color={'primary'} paddingTop={5}>
