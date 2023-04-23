@@ -14,6 +14,9 @@ import {userAtom} from "../../atoms/user.jsx";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import Fuse from "fuse.js";
+import Select from "@mui/joy/Select";
+import Option from "@mui/joy/Option";
+import {KeyboardArrowDown} from "@mui/icons-material";
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -50,6 +53,8 @@ function stableSort(array, comparator) {
     return stabilizedThis.map(el => el[0])
 }
 
+const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
 export default function VendorSubscriptionsTable() {
 
     const [order, setOrder] = React.useState("desc");
@@ -58,12 +63,14 @@ export default function VendorSubscriptionsTable() {
     const [searchCustomer, setSearchCustomer] = useState("");
     const [searchProduct, setSearchProduct] = useState("");
     const [displayList, setDisplayList] = useState(rows);
+    const [day, setDay] = useState("Any");
 
     const fuseCustomer = new Fuse(rows, customerOptions);
     const fuseProduct= new Fuse(rows, productOptions);
 
     useEffect(() => {
         let result;
+        console.log(day);
         if (searchProduct !== "") {
             fuseProduct.setCollection([...rows]);
             let resultProduct = fuseProduct.search(searchProduct);
@@ -86,9 +93,10 @@ export default function VendorSubscriptionsTable() {
         else {
             result = [...rows];
         }
-
+        if (day !== "Any")
+            result = result.filter(r => r.days.includes(day))
         setDisplayList([...result]);
-    }, [searchProduct, searchCustomer]);
+    }, [searchProduct, searchCustomer, day]);
 
 
     useEffect(() => {
@@ -97,6 +105,7 @@ export default function VendorSubscriptionsTable() {
                 await axios.get('http://localhost:5000/api/vendor/getSubs');
 
             setRows(response.data.subscriptions);
+            console.log(response.data.subscriptions)
             return "success"
         }
 
@@ -160,6 +169,18 @@ export default function VendorSubscriptionsTable() {
                         value={searchCustomer}
                         onChange={(e) => setSearchCustomer(e.target.value)}
                     />
+                </FormControl>
+
+                <FormControl sx={{flex: 1}} size="sm">
+                    <FormLabel>Day of delivery</FormLabel>
+                    <Select
+                        defaultValue={'Any'}
+                        indicator={<KeyboardArrowDown />}
+                        onChange={(e) => setDay(e.target.outerText)}
+                    >
+                        <Option value={'Any'}>Any</Option>
+                        {days.map(thisDay => <Option value={thisDay}>{thisDay}</Option>)}
+                    </Select>
                 </FormControl>
 
             </Box>
