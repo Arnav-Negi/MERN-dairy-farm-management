@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Vendor = require("../models/Vendor");
 const Product = require("../models/Product");
+const Subscription = require("../models/Subscription");
 require("dotenv").config();
 
 const registerVendor = async (req, res) => {
@@ -177,6 +178,24 @@ const updateProduct = async (req, res) => {
     }
 }
 
+const getSubscriptions = async (req, res) => {
+    try {
+        if (req.user.userType !== "Vendor") {
+            return res.status(400).json({error: "User is not a vendor"});
+        }
+        const vendor = await Vendor.findById(req.user.id)
+            .populate({path: "subscriptions", populate: [{path: "product", select: "name"}, {path: "customer", select: "first_name last_name"}], select: "-createdAt -updatedAt -__v"});
+
+        if (!vendor) {
+            return res.status(400).json({error: "Vendor not found"});
+        }
+        res.status(200).json({success: "Subscriptions found", subscriptions: vendor.subscriptions});
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+}
+
 module.exports = {
     getVendor,
     updateVendor,
@@ -185,4 +204,5 @@ module.exports = {
     addProduct,
     removeProduct,
     updateProduct,
+    getSubscriptions,
 };

@@ -1,6 +1,7 @@
 const Customer = require("../models/Customer");
 const Product = require("../models/Product");
 const Subscription = require("../models/Subscription");
+const Vendor = require("../models/Vendor");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -268,9 +269,13 @@ const addSubscription = async (req, res) => {
             days: cartItem.days,
             startDate: cartItem.startDate,
         });
+        await subscription.save();
+
+        const vendor = await Vendor.findById(product.vendor);
+        vendor.subscriptions.push(subscription._id);
+        await vendor.save();
 
         customer.subscriptions.push(subscription);
-        await subscription.save();
         customer.cart = customer.cart.filter(item => item.product.toString() !== req.body.product);
         await customer.save();
         res.status(200).json("Subscription added");
@@ -302,8 +307,30 @@ const removeSubscription = async (req, res) => {
 
         customer.subscriptions = customer.subscriptions.filter(item => item._id.toString() !== req.body.subscription);
         await customer.save();
+
+        const vendor = await Vendor.findById(product.vendor);
+        vendor.subscriptions = vendor.subscriptions.filter(item => item._id.toString() !== req.body.subscription);
+        await vendor.save();
+
         await Subscription.findByIdAndDelete(req.body.subscription);
         res.status(200).json("Subscription removed");
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+}
+
+const getSubscriptions = async (req, res) => {
+    try {
+        if (req.user.userType !== "Customer") {
+            return res.status(400).json({error: "User is not a customer"});
+        }
+        const customer = await Customer.findById(req.user.id)
+            .populate({path: "subscriptions", populate: {path: "product", select: "name"}, select: "-customer -__v -createdAt -updatedAt"})
+        if (!customer) {
+            return res.status(400).json({error: "Customer not found"});
+        }
+        res.status(200).json({success: "Subscriptions found", subscriptions: customer.subscriptions});
     } catch (err) {
         console.error(err.message);
         res.status(500).send("Server error");
@@ -320,4 +347,5 @@ module.exports = {
     updateCart,
     addSubscription,
     removeSubscription,
+    getSubscriptions,
 };

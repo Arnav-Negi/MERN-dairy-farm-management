@@ -21,7 +21,7 @@ const getProducts = async (req, res) => {
         if (!vendor) {
             return res.status(400).json({error: "Vendor not found"});
         }
-        res.status(200).json({success: "Vendor found", products: vendor.products});
+        res.status(200).json({success: "Products found", products: vendor.products});
     } catch (err) {
         console.error(err.message);
         res.status(500).send("Server error");

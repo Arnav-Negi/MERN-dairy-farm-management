@@ -18,4 +18,6 @@ router.post("/removeProduct", auth, vendorController.removeProduct);
 
 router.patch("/updateProduct", auth, vendorController.updateProduct);
 
+router.get("/getSubs", auth, vendorController.getSubscriptions);
+
 module.exports = router;
