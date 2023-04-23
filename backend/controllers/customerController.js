@@ -289,14 +289,13 @@ const addSubscription = async (req, res) => {
     const openingTime = vendor.dairyFarm.openingHours;
     const closingTime = vendor.dairyFarm.closingHours;
     if (closingTime > openingTime) {
-        if (time < openingTime || time > closingTime) {
-            return res.status(400).json({ error: "Vendor's Farm is closed" });
-        }
-    }
-    else if (closingTime < openingTime) {
-        if (time < openingTime && time > closingTime) {
-            return res.status(400).json({ error: "Vendor's Farm is closed" });
-        }
+      if (time < openingTime || time > closingTime) {
+        return res.status(400).json({ error: "Vendor's Farm is closed" });
+      }
+    } else if (closingTime < openingTime) {
+      if (time < openingTime && time > closingTime) {
+        return res.status(400).json({ error: "Vendor's Farm is closed" });
+      }
     }
 
     const subscription = new Subscription({
@@ -353,8 +352,7 @@ const removeSubscription = async (req, res) => {
       if (time < openingTime || time > closingTime) {
         return res.status(400).json({ error: "Vendor's Farm is closed" });
       }
-    }
-    else if (closingTime < openingTime) {
+    } else if (closingTime < openingTime) {
       if (time < openingTime && time > closingTime) {
         return res.status(400).json({ error: "Vendor's Farm is closed" });
       }
@@ -395,6 +393,31 @@ const getSubscriptions = async (req, res) => {
     if (!customer) {
       return res.status(400).json({ error: "Customer not found" });
     }
+
+    // sort the subscriptions by which day of the week comes first from today
+    customer.subscriptions.sort((a, b) => {
+      const today = (new Date().getDay() - 1) % 7;
+      const days = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ];
+      const aDays = a.days;
+      const bDays = b.days;
+      for (let i = 1; i <= 7; i++) {
+        let index = (today + i) % 7;
+        if (aDays.includes(days[index]) && !bDays.includes(days[index]))
+          return -1;
+        if (!aDays.includes(days[index]) && bDays.includes(days[index]))
+          return 1;
+      }
+      return 0;
+    });
+
     res.status(200).json({
       success: "Subscriptions found",
       subscriptions: customer.subscriptions,
