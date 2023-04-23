@@ -22,6 +22,7 @@ import GlobalStyles from '@mui/joy/GlobalStyles';
 import CssBaseline from '@mui/joy/CssBaseline';
 import customTheme from './assets/theme/cartTheme'
 import Inventory from "./components/Inventory/Inventory.jsx";
+import VendorSubs from "./components/VendorSubs/VendorSubs.jsx";
 
 
 export default function App() {
@@ -103,6 +104,7 @@ function VendorScreen() {
                         <Route path={'profile'} element={<VendorProfile />} />
                         <Route path={'app-info'} element={<AppInfo />} />
                         <Route path={'inventory'} element={<Inventory />} />
+                        <Route path={'subscriptions'} element={<VendorSubs />} />
                     </Routes>
                 </Box>
             </Box>
