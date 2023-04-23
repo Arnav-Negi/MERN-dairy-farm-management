@@ -280,7 +280,7 @@ export default function OrderTable() {
               {/* <th style={{ width: 48, textAlign: "center", padding: 12 }}>
                 
               </th> */}
-              <th style={{ width: 220, textAlign: "center", padding: 12 }}>Vendor</th>
+              <th style={{ width: 220, textAlign: 'center', padding: 12 }}>Vendor</th>
               
               <th style={{ width: 120, padding: 12 }}>Address</th>
               <th style={{ width: 120, padding: 12 }}>Status</th>

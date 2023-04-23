@@ -3,8 +3,8 @@ import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Auth from './components/Auth/Auth';
 import Verify from './Verify'
 import Choose from './components/Choice/Choose';
-import VendorProfile from "./components/Profile/VendorProfileNew.jsx";
-import CustomerProfile from "./components/Profile/CustomerProfileNew.jsx";
+import VendorProfile from "./components/Profile/VendorProfile.jsx";
+import CustomerProfile from "./components/Profile/CustomerProfile.jsx";
 import ItemList from "./components/ItemList/ItemList";
 import VendorList from "./components/VendorList/OrdersListPage";
 import MySubs from "./components/MySubs/MySubsList";
@@ -21,6 +21,7 @@ import { CssVarsProvider } from '@mui/joy/styles';
 import GlobalStyles from '@mui/joy/GlobalStyles';
 import CssBaseline from '@mui/joy/CssBaseline';
 import customTheme from './assets/theme/cartTheme'
+import Inventory from "./components/Inventory/Inventory.jsx";
 
 
 export default function App() {
@@ -74,21 +75,16 @@ function VendorScreen() {
     if (!user) return (<div>loading</div>)
     else
         return (
-            <Fragment>
-            <Box sx={{ display: 'flex', minHeight: '100dvh', zIndex: 999, position: 'absolute', top: 0, width: '100%' }}>
+                <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
                 <SidebarVendor />
                 <Box
                     component="main"
                     className="MainContent"
                     sx={(theme) => ({
-                        px: {
+                        ml: {
                             xs: 2,
                             md: 6,
-                        },
-                        pt: {
-                            xs: `calc(${theme.spacing(2)} + var(--Header-height))`,
-                            sm: `calc(${theme.spacing(2)} + var(--Header-height))`,
-                            md: 3,
+                            lg: 30
                         },
                         pb: {
                             xs: 2,
@@ -99,18 +95,17 @@ function VendorScreen() {
                         display: 'flex',
                         flexDirection: 'column',
                         minWidth: 0,
-                        minHeight: '100dvh',
+                        height: '100dvh',
                         gap: 1,
-                        backgroundColor: theme.vars.palette.background.level1,
                     })}
                 >
                     <Routes>
                         <Route path={'profile'} element={<VendorProfile />} />
                         <Route path={'app-info'} element={<AppInfo />} />
+                        <Route path={'inventory'} element={<Inventory />} />
                     </Routes>
                 </Box>
             </Box>
-            </Fragment>
         )
 }
 
