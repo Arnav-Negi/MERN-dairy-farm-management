@@ -9,8 +9,15 @@ import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
 import Input from "@mui/joy/Input";
 import updateField from "../../utils/updateField.jsx";
+import {Textarea} from "@mui/joy";
+import {useRecoilState} from "recoil";
+import {userAtom} from "../../atoms/user.jsx";
+import {productsAtom} from "../../atoms/products.jsx";
 
 export default function AddProduct(props) {
+    const [user, setUser] = useRecoilState(userAtom);
+    const [products, setProducts] = useRecoilState(productsAtom);
+
     const {open, setOpen} = props;
     const [formData, setFormData] = useState({
         name: '',
@@ -33,14 +40,19 @@ export default function AddProduct(props) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        
+        console.log(formData);
         setOpen(false);
     }
 
     const getInput = (key) => {
+        const decroratorMap = {
+            'price': '₹',
+            'discount': '%',
+            'weeklyQuantity': 'units',
+        }
         if (key === 'description')
         {
-            return (<Input
+            return (<Textarea
                 sx={{
                     fontSize: 'large',
                     padding: 1,
@@ -48,6 +60,7 @@ export default function AddProduct(props) {
                     borderColor: 'primary.main'
                 }}
                 value={formData[name]}
+                minRows={3}
                 variant={"outlined"}
                 color={"text.primary"}
                 onChange={(e) =>
@@ -66,6 +79,22 @@ export default function AddProduct(props) {
                 value={formData[name]}
                 variant={"outlined"}
                 type={"number"}
+                color={"text.primary"}
+                endDecorator={decroratorMap[key]}
+                onChange={(e) =>
+                    setFormData({...updateField(formData, key, e.target.value)})}/>
+            )
+        }
+        else {
+            return (<Input
+                sx={{
+                    fontSize: 'large',
+                    padding: 1,
+                    border: 1,
+                    borderColor: 'primary.main'
+                }}
+                value={formData[name]}
+                variant={"outlined"}
                 color={"text.primary"}
                 onChange={(e) =>
                     setFormData({...updateField(formData, key, e.target.value)})}/>
@@ -89,7 +118,7 @@ export default function AddProduct(props) {
                         maxWidth: 500,
                         minWidth: 600,
                         borderRadius: 'md',
-                        p: 5,
+                        p: 2,
                         paddingLeft: 10,
                         paddingRight: 10,
                         boxShadow: 'lg',
@@ -109,23 +138,15 @@ export default function AddProduct(props) {
                     <form onSubmit={handleSubmit}>
                         {Object.keys(formData).map((key) => (
                             <FormControl>
-                                <FormLabel>
+                                <FormLabel sx={{paddingTop: 2}}>
                                     {keyToLabel[key]}
                                 </FormLabel>
-                                <Input
-                                    sx={{
-                                        fontSize: 'large',
-                                        padding: 1,
-                                        border: 1,
-                                        borderColor: 'primary.main'
-                                    }}
-                                    value={formData[name]}
-                                    variant={"outlined"}
-                                    color={"text.primary"}
-                                    onChange={(e) =>
-                                        setFormData({...updateField(formData, key, e.target.value)})}/>
+                                {getInput(key)}
                             </FormControl>
                         ))}
+                        <Button type={"submit"} color={"primary"} variant={"outlined"} sx={{marginTop: 2}}>
+                            Add Product
+                        </Button>
                     </form>
                 </Sheet>
             </Modal>

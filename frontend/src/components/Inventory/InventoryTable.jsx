@@ -26,6 +26,8 @@ import RemoveOutlinedIcon from '@mui/icons-material/RemoveOutlined';
 import {useRecoilState} from "recoil";
 import {userAtom} from "../../atoms/user.jsx";
 import AddProduct from "./AddProduct.jsx";
+import UpdateProduct from "./UpdateProduct.jsx";
+import {productsAtom} from "../../atoms/products.jsx";
 
 const rows = [
     {
@@ -52,40 +54,40 @@ const rows = [
         usedQuantity: 20,
         price: 40,
         discount: 0.1,
-    },{
-        id: "INV-1236",
+    }, {
+        id: "INV-1237",
         name: "cheese 100gm",
         description: 'mmmmm cheeselicious',
         weeklyQuantity: 100,
         usedQuantity: 20,
         price: 40,
         discount: 0.1,
-    },{
-        id: "INV-1236",
+    }, {
+        id: "INV-1238",
         name: "cheese 100gm",
         description: 'mmmmm cheeselicious',
         weeklyQuantity: 100,
         usedQuantity: 20,
         price: 40,
         discount: 0.1,
-    },{
-        id: "INV-1236",
+    }, {
+        id: "INV-1239",
         name: "cheese 100gm",
         description: 'mmmmm cheeselicious',
         weeklyQuantity: 100,
         usedQuantity: 20,
         price: 40,
         discount: 0.1,
-    },{
-        id: "INV-1236",
+    }, {
+        id: "INV-1240",
         name: "cheese 100gm",
         description: 'mmmmm cheeselicious',
         weeklyQuantity: 100,
         usedQuantity: 20,
         price: 40,
         discount: 0.1,
-    },{
-        id: "INV-1236",
+    }, {
+        id: "INV-1241",
         name: "cheese 100gm",
         description: 'mmmmm cheeselicious',
         weeklyQuantity: 100,
@@ -135,9 +137,19 @@ export default function InventoryTable() {
     const [selected, setSelected] = React.useState([]);
     const [openAddProduct, setOpenAddProduct] = React.useState(false);
     const [openEditProduct, setOpenEditProduct] = React.useState(false);
-    const [openEditRow, setOpenEditRow] = React.useState(null);
+    const [EditRow, setEditRow] = React.useState(null);
 
     const [user, setUser] = useRecoilState(userAtom);
+    // const [products, setProducts] = useRecoilState(productsAtom);
+
+    const handleEditRow = (row) => {
+        setEditRow(row)
+        setOpenEditProduct(true)
+    }
+
+    const handleRemove = (row) => {
+        console.log("remove", row)
+    }
 
     return (
         <React.Fragment>
@@ -177,7 +189,7 @@ export default function InventoryTable() {
                     <FormLabel>Search for product</FormLabel>
                     <Input
                         placeholder="Search"
-                        startDecorator={<SearchOutlinedIcon />}
+                        startDecorator={<SearchOutlinedIcon/>}
                         sx={{width: '100%'}}
                     />
                 </FormControl>
@@ -189,7 +201,7 @@ export default function InventoryTable() {
                         variant="solid"
                         size="sm"
                         placeholder="Search"
-                        startDecorator={<AddCircleOutlinedIcon />}
+                        startDecorator={<AddCircleOutlinedIcon/>}
                         sx={{height: '75%'}}
                         onClick={(e) => setOpenAddProduct(true)}
                     >
@@ -198,6 +210,7 @@ export default function InventoryTable() {
                 </FormControl>
             </Box>
             <AddProduct open={openAddProduct} setOpen={setOpenAddProduct}/>
+            <UpdateProduct open={openEditProduct} setOpen={setOpenEditProduct} row={EditRow}/>
             <Sheet
                 className="OrderTableContainer"
                 variant="outlined"
@@ -224,19 +237,19 @@ export default function InventoryTable() {
                 >
                     <thead style={{marginLeft: 50}}>
                     <tr>
-                            <th style={{width: 230, padding: 12, paddingLeft: 65}}>Product Name</th>
+                        <th style={{width: 230, padding: 12, paddingLeft: 65}}>Product Name</th>
 
-                            <th style={{width: 300, padding: 12}}>Description</th>
-                            <th style={{width: 100, padding: 12}}>Price</th>
+                        <th style={{width: 300, padding: 12}}>Description</th>
+                        <th style={{width: 100, padding: 12}}>Price</th>
 
-                            <th style={{width: 100, padding: 12}}>
-                                Discount
-                            </th>
+                        <th style={{width: 100, padding: 12}}>
+                            Discount
+                        </th>
 
-                            <th style={{width: 100, padding: 12}}>Quantity</th>
-                            <th style={{width: 100, padding: 12}}>Available</th>
-                            <th style={{width: 80, padding: 12,}}></th>
-                            <th style={{width: 80, padding: 12,}}></th>
+                        <th style={{width: 100, padding: 12}}>Quantity</th>
+                        <th style={{width: 100, padding: 12}}>Available</th>
+                        <th style={{width: 80, padding: 12,}}></th>
+                        <th style={{width: 80, padding: 12,}}></th>
 
                     </tr>
                     </thead>
@@ -246,9 +259,9 @@ export default function InventoryTable() {
                             <td style={{padding: 12}}>
                                 <Box sx={{display: "flex", gap: 2, alignItems: "center", paddingLeft: 7}}>
                                     <Typography fontSize={'md'}
-                                        fontWeight="lg"
-                                        level="body3"
-                                        textColor="text.primary"
+                                                fontWeight="lg"
+                                                level="body3"
+                                                textColor="text.primary"
                                     >
                                         {row.name}
                                     </Typography>
@@ -289,7 +302,7 @@ export default function InventoryTable() {
                                 <Button fontSize={'sm'} type="" color={'primary'}
                                         sx={{marginBottom: 1, marginRight: 1, width: 80}}
                                         startDecorator={<EditOutlinedIcon/>}
-                                // onClick={}
+                                        onClick={() => handleEditRow(row)}
                                 >
                                     Edit
                                 </Button>
@@ -299,8 +312,7 @@ export default function InventoryTable() {
                                 <Button fontSize={'sm'} type="" color={'danger'}
                                         sx={{marginBottom: 1, marginRight: 1, width: 90}}
                                         startDecorator={<RemoveOutlinedIcon/>}
-                                // onClick={}
-                                >
+                                        onClick={() => handleRemove(row)}>
                                     Remove
                                 </Button>
                             </td>
