@@ -392,6 +392,24 @@ const getCart = async (req, res) => {
   }
 };
 
+const getVendors = async (req, res) => {
+  try {
+    if (req.user.userType !== "Customer") {
+      return res.status(400).json({ error: "User is not a customer" });
+    }
+    const vendors = await Vendor.find().select(
+      "-createdAt -updatedAt -__v -products -subscriptions -password -account"
+    );
+    res.status(200).json({
+      success: "Vendors found",
+      vendors,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+};
+
 module.exports = {
   registerCustomer,
   loginCustomer,
@@ -404,4 +422,5 @@ module.exports = {
   removeSubscription,
   getSubscriptions,
   getCart,
+  getVendors,
 };

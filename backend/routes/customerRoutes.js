@@ -26,4 +26,6 @@ router.get("/getSubs", auth, customerController.getSubscriptions);
 
 router.get("/getCart", auth, customerController.getCart);
 
+router.get("/getVendors", auth, customerController.getVendors);
+
 module.exports = router;
