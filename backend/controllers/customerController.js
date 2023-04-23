@@ -50,6 +50,11 @@ const registerCustomer = async (req, res) => {
 
 const loginCustomer = async (req, res) => {
   try {
+    const d = new Date();
+    let diff = d.getTimezoneOffset();
+    console.log(diff);
+    console.log(d);
+    console.log(d.toTimeString());
     const customer = await Customer.findOne({
       emailID: req.body.emailID,
     }).select("-createdAt -updatedAt -__v");
@@ -277,6 +282,23 @@ const addSubscription = async (req, res) => {
       return res.status(400).json({ error: "Product not in cart" });
     }
 
+    const vendor = await Vendor.findById(product.vendor);
+
+    const date = new Date();
+    let time = date.toTimeString().substring(0, 5);
+    const openingTime = vendor.dairyFarm.openingHours;
+    const closingTime = vendor.dairyFarm.closingHours;
+    if (closingTime > openingTime) {
+        if (time < openingTime || time > closingTime) {
+            return res.status(400).json({ error: "Vendor's Farm is closed" });
+        }
+    }
+    else if (closingTime < openingTime) {
+        if (time < openingTime && time > closingTime) {
+            return res.status(400).json({ error: "Vendor's Farm is closed" });
+        }
+    }
+
     const subscription = new Subscription({
       product: req.body.product,
       customer: req.user.id,
@@ -286,7 +308,6 @@ const addSubscription = async (req, res) => {
     });
     await subscription.save();
 
-    const vendor = await Vendor.findById(product.vendor);
     vendor.subscriptions.push(subscription._id);
     await vendor.save();
 
@@ -322,6 +343,23 @@ const removeSubscription = async (req, res) => {
     }
 
     const product = await Product.findById(subscription.product);
+    const vendor = await Vendor.findById(product.vendor);
+
+    const date = new Date();
+    let time = date.toTimeString().substring(0, 5);
+    const openingTime = vendor.dairyFarm.openingHours;
+    const closingTime = vendor.dairyFarm.closingHours;
+    if (closingTime > openingTime) {
+      if (time < openingTime || time > closingTime) {
+        return res.status(400).json({ error: "Vendor's Farm is closed" });
+      }
+    }
+    else if (closingTime < openingTime) {
+      if (time < openingTime && time > closingTime) {
+        return res.status(400).json({ error: "Vendor's Farm is closed" });
+      }
+    }
+
     product.usedQuantity -=
       subscription.daily_quantity * subscription.days.length;
     await product.save();
@@ -331,7 +369,6 @@ const removeSubscription = async (req, res) => {
     );
     await customer.save();
 
-    const vendor = await Vendor.findById(product.vendor);
     vendor.subscriptions = vendor.subscriptions.filter(
       (item) => item._id.toString() !== req.body.subscription
     );
