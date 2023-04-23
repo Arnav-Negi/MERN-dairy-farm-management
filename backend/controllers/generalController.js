@@ -13,12 +13,16 @@ const getUserType = async (req, res) => {
 
 const getProducts = async (req, res) => {
   try {
-    let vendor;
+    let vendorID;
     if (req.user.userType === "Vendor") {
-      vendor = await Vendor.findById(req.user.id).populate("products");
+      vendorID = req.user.id;
     } else {
-      vendor = await Vendor.findById(req.body.vendor).populate("products");
+      vendorID = req.body.vendor;
     }
+    const vendor = await Vendor.findById(vendorID).populate(
+      "products",
+      "-__v -createdAt -updatedAt -vendor -subscriptions"
+    );
     if (!vendor) {
       return res.status(400).json({ error: "Vendor not found" });
     }
