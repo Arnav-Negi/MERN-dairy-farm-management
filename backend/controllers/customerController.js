@@ -136,6 +136,14 @@ const addToCart = async (req, res) => {
             return res.status(400).json({error: "Product not found"});
         }
 
+        const quantity = req.body.daily_quantity * req.body.days.length;
+        if (quantity > product.weekly_quantity - product.usedQuantity) {
+            return res.status(400).json({error: "Not enough quantity available"});
+        }
+
+        product.usedQuantity += quantity;
+        await product.save();
+
         const cartItem = customer.cart.find(item => item.product.toString() === req.body.product);
         if (cartItem) {
             cartItem.daily_quantity = req.body.daily_quantity;
@@ -174,6 +182,10 @@ const removeFromCart = async (req, res) => {
             return res.status(400).json({error: "Product not in cart"});
         }
 
+        const quantity = cartItem.daily_quantity * cartItem.days.length;
+        product.usedQuantity -= quantity;
+        await product.save();
+
         customer.cart = customer.cart.filter(item => item.product.toString() !== req.body.product);
         await customer.save();
         res.status(200).json("Product removed from cart");
@@ -203,6 +215,19 @@ const updateCart = async (req, res) => {
         if (!cartItem) {
             return res.status(400).json({error: "Product not in cart"});
         }
+
+        const oldQuantity = cartItem.daily_quantity * cartItem.days.length;
+        console.log(oldQuantity);
+        const newQuantity = req.body.daily_quantity * req.body.days.length;
+        console.log(newQuantity);
+        console.log(product.weeklyQuantity);
+        console.log(product.usedQuantity);
+        if (newQuantity > product.weeklyQuantity - product.usedQuantity + oldQuantity) {
+            return res.status(400).json({error: "Not enough quantity available"});
+        }
+        product.usedQuantity += newQuantity - oldQuantity;
+        console.log(product.usedQuantity);
+        await product.save();
 
         cartItem.daily_quantity = req.body.daily_quantity;
         cartItem.days = req.body.days;
@@ -270,6 +295,10 @@ const removeSubscription = async (req, res) => {
         if (!subscription) {
             return res.status(400).json({error: "Subscription not found"});
         }
+
+        const product = await Product.findById(subscription.product);
+        product.usedQuantity -= subscription.daily_quantity * subscription.days.length;
+        await product.save();
 
         customer.subscriptions = customer.subscriptions.filter(item => item._id.toString() !== req.body.subscription);
         await customer.save();

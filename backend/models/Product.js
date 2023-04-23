@@ -22,8 +22,9 @@ const ProductSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    availableQuantity: {
+    usedQuantity: {
         type: Number,
+        default: 0,
     },
     subscriptions: {
         type: [mongoose.Schema.Types.ObjectId],
