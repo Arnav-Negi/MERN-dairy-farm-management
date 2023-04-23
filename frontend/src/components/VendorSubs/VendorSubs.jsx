@@ -49,7 +49,7 @@ export default function VendorSubs() {
                     />
                 </Box>
                 <Typography level="h1" fontSize="xl4" color={'primary'}>
-                    Inventory of {user.dairyFarm.name}
+                    Subscriptions for {user.dairyFarm.name}
                 </Typography>
                 <VendorSubscriptionsTable/>
                 <Box sx={{minHeight: '80px'}}></Box>

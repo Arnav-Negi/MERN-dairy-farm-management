@@ -105,11 +105,20 @@ export default function VendorSubscriptionsTable() {
                 }}
             >
                 <FormControl sx={{flex: 1}} size="sm">
-                    <FormLabel>Search for product</FormLabel>
+                    <FormLabel>Search product</FormLabel>
                     <Input
                         placeholder="Search"
                         startDecorator={<SearchOutlinedIcon/>}
-                        sx={{width: '70%'}}
+                        sx={{width: '100%'}}
+                    />
+                </FormControl>
+
+                <FormControl sx={{flex: 1}} size="sm">
+                    <FormLabel>Search customer</FormLabel>
+                    <Input
+                        placeholder="Search"
+                        startDecorator={<SearchOutlinedIcon/>}
+                        sx={{width: '100%'}}
                     />
                 </FormControl>
 
