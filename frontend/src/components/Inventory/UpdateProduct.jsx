@@ -13,6 +13,7 @@ import {Textarea} from "@mui/joy";
 import {useRecoilState} from "recoil";
 import {userAtom} from "../../atoms/user.jsx";
 import {productsAtom} from "../../atoms/products.jsx";
+import axios from "axios";
 
 export default function UpdateProduct(props) {
     const [user, setUser] = useRecoilState(userAtom);
@@ -41,7 +42,28 @@ export default function UpdateProduct(props) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        setOpen(false);
+        async function updateProduct() {
+            const response = await
+                axios.patch('http://localhost:5000/api/vendor/updateProduct', {
+                    id: formData._id,
+                    ...formData});
+
+            const newProductsResponse = await
+                axios.post('http://localhost:5000/api/general/getProducts', {});
+
+            setProducts(newProductsResponse.data.products);
+        }
+
+        updateProduct()
+            .then(() => {
+                console.log("Product updated successfully");
+                setOpen(false);
+            })
+            .catch((err) => {
+                console.log(err);
+                alert(err);
+                setOpen(false);
+            });
     }
 
     const getInput = (key) => {
@@ -65,7 +87,7 @@ export default function UpdateProduct(props) {
                     variant={"outlined"}
                     color={"text.primary"}
                     onChange={(e) =>
-                        setFormData({...updateField(formData, key, e.target.value)})}/>
+                        setFormData({...updateField({...formData}, key, e.target.value)})}/>
             )
         } else if (key === 'price' || key === 'discount' || key === 'weeklyQuantity') {
             return (<Input
@@ -81,7 +103,7 @@ export default function UpdateProduct(props) {
                     color={"text.primary"}
                     endDecorator={decroratorMap[key]}
                     onChange={(e) =>
-                        setFormData({...updateField(formData, key, e.target.value)})}/>
+                        setFormData({...updateField({...formData}, key, e.target.value)})}/>
             )
         } else {
             return (<Input
@@ -95,7 +117,7 @@ export default function UpdateProduct(props) {
                     variant={"outlined"}
                     color={"text.primary"}
                     onChange={(e) =>
-                        setFormData({...updateField(formData, key, e.target.value)})}/>
+                        setFormData({...updateField({...formData}, key, e.target.value)})}/>
             )
         }
     }

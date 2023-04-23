@@ -13,9 +13,9 @@ import {Textarea} from "@mui/joy";
 import {useRecoilState} from "recoil";
 import {userAtom} from "../../atoms/user.jsx";
 import {productsAtom} from "../../atoms/products.jsx";
+import axios from "axios";
 
 export default function AddProduct(props) {
-    const [user, setUser] = useRecoilState(userAtom);
     const [products, setProducts] = useRecoilState(productsAtom);
 
     const {open, setOpen} = props;
@@ -40,8 +40,27 @@ export default function AddProduct(props) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formData);
-        setOpen(false);
+
+        async function addProduct() {
+            const response = await
+                axios.post('http://localhost:5000/api/vendor/addProduct', formData);
+
+            const newProductsResponse = await
+                axios.post('http://localhost:5000/api/general/getProducts', {});
+
+            setProducts(newProductsResponse.data.products);
+        }
+
+        addProduct()
+            .then(() => {
+                console.log("Product added successfully");
+                setOpen(false);
+            })
+            .catch((err) => {
+                console.log(err);
+                alert(err);
+                setOpen(false);
+            });
     }
 
     const getInput = (key) => {

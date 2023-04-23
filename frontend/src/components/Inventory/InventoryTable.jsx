@@ -28,6 +28,8 @@ import {userAtom} from "../../atoms/user.jsx";
 import AddProduct from "./AddProduct.jsx";
 import UpdateProduct from "./UpdateProduct.jsx";
 import {productsAtom} from "../../atoms/products.jsx";
+import {useEffect, useState} from "react";
+import axios from "axios";
 
 const rows = [
     {
@@ -131,10 +133,24 @@ function stableSort(array, comparator) {
 
 export default function InventoryTable() {
 
-    const navigate = useNavigate()
+    const [rows, setRows] = useRecoilState(productsAtom);
+
+    useEffect(() => {
+        async function fetchProducts() {
+            const response = await
+                axios.post("http://localhost:5000/api/general/getProducts", {});
+            console.log(response.data)
+            setRows(response.data.products);
+            return "success";
+        }
+
+        fetchProducts()
+            .then(r => console.log(r))
+            .catch(e => console.log(e));
+    }, []);
+
 
     const [order, setOrder] = React.useState("desc");
-    const [selected, setSelected] = React.useState([]);
     const [openAddProduct, setOpenAddProduct] = React.useState(false);
     const [openEditProduct, setOpenEditProduct] = React.useState(false);
     const [EditRow, setEditRow] = React.useState(null);
@@ -147,8 +163,24 @@ export default function InventoryTable() {
         setOpenEditProduct(true)
     }
 
-    const handleRemove = (row) => {
-        console.log("remove", row)
+    const handleRemove = (e, row) => {
+        e.preventDefault();
+        async function removeProduct() {
+            console.log({id: row._id});
+            const response = await
+                axios.post("http://localhost:5000/api/vendor/removeProduct", {
+                    id: row._id
+                });
+            console.log(response.data)
+            return "success";
+        }
+
+        removeProduct()
+            .then(r => {
+                console.log(r);
+                setRows(rows.filter(r => r._id !== row._id));
+            })
+            .catch(e => console.log(e));
     }
 
     return (
@@ -254,7 +286,7 @@ export default function InventoryTable() {
                     </tr>
                     </thead>
                     <tbody>
-                    {stableSort(rows, getComparator(order, "id")).map(row => (
+                    {rows && stableSort(rows, getComparator(order, "id")).map(row => (
                         <tr key={row.id}>
                             <td style={{padding: 12}}>
                                 <Box sx={{display: "flex", gap: 2, alignItems: "center", paddingLeft: 7}}>
@@ -276,13 +308,13 @@ export default function InventoryTable() {
 
                             <td style={{padding: 12}}>
                                 <Typography fontSize={'md'} fontWeight="md">
-                                    {row.price}
+                                    {row.price.$numberDecimal} Rs.
                                 </Typography>
                             </td>
 
                             <td style={{padding: 12}}>
                                 <Typography fontSize={'md'} fontWeight="md">
-                                    {row.discount}
+                                    {row.discount.$numberDecimal} %
                                 </Typography>
                             </td>
 
@@ -312,7 +344,7 @@ export default function InventoryTable() {
                                 <Button fontSize={'sm'} type="" color={'danger'}
                                         sx={{marginBottom: 1, marginRight: 1, width: 90}}
                                         startDecorator={<RemoveOutlinedIcon/>}
-                                        onClick={() => handleRemove(row)}>
+                                        onClick={(e) => handleRemove(e, row)}>
                                     Remove
                                 </Button>
                             </td>

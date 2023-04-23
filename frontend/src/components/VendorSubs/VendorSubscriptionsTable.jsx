@@ -11,24 +11,8 @@ import {useNavigate} from "react-router-dom"
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import {useRecoilState} from "recoil";
 import {userAtom} from "../../atoms/user.jsx";
-
-const rows = [
-    {
-        id: "INV-1234",
-        product: {name: 'Milk 1L'},
-        customer: {
-            first_name: "John",
-            last_name: "Doe",
-        },
-        daily_quantity: 100,
-        startDate: Date.now(),
-        days: [
-            'Monday',
-            'Tuesday',
-            'Sunday'
-        ],
-    }
-]
+import {useEffect, useState} from "react";
+import axios from "axios";
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -66,8 +50,21 @@ export default function VendorSubscriptionsTable() {
 
     const [order, setOrder] = React.useState("desc");
 
-    const [user, setUser] = useRecoilState(userAtom);
-    // const [products, setProducts] = useRecoilState(productsAtom);
+    const [rows, setRows] = useState([]);
+
+    useEffect(() => {
+        async function fetchData() {
+            const response =
+                await axios.get('http://localhost:5000/api/vendor/getSubs');
+
+            setRows(response.data.subscriptions);
+            return "success"
+        }
+
+        fetchData()
+            .then(r => console.log(r))
+            .catch(e => console.log(e));
+    }, []);
 
 
     return (
@@ -164,7 +161,7 @@ export default function VendorSubscriptionsTable() {
                     </tr>
                     </thead>
                     <tbody>
-                    {stableSort(rows, getComparator(order, "id")).map((row, index) => (
+                    {rows && rows.map((row, index) => (
                         <tr key={row.id}>
                             <td style={{padding: 12}}>
                                 <Box sx={{display: "flex", gap: 2, alignItems: "center", paddingLeft: 7}}>

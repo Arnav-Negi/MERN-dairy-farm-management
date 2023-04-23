@@ -5,10 +5,12 @@ import {Typography} from "@mui/joy";
 import * as React from "react";
 import {userAtom} from "../../atoms/user.jsx";
 import VendorSubscriptionsTable from "./VendorSubscriptionsTable.jsx";
+import axios from "axios";
+import {useEffect, useState} from "react";
 
 export default function VendorSubs() {
     const [user, setUser] = useRecoilState(userAtom);
-    // const [inventory, setInventory] = useRecoilState(inventoryAtom);
+
 
     return (
         <Box sx={{display: 'flex', minHeight: '100dvh',}}>
