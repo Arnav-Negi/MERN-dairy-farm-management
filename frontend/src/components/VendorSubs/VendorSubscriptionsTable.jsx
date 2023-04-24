@@ -105,7 +105,7 @@ export default function VendorSubscriptionsTable() {
                 await axios.get('http://localhost:5000/api/vendor/getSubs');
 
             setRows(response.data.subscriptions);
-            console.log(response.data.subscriptions)
+            console.log(response.data.subscriptions);
             return "success"
         }
 
@@ -113,6 +113,11 @@ export default function VendorSubscriptionsTable() {
             .then(r => console.log(r))
             .catch(e => console.log(e));
     }, []);
+
+    useEffect(() => {
+        setDisplayList([...rows]);
+    }, [rows]);
+
 
 
     return (
