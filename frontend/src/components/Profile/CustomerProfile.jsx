@@ -22,7 +22,7 @@ const keyToLabel = {
     last_name: "Last Name",
     emailID: "Email",
     phoneNumber: "Contact",
-    "address": "Address"
+    address: "Address"
 }
 
 
