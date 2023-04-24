@@ -60,13 +60,13 @@ export default function UpdateProduct(props) {
             .then(() => {
                 console.log("Product updated successfully");
                 setOpen(false);
-                setLaoding(false);
+                setLoading(false);
             })
             .catch((err) => {
                 console.log(err);
                 alert(err);
                 setOpen(false);
-                setLaoding(false);
+                setLoading(false);
             });
     }
 
