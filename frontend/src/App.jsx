@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import {Routes, Route, Navigate, useNavigate} from "react-router-dom";
 import Auth from './components/Auth/Auth';
 import Verify from './Verify'
 import Choose from './components/Choice/Choose';
@@ -9,15 +9,15 @@ import ItemList from "./components/ItemList/ItemList";
 import VendorList from "./components/VendorList/OrdersListPage";
 import MySubs from "./components/MySubs/MySubsList";
 import Cart from "./components/Cart/Cart";
-import { useRecoilState } from "recoil";
-import { userAtom } from "./atoms/user";
+import {useRecoilState} from "recoil";
+import {userAtom} from "./atoms/user";
 import React, {Fragment, useEffect} from "react";
-import { setToken } from "./utils/checkToken";
+import {setToken} from "./utils/checkToken";
 import AppInfo from "./components/AppInfo/NewAppInfo.jsx";
 import SidebarCustomer from "./components/Navbar/SidebarCustomer.jsx";
 import SidebarVendor from "./components/Navbar/SidebarVendor.tsx";
-import { Box } from "@mui/joy";
-import { CssVarsProvider } from '@mui/joy/styles';
+import {Box} from "@mui/joy";
+import {CssVarsProvider} from '@mui/joy/styles';
 import GlobalStyles from '@mui/joy/GlobalStyles';
 import CssBaseline from '@mui/joy/CssBaseline';
 import customTheme from './assets/theme/cartTheme'
@@ -26,29 +26,59 @@ import VendorSubs from "./components/VendorSubs/VendorSubs.jsx";
 
 
 export default function App() {
+    const [user, setUser] = useRecoilState(userAtom);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        async function fetchData() {
+            if (!setToken()) {
+                try {
+                    const response = await axios.get('http://localhost:5000/api/general');
+                    console.log("general",  response.data);
+
+                    const type = response.data.userType;
+
+                    if (type === 'Vendor') {
+                        navigate('/vendor/');
+                    }
+                    else if (type === 'Customer') {
+                        navigate('/customer/');
+                    }
+                } catch {
+                    return "get error, login again";
+                }
+            }
+            else
+            return "no token found";
+        }
+
+        fetchData().then(r => console.log(r)).catch(e => console.log(e));
+    }, []);
+
+
     return (
-        <CssVarsProvider disableTransitionOnChange theme={customTheme}>
-            <GlobalStyles
-                styles={{
-                    '[data-feather], .feather': {
-                        color: 'var(--Icon-color)',
-                        margin: 'var(--Icon-margin)',
-                        fontSize: 'var(--Icon-fontSize, 20px)',
-                        width: '1em',
-                        height: '1em',
-                    },
-                }}
-            />
-            <CssBaseline />
-            <Routes>
-                <Route path="/" element={<Choose />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/:type/:user_id/verify/:token" element={<Verify />} />
-                <Route path="/*" element={<Navigate to='/' />} />
-                <Route path={'/vendor/*'} element={<VendorScreen />} />
-                <Route path={'/customer/*'} element={<CustomerScreen />} />
-            </Routes>
-        </CssVarsProvider>
+            <CssVarsProvider disableTransitionOnChange theme={customTheme}>
+                <GlobalStyles
+                    styles={{
+                        '[data-feather], .feather': {
+                            color: 'var(--Icon-color)',
+                            margin: 'var(--Icon-margin)',
+                            fontSize: 'var(--Icon-fontSize, 20px)',
+                            width: '1em',
+                            height: '1em',
+                        },
+                    }}
+                />
+                <CssBaseline/>
+                <Routes>
+                    <Route path="/" element={<Choose/>}/>
+                    <Route path="/auth" element={<Auth/>}/>
+                    <Route path="/:type/:user_id/verify/:token" element={<Verify/>}/>
+                    <Route path="/*" element={<Navigate to='/'/>}/>
+                    <Route path={'/vendor/*'} element={<VendorScreen/>}/>
+                    <Route path={'/customer/*'} element={<CustomerScreen/>}/>
+                </Routes>
+            </CssVarsProvider>
     )
 }
 
@@ -63,9 +93,8 @@ function VendorScreen() {
             try {
                 const response = await axios.get('http://localhost:5000/api/vendor');
                 console.log(response.data);
-                setUser({ ...user, ...response.data.vendor });
-            }
-            catch {
+                setUser(response.data.vendor);
+            } catch {
                 navigate('/');
             }
         }
@@ -76,8 +105,8 @@ function VendorScreen() {
     if (!user) return (<div>loading</div>)
     else
         return (
-                <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
-                <SidebarVendor />
+            <Box sx={{display: 'flex', minHeight: '100dvh'}}>
+                <SidebarVendor/>
                 <Box
                     component="main"
                     className="MainContent"
@@ -101,10 +130,11 @@ function VendorScreen() {
                     })}
                 >
                     <Routes>
-                        <Route path={'profile'} element={<VendorProfile />} />
-                        <Route path={'app-info'} element={<AppInfo />} />
-                        <Route path={'inventory'} element={<Inventory />} />
-                        <Route path={'subscriptions'} element={<VendorSubs />} />
+                        <Route path={'profile'} element={<VendorProfile/>}/>
+                        <Route path={'app-info'} element={<AppInfo/>}/>
+                        <Route path={'inventory'} element={<Inventory/>}/>
+                        <Route path={'subscriptions'} element={<VendorSubs/>}/>
+                        <Route path={'*'} element={<VendorSubs/>}/>
                     </Routes>
                 </Box>
             </Box>
@@ -123,9 +153,8 @@ function CustomerScreen() {
             try {
                 const response = await axios.get('http://localhost:5000/api/customer');
                 console.log(response.data.customer)
-                setUser({ ...user, ...response.data.customer });
-            }
-            catch {
+                setUser({...user, ...response.data.customer});
+            } catch {
                 navigate('/');
             }
         }
@@ -136,8 +165,8 @@ function CustomerScreen() {
     if (!user) return (<div>loading</div>)
     else
         return (
-            <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
-                <SidebarCustomer />
+            <Box sx={{display: 'flex', minHeight: '100dvh'}}>
+                <SidebarCustomer/>
                 <Box
                     component="main"
                     className="MainContent"
@@ -161,12 +190,13 @@ function CustomerScreen() {
                     })}
                 >
                     <Routes>
-                        <Route path={'profile'} element={<CustomerProfile/>} />
-                        <Route path={'app-info'} element={<AppInfo />} />
-                        <Route path={'vendors-list'} element={<VendorList />} />
-                        <Route path={'vendors-list/:id'} element={<ItemList />} />
-                        <Route path={'shopping-cart'} element={<Cart />} />
-                        <Route path={'my-subscriptions'} element={<MySubs />} />
+                        <Route path={'profile'} element={<CustomerProfile/>}/>
+                        <Route path={'app-info'} element={<AppInfo/>}/>
+                        <Route path={'vendors-list'} element={<VendorList/>}/>
+                        <Route path={'vendors-list/:id'} element={<ItemList/>}/>
+                        <Route path={'shopping-cart'} element={<Cart/>}/>
+                        <Route path={'my-subscriptions'} element={<MySubs/>}/>
+                        <Route path={'*'} element={<VendorList/>}/>
                     </Routes>
                 </Box>
             </Box>

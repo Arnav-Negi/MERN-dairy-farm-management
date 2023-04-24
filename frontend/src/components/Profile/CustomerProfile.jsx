@@ -17,6 +17,7 @@ import Input from "@mui/joy/Input";
 import FormLabel from "@mui/joy/FormLabel";
 
 const keyToLabel = {
+    _id: 'ID',
     first_name: "First Name",
     last_name: "Last Name",
     emailID: "Email",
@@ -84,7 +85,7 @@ export default function CustomerProfile() {
                     gap: 1,
                 })}
             >
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Box sx={{display: 'flex', alignItems: 'center'}}>
                     <ColorSchemeToggle
                         sx={{ml: 'auto', display: {xs: 'none', md: 'inline-flex'},}}
                     />
@@ -113,7 +114,6 @@ export default function CustomerProfile() {
                         <Table borderAxis="none">
                             <tbody>
                             {Object.keys(user).map(key => {
-                                if (key !== '_id')
                                     return (
                                         <tr
                                             key={key}
