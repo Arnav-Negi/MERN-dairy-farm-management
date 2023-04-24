@@ -8,13 +8,9 @@ import Breadcrumbs from '@mui/joy/Breadcrumbs';
 import Link from '@mui/joy/Link';
 import Typography from '@mui/joy/Typography';
 
-import useScript from '../../utils/useScript';
-// import FirstSidebar from './components/FirstSidebar';
-// import SecondSidebar from './components/SecondSidebar';
+import useScript from './useScript';
 import OrderTable from './OrderTable';
-// import Header from './components/Header';
-import ColorSchemeToggle from '../../utils/ColorSchemeToggle';
-// import customTheme from './theme';
+import ColorSchemeToggle from './ColorSchemeToggle';
 
 const useEnhancedEffect =
   typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
@@ -32,6 +28,19 @@ export default function JoyOrderDashboardTemplate() {
   }, [status]);
 
   return (
+    <CssVarsProvider disableTransitionOnChange >
+      <GlobalStyles
+        styles={{
+          '[data-feather], .feather': {
+            color: 'var(--Icon-color)',
+            margin: 'var(--Icon-margin)',
+            fontSize: 'var(--Icon-fontSize, 20px)',
+            width: '1em',
+            height: '1em',
+          },
+        }}
+      />
+      <CssBaseline />
       <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
         <Box
           component="main"
@@ -59,7 +68,7 @@ export default function JoyOrderDashboardTemplate() {
             gap: 1,
           })}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Breadcrumbs
               size="sm"
               aria-label="breadcrumbs"
@@ -85,7 +94,7 @@ export default function JoyOrderDashboardTemplate() {
                 underline="hover"
                 color="neutral"
                 fontSize="inherit"
-                href="/customer/my-subscriptions"
+                href="#some-link"
               >
                 Dashboard
               </Link>
@@ -96,7 +105,7 @@ export default function JoyOrderDashboardTemplate() {
             <ColorSchemeToggle
               sx={{ ml: 'auto', display: { xs: 'none', md: 'inline-flex' } }}
             />
-          </Box>
+          </Box> */}
           <Box
             sx={{
               display: 'flex',
@@ -114,10 +123,26 @@ export default function JoyOrderDashboardTemplate() {
               Vendors List
             </Typography>
             <Box sx={{ flex: 999 }} />
-            <Box sx={{ display: 'flex', gap: 1, '& > *': { flexGrow: 1 } }} />
+            <Box sx={{ display: 'flex', gap: 1, '& > *': { flexGrow: 1 } }}>
+              {/* <Button
+                variant="outlined"
+                color="neutral"
+                startDecorator={<i data-feather="download-cloud" />}
+              >
+                Download PDF
+              </Button>
+              <Button
+                variant="outlined"
+                color="neutral"
+                startDecorator={<i data-feather="table" />}
+              >
+                Download CSV
+              </Button> */}
+            </Box>
           </Box>
           <OrderTable />
         </Box>
       </Box>
+    </CssVarsProvider>
   );
 }

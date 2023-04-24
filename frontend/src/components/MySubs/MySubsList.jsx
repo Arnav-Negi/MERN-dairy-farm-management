@@ -7,11 +7,15 @@ import ColorSchemeToggle from '../../utils/ColorSchemeToggle';
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
 import Link from '@mui/joy/Link';
 import useScript from '../../utils/useScript';
+import axios from 'axios';
 
 const useEnhancedEffect =
   typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
 
 export default function MySubsList() {
+
+    const [isLoading, setIsLoading] = React.useState(true)
+    const [data, setData] = React.useState([]);
 
     const status = useScript(`https://unpkg.com/feather-icons`);
 
@@ -24,6 +28,41 @@ export default function MySubsList() {
       }
     }, [status]);
 
+    React.useEffect(() => {
+        const getData = async () => {
+            try {
+                const url = "http://localhost:5000/api/customer/getSubs"
+                const res = await axios.get(url)
+                if (res.status === 200) {
+                    setData(res.data.subscriptions)
+                    console.log(res.data.subscriptions)
+                    setIsLoading(false)
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        } 
+        getData()
+    }, [])
+
+
+    const handleDelete = async (id) => {
+        try {
+            const url = "http://localhost:5000/api/customer/removeSub"
+            const details = {subscription: id}
+            const res = await axios.post(url, details)
+            if (res.status === 200) {
+                setData(data.filter(item => item._id !== id))
+                alert("Subscription deleted successfully")
+            }
+        } catch (error) {
+            alert(error.response.data.error)
+        }
+    }
+
+    if (isLoading) {
+        return (<div>Loading..</div>)
+    }
     return (
         <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
             <Box
@@ -103,21 +142,13 @@ export default function MySubsList() {
                 </Box>
                 <Box>
                     <Grid container sx={{ height: "100%" }} spacing={2}>
-                        <Grid item sx={{ mb: 2 }} xs={12} sm={6} md={4} lg={4}>
-                            <Item />
-                        </Grid>
-                        <Grid item sx={{ mb: 2 }} xs={12} sm={6} md={4} lg={4}>
-                            <Item />
-                        </Grid>
-                        <Grid item sx={{ mb: 2 }} xs={12} sm={6} md={4} lg={4}>
-                            <Item />
-                        </Grid>
-                        <Grid item sx={{ mb: 2 }} xs={12} sm={6} md={4} lg={4}>
-                            <Item />
-                        </Grid>
-                        <Grid item sx={{ mb: 2 }} xs={12} sm={6} md={4} lg={4}>
-                            <Item />
-                        </Grid>
+                        {data.map((item) => {
+                            return (
+                                <Grid item sx={{ mb: 2 }} xs={12} sm={6} md={4} lg={4}>
+                                    <Item item={item} delete={handleDelete}/>
+                                </Grid>
+                            )
+                        })}
                     </Grid>
                 </Box>
             </Box>

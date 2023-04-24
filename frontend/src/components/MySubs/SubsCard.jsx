@@ -11,8 +11,11 @@ import ListItemContent from '@mui/joy/ListItemContent';
 import Sheet from '@mui/joy/Sheet';
 import KeyboardArrowRightRoundedIcon from '@mui/icons-material/KeyboardArrowRightRounded';
 import Avatar from '@mui/joy/Avatar';
+import IconButton from '@mui/joy/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 
-export default function MultipleInteractionCard() {
+export default function MultipleInteractionCard(props) {
+    console.log(props)
     return (
         <Sheet
             component="li"
@@ -25,86 +28,55 @@ export default function MultipleInteractionCard() {
         >
             <Box sx={{ display: 'flex', gap: 2 }}>
                 <Avatar
-                    src="https://i.pravatar.cc/40?img=6"
-                    srcSet="https://i.pravatar.cc/80?img=6 2x"
+                    src="https://as1.ftcdn.net/v2/jpg/01/77/73/20/1000_F_177732079_wudmALix7bzx6N7lMiuJE9ArqqOnnHWa.jpg?auto=format&fit=crop&w=318"
+                    srcSet="https://as1.ftcdn.net/v2/jpg/01/77/73/20/1000_F_177732079_wudmALix7bzx6N7lMiuJE9ArqqOnnHWa.jpg?auto=format&fit=crop&w=318&dpr=2 2x"
                     sx={{ borderRadius: 'sm' }}
                 />
-                <Box>
-                    <Typography>Andrew Smith</Typography>
-                    <Typography level="body3">UI Designer</Typography>
-                </Box>
+                <Typography level="h4">{props.item.product.name}</Typography>
+                <IconButton variant="outlined" color="danger" size="sm"
+                    sx={{ marginLeft: 'auto' }}
+                    onClick={() => { props.delete(props.item._id)}}
+                >
+                    <DeleteIcon />
+                </IconButton>
             </Box>
             <Divider component="div" sx={{ my: 2 }} />
             <List sx={{ '--ListItemDecorator-size': '48px' }}>
                 <ListItem sx={{ alignItems: 'flex-start' }}>
-                    <ListItemDecorator
-                        sx={{
-                            '&:before': {
-                                content: '""',
-                                position: 'absolute',
-                                height: '100%',
-                                width: '2px',
-                                bgcolor: 'divider',
-                                left: 'calc(var(--ListItem-paddingLeft) + 15px)',
-                                top: '50%',
-                            },
-                        }}
-                    >
-                        <Avatar
-                            size="sm"
-                            src="https://www.vectorlogo.zone/logos/dribbble/dribbble-icon.svg"
-                        />
-                    </ListItemDecorator>
                     <ListItemContent>
-                        <Typography fontSize="sm">Senior designer</Typography>
-                        <Typography level="body3">Dribbble</Typography>
+                        <Typography level="body2">Quantity - {props.item.daily_quantity}</Typography>
+                        {/* <Typography level="body3">Dribbble</Typography> */}
                     </ListItemContent>
-                    <Typography level="body2">2015-now</Typography>
-                </ListItem>
-                <ListItem sx={{ alignItems: 'flex-start' }}>
-                    <ListItemDecorator>
-                        <Avatar
-                            size="sm"
-                            src="https://www.vectorlogo.zone/logos/pinterest/pinterest-icon.svg"
-                            sx={{ backgroundColor: 'background.body' }}
-                        />
-                    </ListItemDecorator>
-                    <ListItemContent>
-                        <Typography fontSize="sm">Designer</Typography>
-                        <Typography level="body3">Pinterest</Typography>
-                    </ListItemContent>
-                    <Typography level="body2">2012-2015</Typography>
+                    <Typography level="body2">Next Delivery day - {props.item.days[0]}</Typography>
                 </ListItem>
             </List>
-            <Button
+            {/* <Button
                 size="sm"
                 variant="plain"
                 endDecorator={<KeyboardArrowRightRoundedIcon fontSize="small" />}
                 sx={{ px: 1, mt: 1 }}
             >
                 Expand
-            </Button>
+            </Button> */}
             <Divider component="div" sx={{ my: 2 }} />
-            <Typography fontSize="sm">Skills tags:</Typography>
+            <Typography fontSize="sm">Days:</Typography>
 
             <Box sx={{ mt: 1.5, display: 'flex', gap: 1 }}>
-                <Chip
-                    variant="outlined"
-                    color="neutral"
-                    size="sm"
-                    sx={{ borderRadius: 'sm' }}
-                >
-                    UI design
-                </Chip>
-                <Chip
-                    variant="outlined"
-                    color="neutral"
-                    size="sm"
-                    sx={{ borderRadius: 'sm' }}
-                >
-                    Illustration
-                </Chip>
+                {props.item.days.map((day) => {
+                    return (
+                        <Chip
+                            variant="soft"
+                            color="neutral"
+                            size="sm"
+                            sx={{ borderRadius: 'sm' }}
+                        >
+                            {day}
+                        </Chip>
+                    );
+                })}
+
             </Box>
+
         </Sheet>
     );
 }
