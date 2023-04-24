@@ -6,7 +6,7 @@ import Choose from './components/Choice/Choose';
 import VendorProfile from "./components/Profile/VendorProfile.jsx";
 import CustomerProfile from "./components/Profile/CustomerProfile.jsx";
 import ItemList from "./components/ItemList/ItemList";
-import VendorList from "./components/VendorList/OrdersListPage";
+import VendorList from "./components/Vendorlist/listpage";
 import MySubs from "./components/MySubs/MySubsList";
 import Cart from "./components/Cart/Cart";
 import {useRecoilState} from "recoil";
@@ -28,32 +28,6 @@ import VendorSubs from "./components/VendorSubs/VendorSubs.jsx";
 export default function App() {
     const [user, setUser] = useRecoilState(userAtom);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        async function fetchData() {
-            if (!setToken()) {
-                try {
-                    const response = await axios.get('http://localhost:5000/api/general');
-                    console.log("general",  response.data);
-
-                    const type = response.data.userType;
-
-                    if (type === 'Vendor') {
-                        navigate('/vendor/');
-                    }
-                    else if (type === 'Customer') {
-                        navigate('/customer/');
-                    }
-                } catch {
-                    return "get error, login again";
-                }
-            }
-            else
-            return "no token found";
-        }
-
-        fetchData().then(r => console.log(r)).catch(e => console.log(e));
-    }, []);
 
 
     return (
@@ -146,6 +120,7 @@ function CustomerScreen() {
 
     const [user, setUser] = useRecoilState(userAtom);
     const navigate = useNavigate();
+
     useEffect(() => {
         async function fetchData() {
             if (setToken())
@@ -161,6 +136,7 @@ function CustomerScreen() {
 
         fetchData();
     }, [])
+    
 
     if (!user) return (<div>loading</div>)
     else
@@ -196,7 +172,7 @@ function CustomerScreen() {
                         <Route path={'vendors-list/:id'} element={<ItemList/>}/>
                         <Route path={'shopping-cart'} element={<Cart/>}/>
                         <Route path={'my-subscriptions'} element={<MySubs/>}/>
-                        <Route path={'*'} element={<VendorList/>}/>
+                        {/* <Route path={'*'} element={<VendorList/>}/> */}
                     </Routes>
                 </Box>
             </Box>

@@ -60,6 +60,11 @@ const CustomerSchema = new mongoose.Schema(
             type: Date,
             required: true,
           },
+          checkStat: {
+            type: Boolean,
+            required: true,
+            default: false,
+          }
         },
       ],
     },

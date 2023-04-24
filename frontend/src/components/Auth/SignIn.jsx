@@ -47,7 +47,7 @@ export default function SignIn() {
             if (res.status === 200) {
                 setUser(res.data.customer);
                 localStorage.setItem("token", res.data.token);
-                navigate('/customer/profile');
+                navigate('/customer/vendors-list');
             } else {
                 alert(res.status)
             }

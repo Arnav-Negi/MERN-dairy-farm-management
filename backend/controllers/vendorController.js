@@ -2,6 +2,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Vendor = require("../models/Vendor");
 const Product = require("../models/Product");
+const Subscription = require("../models/Subscription")
+const Customer = require("../models/Customer")
 require("dotenv").config();
 
 const registerVendor = async (req, res) => {
@@ -157,6 +159,14 @@ const removeProduct = async (req, res) => {
       { _id: req.user.id },
       { $pull: { products: req.body.id } }
     );
+    await Subscription.deleteMany({product: req.body.id});
+    await Customer.updateMany({}, {
+      $pull: {
+        cart: {
+          product: req.body.id
+        }
+      }
+    });
     await Product.findByIdAndDelete(req.body.id);
     res.status(200).json("Product removed");
   } catch (err) {
@@ -196,7 +206,7 @@ const getSubscriptions = async (req, res) => {
       path: "subscriptions",
       populate: [
         { path: "product", select: "name" },
-        { path: "customer", select: "first_name last_name" },
+        { path: "customer", select: "first_name last_name address" },
       ],
       select: "-createdAt -updatedAt -__v",
     });

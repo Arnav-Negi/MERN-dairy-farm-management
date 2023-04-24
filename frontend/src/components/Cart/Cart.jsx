@@ -1,4 +1,6 @@
 import * as React from 'react';
+import axios from 'axios';
+
 import { CssVarsProvider, useColorScheme } from '@mui/joy/styles';
 import CssBaseline from '@mui/joy/CssBaseline';
 import AspectRatio from '@mui/joy/AspectRatio';
@@ -22,6 +24,7 @@ import ListItemButton from '@mui/joy/ListItemButton';
 import ListItemContent from '@mui/joy/ListItemContent';
 import ListItemDecorator from '@mui/joy/ListItemDecorator/ListItemDecorator';
 import Chip from '@mui/joy/Chip/Chip';
+import {useNavigate} from 'react-router-dom';
 
 // Icons import
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
@@ -30,6 +33,9 @@ import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
 import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded';
 import FindInPageRoundedIcon from '@mui/icons-material/FindInPageRounded';
 import MenuIcon from '@mui/icons-material/Menu';
+import FolderOpenIcon from '@mui/icons-material/FolderOpen';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import CloseIcon from '@mui/icons-material/Close';
 import BookRoundedIcon from '@mui/icons-material/BookRounded';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
@@ -37,41 +43,242 @@ import KeyboardArrowRightRoundedIcon from '@mui/icons-material/KeyboardArrowRigh
 
 // custom
 import filesTheme from '../../assets/theme/cartTheme';
-import Menu from '../../utils/Menu';
-import Layout from '../../utils/Layout';
-import Navigation from '../../utils/Navigation';
+import Menu from '../Menu';
+import Layout from '../Layout';
+import Navigation from '../Navigation';
 import Cards from './Card';
+import ColorSchemeToggle from '../../utils/ColorSchemeToggle';
 
-function ColorSchemeToggle() {
-  const { mode, setMode } = useColorScheme();
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
-  if (!mounted) {
-    return <IconButton size="sm" variant="outlined" color="primary" />;
-  }
-  return (
-    <IconButton
-      id="toggle-mode"
-      size="sm"
-      variant="outlined"
-      color="primary"
-      onClick={() => {
-        if (mode === 'light') {
-          setMode('dark');
-        } else {
-          setMode('light');
-        }
-      }}
-    >
-      {mode === 'light' ? <DarkModeRoundedIcon /> : <LightModeRoundedIcon />}
-    </IconButton>
-  );
-}
+// function ColorSchemeToggle() {
+//   const { mode, setMode } = useColorScheme();
+//   const [mounted, setMounted] = React.useState(false);
+
+
+//   React.useEffect(() => {
+//     setMounted(true);
+//   }, []);
+//   if (!mounted) {
+//     return <IconButton size="sm" variant="outlined" color="primary" />;
+//   }
+//   return (
+//     <IconButton
+//       id="toggle-mode"
+//       size="sm"
+//       variant="outlined"
+//       color="primary"
+//       onClick={() => {
+//         if (mode === 'light') {
+//           setMode('dark');
+//         } else {
+//           setMode('light');
+//         }
+//       }}
+//     >
+//       {mode === 'light' ? <DarkModeRoundedIcon /> : <LightModeRoundedIcon />}
+//     </IconButton>
+//   );
+//}
 
 export default function FilesExample() {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [totalPrice, setTotalPrice] = React.useState(0);
+  const [num, setNo_of_items] = React.useState(0);
+  const [cartdata, setCartData] = React.useState([]);
+  const navigate = useNavigate();
+
+  async function handleCheck(product) {
+    console.log(product)
+    let a = product.product.price.$numberDecimal
+    let b = product.product.discount.$numberDecimal
+    let cost = a - (a * b / 100)
+    let totalCost = cost * product.daily_quantity * product.days.length
+    try {
+      const url = "http://localhost:5000/api/customer/updateCart"
+
+      const details = {
+        product: product.product._id,
+        days: product.days,
+        daily_quantity: product.daily_quantity,
+        startDate: product.startDate,
+        checkStat: !product.checkStat
+      }
+
+      const res = await axios.post(url, details)
+
+      if (res.status === 200) {
+        // setItems(res.data.products)
+        // setIsLoading(false)
+      } else {
+        alert(res.status)
+      }
+    } catch (error) {
+      console.log(error)
+      alert(error.response.data.error);
+      window.location.reload();
+    }
+    setCartData((prev) => {
+      return prev.map((item) => {
+        if (item.product._id === product.product._id) {
+          return {
+            ...item,
+            checkStat: !item.checkStat
+          }
+        }
+        return item
+      })
+    })
+    setTotalPrice((prev) => {
+      if (product.checkStat === true) {
+        return prev - totalCost
+      }
+      else {
+        return prev + totalCost
+      }
+    })
+    setNo_of_items((prev) => {
+      if (product.checkStat === true) {
+        return prev - product.daily_quantity
+      }
+      else {
+        return prev + product.daily_quantity
+      }
+    })
+  }
+
+  const handleCount = (count, id) => {
+    setCartData((prev) => {
+      return prev.map((item) => {
+        if (item.product._id === id) {
+          setTotalPrice((prev) => {
+            let a = item.product.price.$numberDecimal
+            let b = item.product.discount.$numberDecimal
+            let cost = a - (a * b / 100)
+            let totalCost = cost * count * item.days.length
+            if (item.checkStat === true) {
+              return prev - cost * item.daily_quantity * item.days.length + totalCost
+            }
+          else return prev})
+            if (item.checkStat === true) {
+              setNo_of_items((prev) => {
+                return prev - item.daily_quantity + count
+              })
+            }
+          return {
+            ...item,
+            daily_quantity: count
+          }
+        }
+        return item
+      })
+    })
+  }
+
+  const handleDays = (days, id) => {
+    setCartData((prev) => {
+      return prev.map((item) => {
+        if (item.product._id === id) {
+          setTotalPrice((prev) => {
+            let a = item.product.price.$numberDecimal
+            let b = item.product.discount.$numberDecimal
+            let cost = a - (a * b / 100)
+            let totalCost = cost * item.daily_quantity * days.length
+            if (item.checkStat === true) {
+              return prev - cost * item.daily_quantity * item.days.length + totalCost
+            }
+          else return prev})
+          return {
+            ...item,
+            days: days
+          }
+        }
+        return item
+      })
+    })
+  }
+
+  const handleDelete = (id) => {
+    setCartData((prev) => {
+      return prev.filter((item) => {
+        if (item.product._id === id) {
+          setTotalPrice((prev) => {
+            let a = item.product.price.$numberDecimal
+            let b = item.product.discount.$numberDecimal
+            let cost = a - (a * b / 100)
+            let totalCost = cost * item.daily_quantity * item.days.length
+            if (item.checkStat === true) {
+              return prev - totalCost
+            }
+          else return prev})
+          if (item.checkStat === true) {
+            setNo_of_items((prev) => {
+              return prev - item.daily_quantity
+            })
+          }
+        }
+        return item.product._id !== id
+      })
+    })
+  }
+
+  async function handleAddSubscription(){
+    try {
+      const url = "http://localhost:5000/api/customer/addSub"
+
+      for (let i = 0; i < cartdata.length; i++) {
+        if (cartdata[i].checkStat && cartdata[i].days.length > 0){
+        const details = {product: cartdata[i].product._id,}
+        const res = await axios.post(url, details)
+        if (res.status === 200) {
+          console.log(res.data)
+        }
+        else{
+          console.log("Error")
+        }
+      }
+      }
+  } catch (error) {
+      console.log(error)
+      alert(error.response.data.error);
+  }
+  navigate("/customer/my-subscriptions");
+
+  }
+
+  React.useEffect(() => {
+    const getData = async () => {
+      try {
+        const url = "http://localhost:5000/api/customer/getCart"
+        const res = await axios.get(url)
+        if (res.status === 200) {
+          let totalprice = 0;
+          let num = 0
+          res.data.cart.map((product) => {
+            if (product.checkStat === true) {
+              totalprice += (product.product.price.$numberDecimal - ((product.product.price.$numberDecimal * product.product.discount.$numberDecimal) / 100)) * product.days.length * product.daily_quantity
+              num += product.daily_quantity
+            }
+          })
+          setTotalPrice(totalprice)
+          setNo_of_items(num)
+          setCartData(res.data.cart)
+          setIsLoading(false)
+        } else {
+          alert(res.status)
+        }
+      } catch (error) {
+        console.log(error)
+        alert(error.response.data.error);
+      }
+    }
+    getData();
+  }, [])
+
+
+
+  console.log(cartdata)  
+
+  if (isLoading) { return <div>Loading...</div> }
   return (
     <CssVarsProvider disableTransitionOnChange theme={filesTheme}>
       <CssBaseline />
@@ -86,7 +293,7 @@ export default function FilesExample() {
             xs: '1fr',
             sm: 'minmax(64px, 200px) minmax(450px, 1fr)',
             md: 'minmax(160px, 40px) minmax(400px, 1fr)',
-            lg: 'minmax(200px, 1000px) minmax(400px, 1fr)',
+            lg: 'minmax(200px, 1000px) minmax(340px, 1fr)',
           },
           ...(drawerOpen && {
             height: '100vh',
@@ -94,7 +301,58 @@ export default function FilesExample() {
           }),
         }}
       >
-        
+        <Layout.Header>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 1.5,
+            }}
+          >
+            <IconButton
+              variant="outlined"
+              size="sm"
+              onClick={() => setDrawerOpen(true)}
+              sx={{ display: { sm: 'none' } }}
+            >
+              <MenuIcon />
+            </IconButton>
+            {/* <IconButton
+              size="sm"
+              variant="solid"
+              sx={{ display: { xs: 'none', sm: 'inline-flex' } }}
+            >
+              <FindInPageRoundedIcon />
+            </IconButton> */}
+            <Typography component="h1" fontWeight="xl">
+              Shopping Cart
+            </Typography>
+          </Box>
+          <Input
+            size="sm"
+            placeholder="Search anything…"
+            startDecorator={<SearchRoundedIcon color="primary" />}
+            endDecorator={
+              <IconButton variant="outlined" size="sm" color="neutral">
+                <Typography fontWeight="lg" fontSize="sm" textColor="text.tertiary">
+                  /
+                </Typography>
+              </IconButton>
+            }
+            sx={{
+              flexBasis: '400px',
+              display: {
+                xs: 'none',
+                sm: 'flex',
+                // marginRight: 100
+              },
+            }}
+          />
+          <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1.5 }}>
+            <ColorSchemeToggle />
+          </Box>
+        </Layout.Header>
         <Layout.Main>
           <Box
             sx={{
@@ -104,257 +362,143 @@ export default function FilesExample() {
               justifyContent: 'flex-end',
             }}
           >
-              <Grid container sx={{height:"100%"}} spacing={2}>
-                <Grid item sx={{mb: 2}} xs={12} sm={6} md={4} lg={12}>
-                  <Cards />
-                </Grid>
-                <Grid item sx={{mb: 2}} xs={12} sm={6} md={4} lg={12}>
-                  <Cards />
-                </Grid>
-                <Grid item sx={{mb: 2}} xs={12} sm={6} md={4} lg={12}>
-                  <Cards />
-                </Grid>
-                <Grid item sx={{mb: 2}} xs={12} sm={6} md={4} lg={12}>
-                  <Cards />
-                </Grid>
-                <Grid item sx={{mb: 2}} xs={12} sm={6} md={4} lg={12}>
-                  <Cards />
-                </Grid>
-                <Grid item sx={{mb: 2}} xs={12} sm={6} md={4} lg={12}>
-                  <Cards />
-                </Grid>
-                <Grid item sx={{mb: 2}} xs={12} sm={6} md={4} lg={12}>
-                  <Cards />
-                </Grid>
-                
-              </Grid>
-            </Box>
+
+
+
+            <Grid container sx={{ height: "100%" }} spacing={2}>
+              {
+                cartdata.map((item, index) => {
+                  return (
+                    <Grid item sx={{ mb: 2 }} xs={12} sm={6} md={4} lg={12}>
+                      <Cards
+                        item={item}
+                        check={handleCheck}
+                        count={handleCount}
+                        days={handleDays}
+                        delete={handleDelete}
+                      />
+                    </Grid>
+                  )
+                })
+              }
+
+
+            </Grid>
+          </Box>
         </Layout.Main>
         <Sheet
-                // key={index}
-                component="li"
-                variant="outlined"
-                sx={{
-                  borderRadius: 'sm',
-                  p: 2,
-                  listStyle: 'none',
-                  mr: 5,
-                  marginTop: 2,
-                  justifyContent: 'flex-end',
-                  // height: '100%',
-                  //autofit height to content
-                  height: 'fit-content',
-                }}
-              >
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                  {/* <Avatar
-                    src="https://i.pravatar.cc/40?img=6"
-                    srcSet="https://i.pravatar.cc/80?img=6 2x"
-                    sx={{ borderRadius: 'sm' }}
-                  /> */}
-                  <ShoppingBagIcon 
-                    sx={{ borderRadius: 'lg',marginTop: 1,marginLeft: 1, }}
+          // key={index}
+          component="li"
+          variant="outlined"
+          sx={{
+            borderRadius: 'sm',
+            p: 2,
+            listStyle: 'none',
+            mr: 2,
+            marginTop: 2,
+            justifyContent: 'flex-end',
+            // height: '100%',
+            //autofit height to content
+            height: 'fit-content',
+          }}
+        >
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <ShoppingBagIcon
+              sx={{ borderRadius: 'lg', marginTop: 1, marginLeft: 1, }}
 
-                  />
-                  <Box>
-                    <Typography>Subtotal (XX Items)</Typography>
-                    {/* <Typography level="body3">UI Designer</Typography> */}
-                  </Box>
-                </Box>
-                <Divider component="div" sx={{ my: 2 }} />
-                <List sx={{ '--ListItemDecorator-size': '48px' }}>
-                  <ListItem sx={{ alignItems: 'flex-start' }}>
-                    <ListItemDecorator
-                      sx={{
-                        '&:before': {
-                          content: '""',
-                          position: 'absolute',
-                          height: '10%',
-                          width: '2px',
-                          bgcolor: 'divider',
-                          left: 'calc(var(--ListItem-paddingLeft) + 15px)',
-                          top: '50%',
-                        },
-                      }}
-                    >
-                      <Avatar
-                        size="sm"
-                        src="https://www.vectorlogo.zone/logos/dribbble/dribbble-icon.svg"
-                      />
-                    </ListItemDecorator>
-                    <ListItemContent>
-                      <Typography fontSize="sm">Product 1</Typography>
-                      {/* <Typography level="body3">Dribbble</Typography> */}
-                    </ListItemContent>
-                    <Typography level="body2">$XX</Typography>
-                  </ListItem>
-                  <ListItem sx={{ alignItems: 'flex-start' }}>
-                    <ListItemDecorator>
-                      <Avatar
-                        size="sm"
-                        src="https://www.vectorlogo.zone/logos/pinterest/pinterest-icon.svg"
-                        sx={{ backgroundColor: 'background.body' }}
-                      />
-                    </ListItemDecorator>
-                    <ListItemContent>
-                      <Typography fontSize="sm">Product 2</Typography>
-                      {/* <Typography level="body3">Pinterest</Typography> */}
-                    </ListItemContent>
-                    <Typography level="body2">$XX</Typography>
-                  </ListItem>
-                </List>
-                <Button
+            />
+            <Box>
+              <Typography sx={{ marginTop: 1 }}>
+                Subtotal ({num} Items) : </Typography>
+            </Box>
+          </Box>
+          <Divider component="div" sx={{ my: 2 }} />
+          <List sx={{ '--ListItemDecorator-size': '48px' }}>
+
+            {
+              cartdata.map((item, index) => {
+                let src = ""
+                let srcSet = ""
+                if (item.product.name === "Milk") {
+                  src="https://thumbs.dreamstime.com/b/milk-juice-beverages-carton-package-blank-white-drink-over-black-background-excellent-vector-illustration-eps-50687533.jpg"
+                  srcSet="https://thumbs.dreamstime.com/b/milk-juice-beverages-carton-package-blank-white-drink-over-black-background-excellent-vector-illustration-eps-50687533.jpg&dpr=2 2x"
+                }
+                else if (item.product.name === "Eggs") {
+                  src = "https://draxe.com/wp-content/uploads/2017/08/Are-Eggs-Dairy_THUMBNAIL.jpg"
+                }
+                else if (item.product.name === "Paneer") {
+                  src = "https://cdn.shopify.com/s/files/1/0017/9234/4153/products/paneer1_500x.jpg?v=1593586837"
+                  srcSet = "https://cdn.shopify.com/s/files/1/0017/9234/4153/products/paneer1_500x.jpg?v=1593586837&dpr=2 2x"}
+                else
+                {
+                  src = "https://www.dairyfarm.co.in/theme/images/ourfarm3.webp"
+                }
+
+
+
+
+                if (item.checkStat === true && item.days.length > 0)
+                  return (
+                    <ListItem sx={{ alignItems: 'flex-start' }}>
+                      <ListItemDecorator>
+                        <Avatar
+                          size="sm"
+                          src={src}
+                          sx={{ backgroundColor: 'background.body', marginRight: 2 }}
+                        />
+                      </ListItemDecorator>
+                      <ListItemContent>
+                        <Typography fontSize="sm" sx={{ marginTop: 1 }}>{item.product.name}</Typography>
+                        {/* <Typography level="body3">Pinterest</Typography> */}
+                      </ListItemContent>
+                      <Typography level="body2" sx={{ marginTop: 1 }}>₹{(item.product.price.$numberDecimal - ((item.product.price.$numberDecimal * item.product.discount.$numberDecimal) / 100)) * item.days.length * item.daily_quantity}</Typography>
+                    </ListItem>
+                  )
+              })
+            }
+          </List>
+          {/* <Button
                   size="sm"
                   variant="plain"
                   endDecorator={<KeyboardArrowRightRoundedIcon fontSize="small" />}
                   sx={{ px: 1, mt: 1 }}
                 >
                   Expand
-                </Button>
+                </Button> */}
 
-                {/* <Divider component="div" sx={{ my: 2 }} />
-                <Typography fontSize="sm">Skills tags:</Typography>
-                
-                <Box sx={{ mt: 1.5, display: 'flex', gap: 1 }}>
-                  <Chip
-                    variant="outlined"
-                    color="neutral"
-                    size="sm"
-                    sx={{ borderRadius: 'sm' }}
-                  >
-                    UI design
-                  </Chip>
-                  <Chip
-                    variant="outlined"
-                    color="neutral"
-                    size="sm"
-                    sx={{ borderRadius: 'sm' }}
-                  >
-                    Illustration
-                  </Chip>
-                </Box> */}
-                <Divider component="div" sx={{ my: 2 }} />
-                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-      
-      <Button variant="soft" endDecorator={<KeyboardArrowRight />} color="success">
-        Checkout
-      </Button>
-      <Typography
-      sx={{
-        marginLeft: 18
-      }}
-      >
-        $xx
-      </Typography>
-    </Box>
-              </Sheet>
-        {/* <Sheet
-          sx={{
-            // display: { xs: 'none', sm: 'initial' },
-            display: 'initial',
-            borderLeft: '1px solid',
-            borderColor: 'neutral.outlinedBorder',
-          }}
-        >
-          <Box sx={{ display: 'flex' }}>
-            <Button
-              variant="soft"
-              sx={{
-                borderRadius: 0,
-                borderBottom: '2px solid',
-                borderColor: 'primary.solidBg',
-                flex: 1,
-                py: '1rem',
-              }}
+          {/* <Divider component="div" sx={{ my: 2 }} /> */}
+          {/* <Typography fontSize="sm">Skills tags:</Typography>
+
+          <Box sx={{ mt: 1.5, display: 'flex', gap: 1 }}>
+            <Chip
+              variant="outlined"
+              color="neutral"
+              size="sm"
+              sx={{ borderRadius: 'sm' }}
             >
-              Details
-            </Button>
+              UI design
+            </Chip>
+            <Chip
+              variant="outlined"
+              color="neutral"
+              size="sm"
+              sx={{ borderRadius: 'sm' }}
+            >
+              Illustration
+            </Chip>
           </Box> */}
+          <Divider component="div" sx={{ my: 2 }} />
+          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
 
-          
-
-
-          {/* <AspectRatio ratio="21/9">
-            <img
-              alt=""
-              src="https://images.unsplash.com/photo-1534067783941-51c9c23ecefd?auto=format&fit=crop&w=774"
-            />
-          </AspectRatio> */}
-          {/* <Box sx={{ p: 2, display: 'flex', gap: 1, alignItems: 'center' }}>
-            <Typography level="body2" mr={1}>
-              Shared with
-            </Typography>
-            <AvatarGroup size="sm" sx={{ '--Avatar-size': '24px' }}>
-              <Avatar
-                src="https://i.pravatar.cc/24?img=6"
-                srcSet="https://i.pravatar.cc/48?img=6 2x"
-              />
-              <Avatar
-                src="https://i.pravatar.cc/24?img=7"
-                srcSet="https://i.pravatar.cc/48?img=7 2x"
-              />
-              <Avatar
-                src="https://i.pravatar.cc/24?img=8"
-                srcSet="https://i.pravatar.cc/48?img=8 2x"
-              />
-              <Avatar
-                src="https://i.pravatar.cc/24?img=9"
-                srcSet="https://i.pravatar.cc/48?img=9 2x"
-              />
-            </AvatarGroup>
-          </Box> */}
-          {/* <Divider />
-          <Box
-            sx={{
-              gap: 2,
-              p: 2,
-              display: 'grid',
-              gridTemplateColumns: 'auto 1fr',
-              '& > *:nth-child(odd)': { color: 'text.secondary' },
-            }}
-          >
-            <Typography level="body2">Type</Typography>
-            <Typography level="body2" textColor="text.primary">
-              Image
-            </Typography>
-
-            <Typography level="body2">Size</Typography>
-            <Typography level="body2" textColor="text.primary">
-              3,6 MB (3,258,385 bytes)
-            </Typography>
-
-            <Typography level="body2">Storage used</Typography>
-            <Typography level="body2" textColor="text.primary">
-              3,6 MB (3,258,385 bytes)
-            </Typography>
-
-            <Typography level="body2">Location</Typography>
-            <Typography level="body2" textColor="text.primary">
-              Travel pictures
-            </Typography>
-
-            <Typography level="body2">Owner</Typography>
-            <Typography level="body2" textColor="text.primary">
-              Michael Scott
-            </Typography>
-
-            <Typography level="body2">Modified</Typography>
-            <Typography level="body2" textColor="text.primary">
-              26 October 2016
-            </Typography>
-
-            <Typography level="body2">Created</Typography>
-            <Typography level="body2" textColor="text.primary">
-              5 August 2016
-            </Typography>
-          </Box>
-          <Divider />
-          <Box sx={{ py: 2, px: 1 }}>
-            <Button variant="plain" size="sm" endDecorator={<EditOutlinedIcon />}>
-              Add a description
+            <Button variant="outlined" endDecorator={<KeyboardArrowRight />} color="success"
+              onClick={handleAddSubscription}
+            >
+              Checkout
             </Button>
+            <Typography level="body2" sx={{ marginLeft: 7, marginTop: 1 ,fontWeight:'lg' }}>Total: ₹{totalPrice}</Typography>
+
           </Box>
-        </Sheet> */}
+        </Sheet>
       </Layout.Root>
     </CssVarsProvider>
   );

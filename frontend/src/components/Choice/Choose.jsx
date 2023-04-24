@@ -1,9 +1,39 @@
 import * as React from "react";
 import './Choose.css';
 import Grid from '@mui/joy/Grid';
-import { Link } from "react-router-dom"
+import { Link, useNavigate} from "react-router-dom"
+import {setToken} from "../../utils/checkToken.jsx";
+import axios from "axios";
 
 export default function Choose() {
+    const navigate = useNavigate();
+
+    React.useEffect(() => {
+        async function fetchData() {
+            if (!setToken()) {
+                try {
+                    const response = await axios.get('http://localhost:5000/api/general');
+                    console.log("general",  response.data);
+
+                    const type = response.data.userType;
+
+                    if (type === 'Vendor') {
+                        navigate('/vendor/inventory');
+                    }
+                    else if (type === 'Customer') {
+                        navigate('/customer/vendors-list');
+                    }
+                } catch {
+                    return "get error, login again";
+                }
+            }
+            else
+            return "no token found";
+        }
+
+        fetchData().then(r => console.log(r)).catch(e => console.log(e));
+    }, []);
+
     return (
         <React.Fragment>
                 <div className="parent">

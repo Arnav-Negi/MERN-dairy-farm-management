@@ -126,7 +126,7 @@ export default function CustomerProfile() {
                                                 </Typography>
                                             </td>
                                             <td>
-                                                {edit ?
+                                                {(edit && key !== '_id' && key !== 'emailID') ?
                                                     <FormControl>
                                                         <Input
                                                             sx={{

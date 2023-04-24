@@ -20,6 +20,8 @@ import List from '@mui/joy/List';
 import ListItem from '@mui/joy/ListItem';
 import ListItemButton from '@mui/joy/ListItemButton';
 import ListItemContent from '@mui/joy/ListItemContent';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 
 // Icons import
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
@@ -36,38 +38,85 @@ import Menu from '../../utils/Menu';
 import Layout from '../../utils/Layout';
 import Navigation from '../../utils/Navigation';
 import Item from './Item';
+import ColorSchemeToggle from '../../utils/ColorSchemeToggle';
+import Fuse from "fuse.js";
 // import FirstSidebar from './components/SideBar';
 
-function ColorSchemeToggle() {
-  const { mode, setMode } = useColorScheme();
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
-  if (!mounted) {
-    return <IconButton size="sm" variant="outlined" color="neutral" />;
-  }
-  return (
-    <IconButton
-      id="toggle-mode"
-      size="sm"
-      variant="outlined"
-      color="neutral"
-      onClick={() => {
-        if (mode === 'light') {
-          setMode('dark');
-        } else {
-          setMode('light');
-        }
-      }}
-    >
-      {mode === 'light' ? <DarkModeRoundedIcon /> : <LightModeRoundedIcon />}
-    </IconButton>
-  );
-}
+// function ColorSchemeToggle() {
+//   const { mode, setMode } = useColorScheme();
+//   const [mounted, setMounted] = React.useState(false);
+//   React.useEffect(() => {
+//     setMounted(true);
+//   }, []);
+//   if (!mounted) {
+//     return <IconButton size="sm" variant="outlined" color="neutral" />;
+//   }
+//   return (
+//     <IconButton
+//       id="toggle-mode"
+//       size="sm"
+//       variant="outlined"
+//       color="neutral"
+//       onClick={() => {
+//         if (mode === 'light') {
+//           setMode('dark');
+//         } else {
+//           setMode('light');
+//         }
+//       }}
+//     >
+//       {mode === 'light' ? <DarkModeRoundedIcon /> : <LightModeRoundedIcon />}
+//     </IconButton>
+//   );
+// }
+
+const searchOptions = {keys: ['name', 'description'], threshold: 0.2, limit: 9999};
 
 export default function FilesExample() {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [items, setItems] = React.useState([]);
+  const vendorDetails = JSON.parse(window.localStorage.getItem('vendorDetails'));
+  const [displayList, setDisplayList] = React.useState(items);
+  const [search, setSearch] = React.useState("");
+
+  let fuse = new Fuse([...items], searchOptions);
+
+  const { id } = useParams();
+  React.useEffect(() => {
+    const getData = async () => {
+      try {
+        const url = "http://localhost:5000/api/general/getProducts"
+        const details = {vendor: id}
+        const res = await axios.post(url, details)
+        if (res.status === 200) {
+          setItems(res.data.products)
+          setIsLoading(false)
+        } else {
+            alert(res.status)
+        }
+    } catch (error) {
+        console.log(error)
+        alert(error.response.data.error);
+    }
+    }
+    getData();
+  }, [])
+
+  React.useEffect(() => {
+    fuse.setCollection([...items]);
+    setDisplayList([...items]);
+}, [items]);
+
+React.useEffect(() => {
+    const result = fuse.search(search);
+    if (search !== "")
+        setDisplayList(result.map(res => res.item));
+    else
+        setDisplayList([...items])
+}, [search]);
+
+  if (isLoading) return (<div>Loading...</div>)
   return (
     <CssVarsProvider disableTransitionOnChange theme={filesTheme}>
       <CssBaseline />
@@ -103,13 +152,6 @@ export default function FilesExample() {
             size="sm"
             placeholder="Search anything…"
             startDecorator={<SearchRoundedIcon color="primary" />}
-            endDecorator={
-              <IconButton variant="outlined" size="sm" color="neutral">
-                <Typography fontWeight="lg" fontSize="sm" textColor="text.tertiary">
-                  /
-                </Typography>
-              </IconButton>
-            }
             sx={{
               flexBasis: '500px',
               display: {
@@ -117,6 +159,8 @@ export default function FilesExample() {
                 sm: 'flex',
               },
             }}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
             <ColorSchemeToggle />
         </Layout.Header>
@@ -129,7 +173,7 @@ export default function FilesExample() {
           }}
         >
           <Box sx={{ p: 2, display: 'flex', alignItems: 'center' }}>
-            <Typography sx={{ flex: 1 }}>Vendor Name</Typography>
+            <Typography sx={{ flex: 1 }}>{vendorDetails.dairyFarm.name}</Typography>
           </Box>
           <Divider />
           <Box sx={{ display: 'flex' }}>
@@ -149,7 +193,7 @@ export default function FilesExample() {
           <AspectRatio ratio="21/9">
             <img
               alt=""
-              src="https://images.unsplash.com/photo-1534067783941-51c9c23ecefd?auto=format&fit=crop&w=774"
+              src="https://i.dietdoctor.com/wp-content/uploads/2020/08/dairy.png?auto=compress%2Cformat&w=800&h=400&fit=crop"
             />
           </AspectRatio>
           <Box
@@ -161,48 +205,43 @@ export default function FilesExample() {
               '& > *:nth-child(odd)': { color: 'text.secondary' },
             }}
           >
-            <Typography level="body2">Address</Typography>
+            <Typography level="body2">Vendor Name</Typography>
             <Typography level="body2" textColor="text.primary">
-              Address
+              {vendorDetails.first_name} {vendorDetails.last_name}
             </Typography>
 
             <Typography level="body2">Email</Typography>
             <Typography level="body2" textColor="text.primary">
-              email
+              {vendorDetails.emailID}
             </Typography>
 
             <Typography level="body2">Contact</Typography>
             <Typography level="body2" textColor="text.primary">
-              contact
+              {vendorDetails.phoneNumber}
             </Typography>
 
-            <Typography level="body2">Rating</Typography>
+            <Typography level="body2">Address</Typography>
             <Typography level="body2" textColor="text.primary">
-              Rating
+              {vendorDetails.address}
             </Typography>
 
             <Typography level="body2">Timings</Typography>
             <Typography level="body2" textColor="text.primary">
-              Timings
+              {vendorDetails.dairyFarm.openingHours} - {vendorDetails.dairyFarm.closingHours}
             </Typography>
 
-            <Typography level="body2">Status</Typography>
+            <Typography level="body2">Working Days</Typography>
             <Typography level="body2" textColor="text.primary">
-              Status
+              {vendorDetails.workingDays.map((day) => {
+                return day + " " + " "
+                })}
             </Typography>
 
-            <Typography level="body2">Created</Typography>
+            <Typography level="body2">Established Date</Typography>
             <Typography level="body2" textColor="text.primary">
-              5 August 2016
-            </Typography>
-            
-            <Typography level="body2">Description</Typography>
-            <Typography level="body2" textColor="text.primary">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
-            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+              {vendorDetails.dairyFarm.establishedDate.slice(0, 10)}
             </Typography>
           </Box>
-          <Divider />
         </Sheet>
         <Layout.Main>
           <Box
@@ -214,45 +253,13 @@ export default function FilesExample() {
           >
             <Box>
               <Grid container sx={{height:"100%"}} spacing={2}>
-                <Grid item sx={{mb: 2}} xs={12} sm={6} md={4} lg={4}>
-                  <Item />
-                </Grid>
-                <Grid item sx={{mb: 2}} xs={12} sm={6} md={4} lg={4}>
-                  <Item />
-                </Grid>
-                <Grid item sx={{mb: 2}} xs={12} sm={6} md={4} lg={4}>
-                  <Item />
-                </Grid>
-                <Grid item sx={{mb: 2}} xs={12} sm={6} md={4} lg={4}>
-                  <Item />
-                </Grid>
-                <Grid item sx={{mb: 2}} xs={12} sm={6} md={4} lg={4}>
-                  <Item />
-                </Grid>
-                <Grid item sx={{mb: 2}} xs={12} sm={6} md={4} lg={4}>
-                  <Item />
-                </Grid>
-                <Grid item sx={{mb: 2}} xs={12} sm={6} md={4} lg={4}>
-                  <Item />
-                </Grid>
-                <Grid item sx={{mb: 2}} xs={12} sm={6} md={4} lg={4}>
-                  <Item />
-                </Grid>
-                <Grid item sx={{mb: 2}} xs={12} sm={6} md={4} lg={4}>
-                  <Item />
-                </Grid>
-                <Grid item sx={{mb: 2}} xs={12} sm={6} md={4} lg={4}>
-                  <Item />
-                </Grid>
-                <Grid item sx={{mb: 2}} xs={12} sm={6} md={4} lg={4}>
-                  <Item />
-                </Grid>
-                <Grid item sx={{mb: 2}} xs={12} sm={6} md={4} lg={4}>
-                  <Item />
-                </Grid>
-                <Grid item sx={{mb: 2}} xs={12} sm={6} md={4} lg={4}>
-                  <Item />
-                </Grid>
+                {displayList.map((product) => {
+                  return (
+                    <Grid item sx={{mb: 2}} xs={12} sm={6} md={4} lg={4}>
+                      <Item item={product} />
+                    </Grid>
+                  )
+                })}
               </Grid>
             </Box>
           </Box>

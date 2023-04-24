@@ -28,7 +28,7 @@ export default function VendorSignIn() {
             const res = await axios.post(url, details)
             setUser({...user, ...res.data.vendor});
             localStorage.setItem("token", res.data.token);
-            navigate('/vendor/profile');
+            navigate('/vendor/inventory');
         } catch (error) {
             console.log(error)
             alert(error.response.data.error);

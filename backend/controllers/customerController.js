@@ -50,11 +50,6 @@ const registerCustomer = async (req, res) => {
 
 const loginCustomer = async (req, res) => {
   try {
-    const d = new Date();
-    let diff = d.getTimezoneOffset();
-    console.log(diff);
-    console.log(d);
-    console.log(d.toTimeString());
     const customer = await Customer.findOne({
       emailID: req.body.emailID,
     }).select("-createdAt -updatedAt -__v");
@@ -152,6 +147,8 @@ const addToCart = async (req, res) => {
     product.usedQuantity += quantity;
     await product.save();
 
+    console.log(req.body.startDate)
+
     const cartItem = customer.cart.find(
       (item) => item.product.toString() === req.body.product
     );
@@ -159,6 +156,7 @@ const addToCart = async (req, res) => {
       cartItem.daily_quantity = req.body.daily_quantity;
       cartItem.days = req.body.days;
       cartItem.startDate = req.body.startDate;
+      cartItem.checkStat = req.body.checkStat;
     } else {
       customer.cart.push(req.body);
     }
@@ -251,6 +249,7 @@ const updateCart = async (req, res) => {
     cartItem.daily_quantity = req.body.daily_quantity;
     cartItem.days = req.body.days;
     cartItem.startDate = req.body.startDate;
+    cartItem.checkStat = req.body.checkStat;
     await customer.save();
     res.status(200).json("Cart updated");
   } catch (err) {
@@ -276,8 +275,7 @@ const addSubscription = async (req, res) => {
     }
 
     const cartItem = customer.cart.find(
-      (item) => item.product.toString() === req.body.product
-    );
+      (item) => item.product.toString() === req.body.product)
     if (!cartItem) {
       return res.status(400).json({ error: "Product not in cart" });
     }
@@ -323,6 +321,7 @@ const addSubscription = async (req, res) => {
 };
 
 const removeSubscription = async (req, res) => {
+
   try {
     if (req.user.userType !== "Customer") {
       return res.status(400).json({ error: "User is not a customer" });
@@ -332,12 +331,13 @@ const removeSubscription = async (req, res) => {
     if (!customer) {
       return res.status(400).json({ error: "Customer not found" });
     }
-
+    
     const subscription = await Subscription.findOne({
       customer: req.user.id,
       _id: req.body.subscription,
     });
     if (!subscription) {
+      console.log("Found nothing")
       return res.status(400).json({ error: "Subscription not found" });
     }
 
@@ -454,15 +454,41 @@ const getCart = async (req, res) => {
 
 const getVendors = async (req, res) => {
   try {
-    if (req.user.userType !== "Customer") {
-      return res.status(400).json({ error: "User is not a customer" });
-    }
+    // if (req.user.userType !== "Customer") {
+    //   return res.status(400).json({ error: "User is not a customer" });
+    // }
     const vendors = await Vendor.find().select(
       "-createdAt -updatedAt -__v -products -subscriptions -password -account"
     );
+
+    let openStatus = [];
+    let date = new Date();
+    for (let i = 0; i < vendors.length; i++) {
+      let time = date.toTimeString().substring(0, 5);
+      const openingTime = vendors[i].dairyFarm.openingHours;
+      const closingTime = vendors[i].dairyFarm.closingHours;
+      if (closingTime > openingTime) {
+        if (time < openingTime || time > closingTime) {
+          openStatus.push("close");
+        } else {
+          openStatus.push("open");
+        }
+      } else if (closingTime < openingTime) {
+        if (time < openingTime && time > closingTime) {
+          openStatus.push("close");
+        } else {
+          openStatus.push("open");
+        }
+      }
+      else {
+        openStatus.push("close");
+      }
+    }
+
+    console.log(vendors)
     res.status(200).json({
       success: "Vendors found",
-      vendors,
+      vendors: vendors, statuses: openStatus
     });
   } catch (err) {
     console.error(err.message);

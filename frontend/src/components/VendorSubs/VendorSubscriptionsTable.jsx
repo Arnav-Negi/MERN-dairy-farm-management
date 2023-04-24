@@ -219,6 +219,7 @@ export default function VendorSubscriptionsTable() {
                         <th style={{width: 150, padding: 12, paddingLeft: 10}}>Product Name</th>
 
                         <th style={{width: 150, padding: 12}}>Customer</th>
+                        <th style={{width: 150, padding: 12}}>Customer address</th>
                         <th style={{width: 150, padding: 12}}>Quantity (Daily)</th>
 
                         <th style={{width: 150, padding: 12}}>
@@ -253,6 +254,12 @@ export default function VendorSubscriptionsTable() {
                             <td style={{padding: 12}}>
                                 <Typography fontSize={'md'} fontWeight="md">
                                     {row.customer.first_name + " " + row.customer.last_name}
+                                </Typography>
+                            </td>
+
+                            <td style={{padding: 12}}>
+                                <Typography fontSize={'md'} fontWeight="md">
+                                    {row.customer.address}
                                 </Typography>
                             </td>
 
