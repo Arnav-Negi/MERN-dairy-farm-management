@@ -1,228 +1,460 @@
-import {Table, TableBody, TableCell, TableContainer, TableRow, TextField} from "@mui/material";
-import { Sheet } from "@mui/joy";
-import {Link} from "react-router-dom";
-import {useRecoilState} from "recoil";
+import {Typography} from "@mui/joy";
+import {useEffect, useState} from "react";
 import Button from "@mui/joy/Button";
+import {useRecoilState} from "recoil";
 import {userAtom} from "../../atoms/user"
-import {useState} from "react";
-import Typography from "@mui/joy/Typography";
+import updateField from "../../utils/updateField";
+import {Link} from "react-router-dom";
+import * as url from "url";
 import axios from "axios";
-import updateField from "../../utils/updateField.jsx";
+import Sheet from "@mui/joy/Sheet";
+import ColorSchemeToggle from "../Navbar/ColorSchemeToggle.tsx";
+import * as React from "react";
+import Box from "@mui/joy/Box";
+import FormControl from "@mui/joy/FormControl";
+import Table from "@mui/joy/Table";
+import Input from "@mui/joy/Input";
+import Checkbox from '@mui/joy/Checkbox';
+import {KeyboardArrowDown} from "@mui/icons-material";
+import Option from "@mui/joy/Option";
+import Select from "@mui/joy/Select";
+
+const keyToLabel = {
+    _id: "ID",
+    first_name: "First Name",
+    last_name: "Last Name",
+    emailID: "Email",
+    phoneNumber: "Contact",
+    address: "Address",
+    accountNumber: "Account no.",
+    IFSC: "IFSC",
+    accountType: "Account Type",
+    bankName: "Bank Name",
+    branchName: "Branch Name",
+    holderName: "Holder Name",
+    closingHours: "Closing Hours",
+    establishedDate: "Established Date",
+    name: "Farm Name",
+    openingHours: "Opening Hours",
+    workingDays: "Working Days",
+}
+
+const validateEmail = (email) => {
+    return String(email)
+        .toLowerCase()
+        .match(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        );
+};
+
+const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
 export default function VendorProfile() {
     const [user, setUser] = useRecoilState(userAtom);
     const [formData, setFormData] = useState(user);
-    const [editUser, setEditUser] = useState(false);
-    const [editFarm, setEditFarm] = useState(false);
-    const [editAccount, setEditAccount] = useState(false);
+    const [edit, setEdit] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const keyProps = {
+        emailID: {type: "text", error: validateEmail(formData.emailID)},
+        phoneNumber: {type: "tel", sx: {min: 1000000000, max: 9999999999}},
+    }
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setLoading(true);
 
-        async function updateCustomer() {
+        async function updateVendor() {
             try {
                 const url = 'http://localhost:5000/api/vendor';
                 const res = await axios.patch(url, formData);
-                alert("customer updated.");
+                setUser(formData);
+                setLoading(false);
+                alert("vendor updated.");
             } catch (e) {
+                setLoading(false);
                 alert(e);
-                console.log(e)
+                console.log(e);
             }
         }
 
-        updateCustomer().then(() => setUser(formData)).catch(err => console.log(err));
-        setEditUser(false);
-        setEditFarm(false);
-        setEditAccount(false);
+        updateVendor().then(() => {
+            setEdit(false);
+        });
+
+        console.log(formData);
+    }
+
+    const addOrRemoveDay = (day, add) => {
+        const newWorkingDays = [...formData.workingDays];
+        if (add && !newWorkingDays.includes(day))
+            newWorkingDays.push(day);
+        else if (newWorkingDays.includes(day))
+            newWorkingDays.splice(newWorkingDays.indexOf(day), 1);
+        setFormData({...formData, workingDays: newWorkingDays});
     }
 
     return (
-        <div className={' w-full'} style={{paddingTop: '50rem',
-            paddingBottom: '5rem'}}>
-            <Typography align={'left'} fontSize={'large'} sx={{paddingTop: '5%'}}>
-                User info
-            </Typography>
-            <TableContainer
-                variant={"elevation"}
-                // elevation={3}
-                component={Sheet}
-                sx={{
-                    width: "100%"
-                }}
+        <Box sx={{display: 'flex', minHeight: '100dvh',}}>
+            <Box
+                component="main"
+                className="MainContent"
+                sx={(theme) => ({
+                    px: {
+                        xs: 2,
+                        md: 6,
+                    },
+                    pt: {
+                        xs: `calc(${theme.spacing(2)} + var(--Header-height))`,
+                        sm: `calc(${theme.spacing(2)} + var(--Header-height))`,
+                        md: 3,
+                    },
+                    pb: {
+                        xs: 2,
+                        sm: 2,
+                        md: 3,
+                    },
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    minWidth: 0,
+                    height: '100dvh',
+                    gap: 1,
+                })}
             >
-                <Table aria-label="simple table">
-                    <TableBody>
-                        {Object.keys(user).map(key => {
-                                if (key !== 'dairyFarm' && key !== 'account' && key !== '_id') {
-                                    if (key === 'workingDays')
-                                        return (
-                                            <TableRow
-                                                key={key}
-                                                sx={{'&:last-child td, &:last-child th': {border: 0}}}
-                                            >
-                                                <TableCell component="th" scope="row" align="left" sx={{
-                                                    fontSize: "120%",
-                                                }}>
-                                                    {key}
-                                                </TableCell>
-                                                <TableCell align="right" sx={{
-                                                    fontSize: "120%",
-                                                }}>
-                                                    <TextField
-                                                        value={formData[key].join()}
-                                                        InputProps={{
-                                                            readOnly: !editUser,
-                                                        }}
-                                                        onChange={(e) => setFormData({...updateField({...formData}, key, e.target.value.split(','))})}/>
-                                                </TableCell>
-                                            </TableRow>
-                                        )
-                                    else
-                                        return (
-                                            <TableRow
-                                                key={key}
-                                                sx={{'&:last-child td, &:last-child th': {border: 0}}}
-                                            >
-                                                <TableCell component="th" scope="row" align="left" sx={{
-                                                    fontSize: "120%",
-                                                }}>
-                                                    {key}
-                                                </TableCell>
-                                                <TableCell align="right" sx={{
-                                                    fontSize: "120%",
-                                                }}>
-                                                    <TextField
-                                                        value={formData[key]}
-                                                        InputProps={{
-                                                            readOnly: !editUser,
-                                                        }}
-                                                        onChange={(e) => setFormData({...updateField({...formData}, key, e.target.value)})}/>
-                                                </TableCell>
-                                            </TableRow>
-                                        )
-                                }
-                            }
-                        )}
-                    </TableBody>
-                </Table>
-                <div className="flex justify-center">
-                    {editUser? <Button onClick={() => {
-                            setEditUser(false);
-                            setFormData(user);
-                        }}>CANCEL</Button> :
-                        <Button onClick={() => setEditUser(true)}>EDIT</Button>
-                    }
-                    <Button onClick={handleSubmit} disabled={!editUser}>UPDATE</Button>
-                </div>
-            </TableContainer>
-
-            <Typography align={'left'} fontSize={'large'} sx={{paddingTop: '5%'}}>
-                Farm info
-            </Typography>
-            <TableContainer
-                variant={"elevation"}
-                // elevation={3}
-                component={Sheet}
-                sx={{
-                    width: "100%"
-                }}
-            >
-                <Table aria-label="simple table">
-                    <TableBody>
-                        {Object.keys(user.dairyFarm).map(key => {
-                                return (
-                                    <TableRow
+                <Box
+                    sx={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'right'
+                    }}>
+                    <ColorSchemeToggle
+                        sx={{ml: 'auto', display: {xs: 'none', md: 'inline-flex'},}}
+                    />
+                </Box>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        my: 1,
+                        gap: 1,
+                        flexWrap: 'wrap',
+                        '& > *': {
+                            minWidth: 'clamp(0px, (500px - 100%) * 999, 100%)',
+                            flexGrow: 1,
+                        },
+                        width: '75%',
+                        marginLeft: 'auto',
+                        marginRight: 'auto',
+                    }}
+                >
+                    <Typography level="h1" fontSize="xl5" color={'primary'}>
+                        Hi, {user.first_name}!
+                    </Typography>
+                </Box>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        my: 1,
+                        gap: 1,
+                        paddingTop: '10px',
+                        flexWrap: 'wrap',
+                        '& > *': {
+                            minWidth: 'clamp(0px, (500px - 100%) * 999, 100%)',
+                            flexGrow: 1,
+                        },
+                        width: '75%',
+                        marginLeft: 'auto',
+                        marginRight: 'auto',
+                    }}
+                >
+                    <form onSubmit={handleSubmit}>
+                        <Table borderAxis="none">
+                            <tbody>
+                            <Typography level="h3" fontSize="xl2" color={'primary'} paddingTop={5}>
+                                Personal Details
+                            </Typography>
+                            {Object.keys(user).map(key => {
+                                if (!Object.keys(keyToLabel).includes(key)) return <></>
+                                if (key !== 'workingDays')
+                                    return (
+                                        <tr
+                                            key={key}
+                                            style={{'&:last-child td, &:last-child th': {border: 0}}}
+                                        >
+                                            <td>
+                                                <Typography fontSize={"lg"}>
+                                                    {keyToLabel[key]}
+                                                </Typography>
+                                            </td>
+                                            <td>
+                                                {(edit && key !== 'emailID' && key !== '_id') ?
+                                                    <FormControl>
+                                                        <Input
+                                                            sx={{
+                                                                fontSize: 'large',
+                                                                padding: 1,
+                                                                border: 1,
+                                                                borderColor: 'primary.main'
+                                                            }}
+                                                            {...keyProps[key]}
+                                                            value={formData[key]}
+                                                            variant={"outlined"}
+                                                            color={"text.primary"}
+                                                            onChange={(e) =>
+                                                                setFormData({...updateField({...formData}, key, e.target.value)})}/>
+                                                    </FormControl>
+                                                    :
+                                                    <Typography fontSize={'lg'} sx={{
+                                                        fontSize: 'large',
+                                                        padding: 1,
+                                                        border: 1,
+                                                        borderColor: 'primary.main'
+                                                    }}>
+                                                        {user[key]}
+                                                    </Typography>}
+                                            </td>
+                                        </tr>
+                                    )
+                                else return (
+                                    <tr
                                         key={key}
-                                        sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                        style={{'&:last-child td, &:last-child th': {border: 0}}}
                                     >
-                                        <TableCell component="th" scope="row" align="left" sx={{
-                                            fontSize: "120%",
-                                        }}>
-                                            {key}
-                                        </TableCell>
-                                        <TableCell align="right" sx={{
-                                            fontSize: "120%",
-                                        }}>
-                                            <TextField
-                                                value={formData.dairyFarm[key]}
-                                                InputProps={{
-                                                    readOnly: !editFarm,
-                                                }}
-                                                onChange={(e) => setFormData({
-                                                    ...formData,
-                                                    dairyFarm: {...updateField({...formData.dairyFarm}, key, e.target.value)}
-                                                })}/>
-                                        </TableCell>
-                                    </TableRow>
+                                        <td>
+                                            <Typography fontSize={"lg"}>
+                                                {keyToLabel[key]}
+                                            </Typography>
+                                        </td>
+                                        <td>
+                                            <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 4}}>
+                                                {days.map((day, index) => {
+                                                        return (
+                                                            <Checkbox
+                                                                disabled={!edit}
+                                                                label={day}
+                                                                checked={formData.workingDays.includes(day)}
+                                                                onChange={(e =>
+                                                                        addOrRemoveDay(day, e.target.checked)
+                                                                )}/>
+                                                        )
+                                                    }
+                                                )
+                                                }
+                                            </Box>
+                                        </td>
+                                    </tr>
                                 )
-                            }
-                        )}
-                    </TableBody>
-                </Table>
-                <div className="flex justify-center">
-                    {editFarm? <Button onClick={() => {
-                            setEditFarm(false);
-                            setFormData(user);
-                        }}>CANCEL</Button> :
-                        <Button onClick={() => setEditFarm(true)}>EDIT</Button>
-                    }
-                    <Button onClick={handleSubmit} disabled={!editFarm}>UPDATE</Button>
-                </div>
-            </TableContainer>
-
-            <Typography align={'left'} fontSize={'large'} sx={{paddingTop: '5%'}}>
-                Account info
-            </Typography>
-            <TableContainer
-                variant={"elevation"}
-                // elevation={3}
-                component={Sheet}
-                sx={{
-                    width: "100%"
-                }}
-            >
-                <Table aria-label="simple table">
-                    <TableBody>
-                        {Object.keys(user.account).map(key => {
-                                return (
-                                    <TableRow
+                            })}
+                            <Typography level="h3" fontSize="xl2" color={'primary'} paddingTop={5}>
+                                Dairy Farm Details
+                            </Typography>
+                            {Object.keys(user.dairyFarm).map(key => {
+                                if (key === 'establishedDate')
+                                    return (
+                                        <tr
+                                            key={key}
+                                            style={{'&:last-child td, &:last-child th': {border: 0}}}
+                                        >
+                                            <td>
+                                                <Typography fontSize={"lg"}>
+                                                    {keyToLabel[key]}
+                                                </Typography>
+                                            </td>
+                                            <td>
+                                                {edit ?
+                                                    <FormControl>
+                                                        <Input
+                                                            sx={{
+                                                                fontSize: 'large',
+                                                                padding: 1,
+                                                                border: 1,
+                                                                borderColor: 'primary.main'
+                                                            }}
+                                                            value={formData.dairyFarm[key]}
+                                                            variant={"outlined"}
+                                                            color={"text.primary"}
+                                                            onChange={(e) =>
+                                                                setFormData({
+                                                                    ...formData,
+                                                                    dairyFarm: {
+                                                                        ...updateField({...formData.dairyFarm}, key, e.target.value)
+                                                                    }
+                                                                })}/>
+                                                    </FormControl>
+                                                    :
+                                                    <Typography fontSize={'lg'} sx={{
+                                                        fontSize: 'large',
+                                                        padding: 1,
+                                                        border: 1,
+                                                        borderColor: 'primary.main'
+                                                    }}>
+                                                        {new Date(user.dairyFarm[key]).toLocaleDateString()}
+                                                    </Typography>}
+                                            </td>
+                                        </tr>
+                                    )
+                                else
+                                    return (
+                                        <tr
+                                            key={key}
+                                            style={{'&:last-child td, &:last-child th': {border: 0}}}
+                                        >
+                                            <td>
+                                                <Typography fontSize={"lg"}>
+                                                    {keyToLabel[key]}
+                                                </Typography>
+                                            </td>
+                                            <td>
+                                                {edit ?
+                                                    <FormControl>
+                                                        <Input
+                                                            sx={{
+                                                                fontSize: 'large',
+                                                                padding: 1,
+                                                                border: 1,
+                                                                borderColor: 'primary.main'
+                                                            }}
+                                                            value={formData.dairyFarm[key]}
+                                                            variant={"outlined"}
+                                                            color={"text.primary"}
+                                                            onChange={(e) =>
+                                                                setFormData({
+                                                                    ...formData,
+                                                                    dairyFarm: {
+                                                                        ...updateField({...formData.dairyFarm}, key, e.target.value)
+                                                                    }
+                                                                })}/>
+                                                    </FormControl>
+                                                    :
+                                                    <Typography fontSize={'lg'} sx={{
+                                                        fontSize: 'large',
+                                                        padding: 1,
+                                                        border: 1,
+                                                        borderColor: 'primary.main'
+                                                    }}>
+                                                        {user.dairyFarm[key]}
+                                                    </Typography>}
+                                            </td>
+                                        </tr>
+                                    )
+                            })}
+                            <Typography level="h3" fontSize="xl2" color={'primary'} paddingTop={5}>
+                                Bank Account Details
+                            </Typography>
+                            {Object.keys(user.account).map(key => {
+                                if (key === 'accountType')
+                                    return (
+                                        <tr
+                                            key={key}
+                                            style={{'&:last-child td, &:last-child th': {border: 0}}}
+                                        >
+                                            <td>
+                                                <Typography fontSize={"lg"}>
+                                                    {keyToLabel[key]}
+                                                </Typography>
+                                            </td>
+                                            <td>
+                                                {edit ?
+                                                    <FormControl>
+                                                        <Select
+                                                            // defaultValue={formData.account[key]}
+                                                            indicator={<KeyboardArrowDown/>}
+                                                            onChange={(e) =>
+                                                                setFormData({
+                                                                    ...formData,
+                                                                    account: {
+                                                                        ...updateField({...formData.account}, key, e.target.outerText)
+                                                                    }
+                                                                })}
+                                                        >
+                                                            <Option value={'Savings'}>Savings</Option>
+                                                            <Option value={'Credit'}>Credit</Option>
+                                                        </Select>
+                                                    </FormControl>
+                                                    :
+                                                    <Typography fontSize={'lg'} sx={{
+                                                        fontSize: 'large',
+                                                        padding: 1,
+                                                        border: 1,
+                                                        borderColor: 'primary.main',
+                                                        minHeight: '45px'
+                                                    }}>
+                                                        {user.account[key]}
+                                                    </Typography>}
+                                            </td>
+                                        </tr>
+                                    )
+                                else return (
+                                    <tr
                                         key={key}
-                                        sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                        style={{'&:last-child td, &:last-child th': {border: 0}}}
                                     >
-                                        <TableCell component="th" scope="row" align="left" sx={{
-                                            fontSize: "120%",
-                                        }}>
-                                            {key}
-                                        </TableCell>
-                                        <TableCell align="right" sx={{
-                                            fontSize: "120%",
-                                        }}>
-                                            <TextField
-                                                value={formData.account[key]}
-                                                InputProps={{
-                                                    readOnly: !editAccount,
-                                                }}
-                                                onChange={(e) => setFormData({
-                                                    ...formData,
-                                                    account: {...updateField({...formData.account}, key, e.target.value)}
-                                                })}/>
-                                        </TableCell>
-                                    </TableRow>
+                                        <td>
+                                            <Typography fontSize={"lg"}>
+                                                {keyToLabel[key]}
+                                            </Typography>
+                                        </td>
+                                        <td>
+                                            {edit ?
+                                                <FormControl>
+                                                    <Input
+                                                        sx={{
+                                                            fontSize: 'large',
+                                                            padding: 1,
+                                                            border: 1,
+                                                            borderColor: 'primary.main'
+                                                        }}
+                                                        value={formData.account[key]}
+                                                        variant={"outlined"}
+                                                        color={"text.primary"}
+                                                        onChange={(e) =>
+                                                            setFormData({
+                                                                ...formData,
+                                                                account: {
+                                                                    ...updateField({...formData.account}, key, e.target.value)
+                                                                }
+                                                            })}/>
+                                                </FormControl>
+                                                :
+                                                <Typography fontSize={'lg'} sx={{
+                                                    fontSize: 'large',
+                                                    padding: 1,
+                                                    border: 1,
+                                                    borderColor: 'primary.main',
+                                                    minHeight: '45px'
+                                                }}>
+                                                    {user.account[key]}
+                                                </Typography>}
+                                        </td>
+                                    </tr>
                                 )
+                            })
                             }
-                        )}
-                    </TableBody>
-                </Table>
-                <div className="flex justify-center">
-                    {editAccount? <Button onClick={() => {
-                            setEditAccount(false);
-                            setFormData(user);
-                        }}>CANCEL</Button> :
-                        <Button onClick={() => setEditAccount(true)}>EDIT</Button>
-                    }
-                    <Button onClick={handleSubmit} disabled={!editAccount}>UPDATE</Button>
-                </div>
-            </TableContainer>
-        </div>
+                            </tbody>
+                        </Table>
+                        <Box sx={{display: 'flex', gap: 2, paddingTop: '50px'}}>
+                            {edit ? <Button variant={'outlined'} color="primary" onClick={(e) => {
+                                    e.preventDefault();
+                                    setEdit(false);
+                                    console.log('cancel')
+                                    setFormData(user);
+                                }}>CANCEL</Button> :
+                                <Button variant={'outlined'} color="primary" onClick={(e) => {
+                                    e.preventDefault();
+                                    console.log('edit')
+                                    setEdit(true);
+                                }}>EDIT</Button>
+                            }
+                            <Button type="" disabled={!edit} loading={loading} color={"primary"}>UPDATE</Button>
+                            <input type="submit" hidden/>
+                        </Box>
+                    </form>
+                </Box>
+                <Box sx={{minHeight: '80px'}}></Box>
+            </Box>
+        </Box>
     )
-}
+};

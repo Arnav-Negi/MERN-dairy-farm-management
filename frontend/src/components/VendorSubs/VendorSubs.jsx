@@ -1,14 +1,16 @@
-import InventoryTable from "./InventoryTable.jsx";
 import {useRecoilState} from "recoil";
 import Box from "@mui/joy/Box";
 import ColorSchemeToggle from "../../utils/ColorSchemeToggle.jsx";
 import {Typography} from "@mui/joy";
 import * as React from "react";
 import {userAtom} from "../../atoms/user.jsx";
+import VendorSubscriptionsTable from "./VendorSubscriptionsTable.jsx";
+import axios from "axios";
+import {useEffect, useState} from "react";
 
-export default function Inventory() {
+export default function VendorSubs() {
     const [user, setUser] = useRecoilState(userAtom);
-    // const [inventory, setInventory] = useRecoilState(inventoryAtom);
+
 
     return (
         <Box sx={{display: 'flex', minHeight: '100dvh',}}>
@@ -49,9 +51,9 @@ export default function Inventory() {
                     />
                 </Box>
                 <Typography level="h1" fontSize="xl4" color={'primary'}>
-                    Inventory of {user.dairyFarm.name}
+                    Subscriptions for {user.dairyFarm.name}
                 </Typography>
-                <InventoryTable/>
+                <VendorSubscriptionsTable/>
                 <Box sx={{minHeight: '80px'}}></Box>
             </Box>
         </Box>

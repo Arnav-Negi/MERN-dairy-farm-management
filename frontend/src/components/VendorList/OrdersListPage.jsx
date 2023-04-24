@@ -7,13 +7,14 @@ import Button from '@mui/joy/Button';
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
 import Link from '@mui/joy/Link';
 import Typography from '@mui/joy/Typography';
-import useScript from './useScript';
-import FirstSidebar from './components/FirstSidebar';
-import SecondSidebarCustomer from '../Navbar/SidebarCustomer';
-import OrderTable from './components/OrderTable';
-import Header from './components/Header';
-import ColorSchemeToggle from '../Navbar/ColorSchemeToggle';
-import customTheme from './theme';
+
+import useScript from '../../utils/useScript';
+// import FirstSidebar from './components/FirstSidebar';
+// import SecondSidebar from './components/SecondSidebar';
+import OrderTable from './OrderTable';
+// import Header from './components/Header';
+import ColorSchemeToggle from '../../utils/ColorSchemeToggle';
+// import customTheme from './theme';
 
 const useEnhancedEffect =
   typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
@@ -31,23 +32,7 @@ export default function JoyOrderDashboardTemplate() {
   }, [status]);
 
   return (
-    <CssVarsProvider disableTransitionOnChange theme={customTheme}>
-      <GlobalStyles
-        styles={{
-          '[data-feather], .feather': {
-            color: 'var(--Icon-color)',
-            margin: 'var(--Icon-margin)',
-            fontSize: 'var(--Icon-fontSize, 20px)',
-            width: '1em',
-            height: '1em',
-          },
-        }}
-      />
-      <CssBaseline />
       <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
-        <Header />
-        <FirstSidebar />
-        <SecondSidebarCustomer />
         <Box
           component="main"
           className="MainContent"
@@ -100,7 +85,7 @@ export default function JoyOrderDashboardTemplate() {
                 underline="hover"
                 color="neutral"
                 fontSize="inherit"
-                href="#some-link"
+                href="/customer/my-subscriptions"
               >
                 Dashboard
               </Link>
@@ -126,29 +111,13 @@ export default function JoyOrderDashboardTemplate() {
             }}
           >
             <Typography level="h1" fontSize="xl4">
-              Orders
+              Vendors List
             </Typography>
             <Box sx={{ flex: 999 }} />
-            <Box sx={{ display: 'flex', gap: 1, '& > *': { flexGrow: 1 } }}>
-              <Button
-                variant="outlined"
-                color="neutral"
-                startDecorator={<i data-feather="download-cloud" />}
-              >
-                Download PDF
-              </Button>
-              <Button
-                variant="outlined"
-                color="neutral"
-                startDecorator={<i data-feather="table" />}
-              >
-                Download CSV
-              </Button>
-            </Box>
+            <Box sx={{ display: 'flex', gap: 1, '& > *': { flexGrow: 1 } }} />
           </Box>
           <OrderTable />
         </Box>
       </Box>
-    </CssVarsProvider>
   );
 }

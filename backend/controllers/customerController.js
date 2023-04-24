@@ -50,6 +50,11 @@ const registerCustomer = async (req, res) => {
 
 const loginCustomer = async (req, res) => {
   try {
+    const d = new Date();
+    let diff = d.getTimezoneOffset();
+    console.log(diff);
+    console.log(d);
+    console.log(d.toTimeString());
     const customer = await Customer.findOne({
       emailID: req.body.emailID,
     }).select("-createdAt -updatedAt -__v");
@@ -277,6 +282,22 @@ const addSubscription = async (req, res) => {
       return res.status(400).json({ error: "Product not in cart" });
     }
 
+    const vendor = await Vendor.findById(product.vendor);
+
+    const date = new Date();
+    let time = date.toTimeString().substring(0, 5);
+    const openingTime = vendor.dairyFarm.openingHours;
+    const closingTime = vendor.dairyFarm.closingHours;
+    if (closingTime > openingTime) {
+      if (time < openingTime || time > closingTime) {
+        return res.status(400).json({ error: "Vendor's Farm is closed" });
+      }
+    } else if (closingTime < openingTime) {
+      if (time < openingTime && time > closingTime) {
+        return res.status(400).json({ error: "Vendor's Farm is closed" });
+      }
+    }
+
     const subscription = new Subscription({
       product: req.body.product,
       customer: req.user.id,
@@ -286,7 +307,6 @@ const addSubscription = async (req, res) => {
     });
     await subscription.save();
 
-    const vendor = await Vendor.findById(product.vendor);
     vendor.subscriptions.push(subscription._id);
     await vendor.save();
 
@@ -322,6 +342,22 @@ const removeSubscription = async (req, res) => {
     }
 
     const product = await Product.findById(subscription.product);
+    const vendor = await Vendor.findById(product.vendor);
+
+    const date = new Date();
+    let time = date.toTimeString().substring(0, 5);
+    const openingTime = vendor.dairyFarm.openingHours;
+    const closingTime = vendor.dairyFarm.closingHours;
+    if (closingTime > openingTime) {
+      if (time < openingTime || time > closingTime) {
+        return res.status(400).json({ error: "Vendor's Farm is closed" });
+      }
+    } else if (closingTime < openingTime) {
+      if (time < openingTime && time > closingTime) {
+        return res.status(400).json({ error: "Vendor's Farm is closed" });
+      }
+    }
+
     product.usedQuantity -=
       subscription.daily_quantity * subscription.days.length;
     await product.save();
@@ -331,7 +367,6 @@ const removeSubscription = async (req, res) => {
     );
     await customer.save();
 
-    const vendor = await Vendor.findById(product.vendor);
     vendor.subscriptions = vendor.subscriptions.filter(
       (item) => item._id.toString() !== req.body.subscription
     );
@@ -358,6 +393,31 @@ const getSubscriptions = async (req, res) => {
     if (!customer) {
       return res.status(400).json({ error: "Customer not found" });
     }
+
+    // sort the subscriptions by which day of the week comes first from today
+    customer.subscriptions.sort((a, b) => {
+      const today = (new Date().getDay() - 1) % 7;
+      const days = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ];
+      const aDays = a.days;
+      const bDays = b.days;
+      for (let i = 1; i <= 7; i++) {
+        let index = (today + i) % 7;
+        if (aDays.includes(days[index]) && !bDays.includes(days[index]))
+          return -1;
+        if (!aDays.includes(days[index]) && bDays.includes(days[index]))
+          return 1;
+      }
+      return 0;
+    });
+
     res.status(200).json({
       success: "Subscriptions found",
       subscriptions: customer.subscriptions,
@@ -392,6 +452,24 @@ const getCart = async (req, res) => {
   }
 };
 
+const getVendors = async (req, res) => {
+  try {
+    if (req.user.userType !== "Customer") {
+      return res.status(400).json({ error: "User is not a customer" });
+    }
+    const vendors = await Vendor.find().select(
+      "-createdAt -updatedAt -__v -products -subscriptions -password -account"
+    );
+    res.status(200).json({
+      success: "Vendors found",
+      vendors,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+};
+
 module.exports = {
   registerCustomer,
   loginCustomer,
@@ -404,4 +482,5 @@ module.exports = {
   removeSubscription,
   getSubscriptions,
   getCart,
+  getVendors,
 };
