@@ -114,6 +114,7 @@ export default function CustomerProfile() {
                         <Table borderAxis="none">
                             <tbody>
                             {Object.keys(user).map(key => {
+                                if (Object.keys(keyToLabel).includes(key))
                                     return (
                                         <tr
                                             key={key}
