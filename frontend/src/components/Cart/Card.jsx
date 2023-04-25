@@ -183,15 +183,13 @@ props.delete(props.item.product._id)
       const res = await axios.post(url, details)
       if (res.status === 200) {
         setAddingStat(false)
+        props.days(arrayOfdays, props.item.product._id);
       }
-
     } catch (error) {
       console.log(error)
-      alert("Please try again later")
+      alert("Not enough quantity available.")
+      setAddingStat(false)
     }
-
-    props.days(arrayOfdays, props.item.product._id)
-    
   }
 
   const updateCheckStat = async (item) => {
@@ -356,7 +354,6 @@ props.delete(props.item.product._id)
               >
                 Edit
               </Button>
-              {/* <Button variant="soft">Soft</Button> */}
         
         </Box>
 
