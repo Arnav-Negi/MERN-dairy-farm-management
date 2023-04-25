@@ -37,8 +37,6 @@ export default function InteractiveCard(props) {
   // const [changing, setChanging] = React.useState(false)
   const [addingStat, setAddingStat] = React.useState(false)
 
-  console.log(props.item.product.name)
-
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
   async function handleCountAdd(){
     setEditting(true)
@@ -181,6 +179,7 @@ props.delete(props.item.product._id)
         startDate: props.item.startDate,
         checkStat: props.item.checkStat,
          days: arrayOfdays}
+      console.log(details);
       const res = await axios.post(url, details)
       if (res.status === 200) {
         setAddingStat(false)

@@ -87,9 +87,6 @@ export default function MultipleInteractionCard(props) {
   if (props.item.discount.$numberDecimal === "0") {
     textDecoration = "none"
   }
-  console.log(typeof (props.item.price.$numberDecimal))
-  console.log(props.item)
-
   return (
     <>
       <React.Fragment>

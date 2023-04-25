@@ -36,7 +36,6 @@ const registerVendor = async (req, res) => {
     jwt.sign(
       payload,
       process.env.SECRETKEY,
-      { expiresIn: "1h" },
       (err, token) => {
         if (err) throw err;
         res.json({ token, vendor });
@@ -74,7 +73,6 @@ const loginVendor = async (req, res) => {
     jwt.sign(
       payload,
       process.env.SECRETKEY,
-      { expiresIn: "1h" },
       (err, token) => {
         if (err) throw err;
         res.status(200).json({ token, vendor });

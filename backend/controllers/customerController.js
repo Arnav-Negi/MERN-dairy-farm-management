@@ -74,7 +74,6 @@ const loginCustomer = async (req, res) => {
     jwt.sign(
       payload,
       process.env.SECRETKEY,
-      { expiresIn: "1h" },
       (err, token) => {
         if (err) throw err;
         res.status(200).json({ token, customer });

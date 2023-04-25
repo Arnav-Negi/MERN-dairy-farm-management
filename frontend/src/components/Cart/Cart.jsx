@@ -279,47 +279,14 @@ export default function FilesExample() {
               flexDirection: 'row',
               alignItems: 'center',
               gap: 1.5,
+              paddingLeft: '5%',
+              paddingRight: '5%',
             }}
           >
-            <IconButton
-              variant="outlined"
-              size="sm"
-              onClick={() => setDrawerOpen(true)}
-              sx={{ display: { sm: 'none' } }}
-            >
-              <MenuIcon />
-            </IconButton>
-            {/* <IconButton
-              size="sm"
-              variant="solid"
-              sx={{ display: { xs: 'none', sm: 'inline-flex' } }}
-            >
-              <FindInPageRoundedIcon />
-            </IconButton> */}
             <Typography component="h1" fontWeight="xl">
               Shopping Cart
             </Typography>
           </Box>
-          <Input
-            size="sm"
-            placeholder="Search anything…"
-            startDecorator={<SearchRoundedIcon color="primary" />}
-            endDecorator={
-              <IconButton variant="outlined" size="sm" color="neutral">
-                <Typography fontWeight="lg" fontSize="sm" textColor="text.tertiary">
-                  /
-                </Typography>
-              </IconButton>
-            }
-            sx={{
-              flexBasis: '400px',
-              display: {
-                xs: 'none',
-                sm: 'flex',
-                // marginRight: 100
-              },
-            }}
-          />
           <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1.5 }}>
             <ColorSchemeToggle />
           </Box>
@@ -331,11 +298,10 @@ export default function FilesExample() {
               gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1250px))',
               gap: 2,
               justifyContent: 'flex-end',
+              paddingLeft: '5%',
+              paddingRight: '5%',
             }}
           >
-
-
-
             <Grid container sx={{ height: "100%" }} spacing={2}>
               {
                 cartdata.map((item, index) => {
