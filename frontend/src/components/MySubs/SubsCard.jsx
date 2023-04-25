@@ -15,7 +15,29 @@ import IconButton from '@mui/joy/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function MultipleInteractionCard(props) {
-    console.log(props)
+
+    const days = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+    ];
+
+    const getNextDay = (listDays) => {
+        const tom = new Date().getDay();
+        let thisDay;
+        for (var i = 0; i<7; i++) {
+            thisDay = days[(i + tom)%7];
+            if (listDays.includes(thisDay))
+                return thisDay;
+        }
+        if (!listDays) return null
+        return listDays[0]
+    }
+
     return (
         <Sheet
             component="li"
@@ -47,7 +69,7 @@ export default function MultipleInteractionCard(props) {
                         <Typography level="body2">Quantity - {props.item.daily_quantity}</Typography>
                         {/* <Typography level="body3">Dribbble</Typography> */}
                     </ListItemContent>
-                    <Typography level="body2">Next Delivery day - {props.item.days[0]}</Typography>
+                    <Typography level="body2">Next Delivery day - {getNextDay(props.item.days)}</Typography>
                 </ListItem>
             </List>
             {/* <Button

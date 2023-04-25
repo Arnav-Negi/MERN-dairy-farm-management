@@ -291,7 +291,7 @@ export default function VendorProfile() {
                                                         border: 1,
                                                         borderColor: 'primary.main'
                                                     }}>
-                                                        {new Date(user.dairyFarm[key]).toLocaleDateString()}
+                                                        {new Date(user.dairyFarm[key]).toDateString()}
                                                     </Typography>}
                                             </td>
                                         </tr>

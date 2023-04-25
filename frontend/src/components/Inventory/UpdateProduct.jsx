@@ -24,8 +24,15 @@ export default function UpdateProduct(props) {
     const [formData, setFormData] = useState(row);
 
     useEffect(() => {
-        console.log("Form set to", row);
-        setFormData(row);
+        if (row)
+        setFormData({
+            id: row._id,
+            name: row.name,
+            description: row.description,
+            price: row.price.$numberDecimal,
+            discount: row.discount.$numberDecimal,
+            weeklyQuantity: row.weeklyQuantity,
+        });
     }, [row]);
 
 
@@ -105,6 +112,7 @@ export default function UpdateProduct(props) {
                     variant={"outlined"}
                     type={"number"}
                     color={"text.primary"}
+                    step
                     endDecorator={decroratorMap[key]}
                     onChange={(e) =>
                         setFormData({...updateField({...formData}, key, e.target.value)})}/>

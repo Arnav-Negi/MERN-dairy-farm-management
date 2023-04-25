@@ -271,7 +271,7 @@ export default function VendorSubscriptionsTable() {
 
                             <td style={{padding: 12}}>
                                 <Typography fontSize={'md'} fontWeight="md">
-                                    {(new Date(row.startDate)).toLocaleDateString()}
+                                    {(new Date(row.startDate)).toDateString()}
                                 </Typography>
                             </td>
 

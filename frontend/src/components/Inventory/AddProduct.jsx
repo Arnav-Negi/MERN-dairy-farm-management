@@ -23,9 +23,9 @@ export default function AddProduct(props) {
     const [formData, setFormData] = useState({
         name: '',
         description: '',
-        price: '',
-        discount: '',
-        weeklyQuantity: '',
+        price: 0.0,
+        discount: 0.0,
+        weeklyQuantity: 0,
     });
 
     const keyToLabel = {
@@ -90,7 +90,7 @@ export default function AddProduct(props) {
                     setFormData({...updateField(formData, key, e.target.value)})}/>
             )
         }
-        else if (key === 'price' || key === 'discount' || key === 'weeklyQuantity')
+        else if (key === 'price' || key === 'discount')
         {
             return (<Input
                 sx={{
@@ -102,10 +102,35 @@ export default function AddProduct(props) {
                 value={formData[name]}
                 variant={"outlined"}
                 type={"number"}
+                defaultValue={0}
+                slotProps={{
+                    input: {
+                        step: 0.1,
+                    },
+                }}
                 color={"text.primary"}
                 endDecorator={decroratorMap[key]}
                 onChange={(e) =>
                     setFormData({...updateField(formData, key, e.target.value)})}/>
+            )
+        }
+        else if (key === 'weeklyQuantity')
+        {
+            return (<Input
+                    sx={{
+                        fontSize: 'large',
+                        padding: 1,
+                        border: 1,
+                        borderColor: 'primary.main'
+                    }}
+                    value={formData[name]}
+                    variant={"outlined"}
+                    type={"number"}
+                    defaultValue={0}
+                    color={"text.primary"}
+                    endDecorator={decroratorMap[key]}
+                    onChange={(e) =>
+                        setFormData({...updateField(formData, key, e.target.value)})}/>
             )
         }
         else {

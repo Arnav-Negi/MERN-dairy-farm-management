@@ -155,7 +155,7 @@ export default function SignUp() {
                         placeholder="Enter your Contact"
                         name="contact"
                         type="number"
-
+                        defaultValue={0}
                         value={contact}
                         onChange={handleContactChange}
                         error={conError}
