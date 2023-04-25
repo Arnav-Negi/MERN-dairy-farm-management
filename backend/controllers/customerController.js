@@ -139,7 +139,7 @@ const addToCart = async (req, res) => {
     }
 
     const quantity = req.body.daily_quantity * req.body.days.length;
-    if (quantity > product.weekly_quantity - product.usedQuantity) {
+    if (quantity > product.weeklyQuantity - product.usedQuantity) {
       return res.status(400).json({ error: "Not enough quantity available" });
     }
 
